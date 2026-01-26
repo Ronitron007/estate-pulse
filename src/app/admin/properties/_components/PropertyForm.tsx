@@ -11,11 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageUploader } from "./ImageUploader";
 import { ConfigurationsEditor } from "./ConfigurationsEditor";
 import { AmenitiesSelector } from "./AmenitiesSelector";
-import { propertyFormSchema, type PropertyFormValues, type PropertyFormData } from "./property-schema";
+import { propertyFormSchema, transformFormData, type PropertyFormValues, type PropertyFormData } from "./property-schema";
 import type { Configuration, ProjectImage } from "@/types/database";
 
+interface InitialData extends PropertyFormValues {
+  images: Partial<ProjectImage>[];
+  configurations: Partial<Configuration>[];
+  amenityIds: string[];
+}
+
 interface PropertyFormProps {
-  initialData?: PropertyFormData;
+  initialData?: InitialData;
   projectId?: string;
   builders: { id: string; name: string }[];
   cities: string[];
@@ -49,19 +55,21 @@ export function PropertyForm({
       slug: "",
       description: "",
       status: "upcoming",
-      property_type: null,
-      price_min: null,
-      price_max: null,
+      property_type: "",
+      price_min: "",
+      price_max: "",
       price_on_request: false,
       address: "",
       city: "",
       locality: "",
       pincode: "",
-      total_units: null,
-      available_units: null,
+      lat: "",
+      lng: "",
+      total_units: "",
+      available_units: "",
       possession_date: "",
       rera_id: "",
-      builder_id: null,
+      builder_id: "",
       published: false,
     },
   });
@@ -69,12 +77,7 @@ export function PropertyForm({
   const handleSubmit = form.handleSubmit((data) => {
     setError(null);
     startTransition(async () => {
-      const fullData: PropertyFormData = {
-        ...data,
-        images: images as Partial<ProjectImage>[],
-        configurations,
-        amenityIds,
-      };
+      const fullData = transformFormData(data, images, configurations, amenityIds);
       const result = await onSubmit(fullData);
       if (result.success) {
         router.push("/admin/properties");

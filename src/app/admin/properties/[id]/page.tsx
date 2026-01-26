@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProjectById, getUniqueCities, getAllBuilders, getAllAmenities } from "@/lib/queries/admin";
 import { PropertyForm } from "../_components/PropertyForm";
-import { projectToFormData } from "../_components/property-schema";
+import { projectToFormValues } from "../_components/property-schema";
 import { updatePropertyAction, deletePropertyAction } from "../actions";
 
 interface Props {
@@ -37,7 +37,7 @@ export default async function EditPropertyPage({ params }: Props) {
         <p className="text-muted-foreground">Update {project.name}</p>
       </div>
       <PropertyForm
-        initialData={projectToFormData(project)}
+        initialData={projectToFormValues(project)}
         projectId={id}
         builders={builders}
         cities={cities}
