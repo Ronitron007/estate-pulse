@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getImageUrl } from "@/lib/image-urls";
 import type { ProjectImage } from "@/types/database";
 
 interface PropertyGalleryProps {
@@ -13,11 +14,6 @@ interface PropertyGalleryProps {
 export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
-  const getImageUrl = (publicId: string, width: number, height: number) =>
-    `https://res.cloudinary.com/${cloudName}/image/upload/w_${width},h_${height},c_fill,f_auto,q_auto/${publicId}`;
 
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
@@ -49,7 +45,7 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
             className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 hover:opacity-90 transition-opacity"
           >
             <img
-              src={getImageUrl(image.cloudinary_public_id, 300, 300)}
+              src={getImageUrl(image.image_path, "thumbnail")}
               alt={image.alt_text || `${projectName} image ${index + 1}`}
               className="w-full h-full object-cover"
             />
@@ -60,7 +56,6 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
       {/* Lightbox */}
       {lightboxOpen && (
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-          {/* Close button */}
           <Button
             variant="ghost"
             size="sm"
@@ -70,7 +65,6 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
             <X className="w-6 h-6" />
           </Button>
 
-          {/* Previous button */}
           {images.length > 1 && (
             <Button
               variant="ghost"
@@ -82,16 +76,14 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
             </Button>
           )}
 
-          {/* Image */}
           <div className="max-w-4xl max-h-[80vh] px-16">
             <img
-              src={getImageUrl(images[currentIndex].cloudinary_public_id, 1200, 800)}
+              src={getImageUrl(images[currentIndex].image_path, "hero")}
               alt={images[currentIndex].alt_text || `${projectName} image ${currentIndex + 1}`}
               className="max-w-full max-h-[80vh] object-contain"
             />
           </div>
 
-          {/* Next button */}
           {images.length > 1 && (
             <Button
               variant="ghost"
@@ -103,7 +95,6 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
             </Button>
           )}
 
-          {/* Counter */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm">
             {currentIndex + 1} / {images.length}
           </div>
