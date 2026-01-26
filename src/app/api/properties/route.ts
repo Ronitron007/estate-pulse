@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       id, slug, name, status, price_min, price_max, price_on_request,
       city, locality, location, property_type, possession_date,
       builder:builders(id, name),
-      images:project_images(cloudinary_public_id, is_primary, alt_text)
+      images:project_images(image_path, is_primary, alt_text)
     `)
     .not("published_at", "is", null)
     .is("deleted_at", null)

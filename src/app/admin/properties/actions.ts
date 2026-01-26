@@ -11,6 +11,17 @@ interface ActionResult {
   id?: string;
 }
 
+// Build GeoJSON Point format for PostGIS GEOGRAPHY column
+// PostGIS accepts GeoJSON and converts it to geography type
+function buildGeoJSONPoint(lat: number | undefined, lng: number | undefined): string | null {
+  if (lat === undefined || lng === undefined) return null;
+  // GeoJSON Point format: coordinates are [longitude, latitude]
+  return JSON.stringify({
+    type: "Point",
+    coordinates: [lng, lat],
+  });
+}
+
 export async function createPropertyAction(
   data: PropertyFormData
 ): Promise<ActionResult> {
@@ -25,9 +36,8 @@ export async function createPropertyAction(
 
     const supabase = await createClient();
 
-    // Build location object if lat/lng provided
-    const location =
-      data.lat && data.lng ? { lat: data.lat, lng: data.lng } : null;
+    // Build GeoJSON location for PostGIS geography column
+    const location = buildGeoJSONPoint(data.lat, data.lng);
 
     // Insert project
     const { data: project, error: projectError } = await supabase
@@ -71,7 +81,7 @@ export async function createPropertyAction(
     if (data.images.length > 0) {
       const imagesToInsert = data.images.map((img, index) => ({
         project_id: projectId,
-        cloudinary_public_id: img.cloudinary_public_id!,
+        image_path: img.image_path!,
         width: img.width || null,
         height: img.height || null,
         image_type: img.image_type || null,
@@ -159,9 +169,8 @@ export async function updatePropertyAction(
       .eq("id", id)
       .single();
 
-    // Build location object if lat/lng provided
-    const location =
-      data.lat && data.lng ? { lat: data.lat, lng: data.lng } : null;
+    // Build GeoJSON location for PostGIS geography column
+    const location = buildGeoJSONPoint(data.lat, data.lng);
 
     // Determine published_at value
     let published_at = currentProject?.published_at;
@@ -212,7 +221,7 @@ export async function updatePropertyAction(
     if (data.images.length > 0) {
       const imagesToInsert = data.images.map((img, index) => ({
         project_id: id,
-        cloudinary_public_id: img.cloudinary_public_id!,
+        image_path: img.image_path!,
         width: img.width || null,
         height: img.height || null,
         image_type: img.image_type || null,
