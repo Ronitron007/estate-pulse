@@ -1,4 +1,5 @@
 import { Storage, Bucket } from "@google-cloud/storage";
+import { randomUUID } from "crypto";
 
 let _storage: Storage | null = null;
 let _bucket: Bucket | null = null;
@@ -21,14 +22,18 @@ export interface PresignedUrlResponse {
   uploadUrl: string;
   publicUrl: string;
   fileName: string;
+  basePath: string;
 }
 
 export async function generatePresignedUploadUrl(
   originalFileName: string,
-  contentType: string
+  contentType: string,
+  slug: string
 ): Promise<PresignedUrlResponse> {
   const ext = originalFileName.split(".").pop() || "jpg";
-  const fileName = `properties/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const uuid = randomUUID().slice(0, 8);
+  const basePath = `properties/${slug}/img-${uuid}`;
+  const fileName = `${basePath}-original.${ext}`;
 
   const file = getBucket().file(fileName);
 
@@ -41,7 +46,7 @@ export async function generatePresignedUploadUrl(
 
   const publicUrl = `https://storage.googleapis.com/${process.env.GCP_BUCKET_NAME}/${fileName}`;
 
-  return { uploadUrl, publicUrl, fileName };
+  return { uploadUrl, publicUrl, fileName, basePath };
 }
 
 export function getPublicUrl(fileName: string): string {

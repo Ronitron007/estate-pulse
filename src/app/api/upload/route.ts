@@ -8,10 +8,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { fileName, contentType } = await request.json();
+  const { fileName, contentType, slug } = await request.json();
 
   if (!fileName || !contentType) {
     return NextResponse.json({ error: "Missing fileName or contentType" }, { status: 400 });
+  }
+
+  if (!slug) {
+    return NextResponse.json({ error: "Missing slug" }, { status: 400 });
   }
 
   if (!contentType.startsWith("image/")) {
@@ -19,7 +23,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await generatePresignedUploadUrl(fileName, contentType);
+    const result = await generatePresignedUploadUrl(fileName, contentType, slug);
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error generating presigned URL:", error);
