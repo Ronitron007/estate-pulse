@@ -3,10 +3,12 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getImageUrl } from "@/lib/image-urls";
 import type { ProjectImage, ImageType } from "@/types/database";
 
 interface ImageUploaderProps {
   projectId?: string;
+  slug: string;
   images: ProjectImage[];
   onChange: (images: ProjectImage[]) => void;
 }
@@ -19,7 +21,7 @@ interface PendingUpload {
   error?: string;
 }
 
-export function ImageUploader({ projectId, images, onChange }: ImageUploaderProps) {
+export function ImageUploader({ projectId, slug, images, onChange }: ImageUploaderProps) {
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [dragOver, setDragOver] = useState(false);
 
@@ -30,16 +32,16 @@ export function ImageUploader({ projectId, images, onChange }: ImageUploaderProp
     setPending((p) => [...p, { id, file, preview, progress: 0 }]);
 
     try {
-      // Get presigned URL
+      // Get presigned URL with slug
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+        body: JSON.stringify({ fileName: file.name, contentType: file.type, slug }),
       });
 
       if (!res.ok) throw new Error("Failed to get upload URL");
 
-      const { uploadUrl, publicUrl, fileName } = await res.json();
+      const { uploadUrl, basePath } = await res.json();
 
       // Upload to GCP
       setPending((p) => p.map((u) => (u.id === id ? { ...u, progress: 50 } : u)));
@@ -58,7 +60,7 @@ export function ImageUploader({ projectId, images, onChange }: ImageUploaderProp
       return {
         id: `temp-${id}`,
         project_id: projectId || "",
-        cloudinary_public_id: fileName, // Storing GCP path in this field
+        image_path: basePath,
         width: null,
         height: null,
         image_type: "exterior" as ImageType,
@@ -85,7 +87,7 @@ export function ImageUploader({ projectId, images, onChange }: ImageUploaderProp
     if (newImages.length > 0) {
       onChange([...images, ...newImages]);
     }
-  }, [images, onChange]);
+  }, [images, onChange, slug]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -96,7 +98,6 @@ export function ImageUploader({ projectId, images, onChange }: ImageUploaderProp
   const removeImage = (index: number) => {
     const newImages = [...images];
     newImages.splice(index, 1);
-    // Reassign primary if needed
     if (newImages.length > 0 && !newImages.some((i) => i.is_primary)) {
       newImages[0].is_primary = true;
     }
@@ -173,7 +174,7 @@ export function ImageUploader({ projectId, images, onChange }: ImageUploaderProp
               <CardContent className="p-0">
                 <div className="aspect-[4/3] relative">
                   <img
-                    src={`https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GCP_BUCKET_NAME}/${img.cloudinary_public_id}`}
+                    src={getImageUrl(img.image_path, "thumbnail")}
                     alt={img.alt_text || ""}
                     className="w-full h-full object-cover"
                   />

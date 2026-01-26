@@ -170,7 +170,7 @@ export function PropertyForm({
           <CardTitle className="text-base">Images</CardTitle>
         </CardHeader>
         <CardContent>
-          <ImageUploader projectId={projectId} images={images as ProjectImage[]} onChange={setImages} />
+          <ImageUploader projectId={projectId} slug={form.watch("slug") || "temp"} images={images as ProjectImage[]} onChange={setImages} />
         </CardContent>
       </Card>
 
