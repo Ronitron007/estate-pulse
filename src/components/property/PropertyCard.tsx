@@ -5,6 +5,10 @@ import { useState } from "react";
 import { MapPin, Building2, Calendar, Home, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatPriceRange, formatDate } from "@/lib/format";
+import { useFavorites } from "@/components/auth/FavoritesProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { useRouter } from "next/navigation";
+import { getImageUrl } from "@/lib/image-urls";
 import type { Project } from "@/types/database";
 
 interface PropertyCardProps {
@@ -15,8 +19,11 @@ interface PropertyCardProps {
 
 export function PropertyCard({ project, showPrice = false, index = 0 }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
+  const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const router = useRouter();
+  const isFavorited = isFavorite(project.id);
 
   const primaryImage = project.images?.find((img) => img.is_primary) || project.images?.[0];
   const minBedrooms = project.configurations?.length
@@ -42,12 +49,18 @@ export function PropertyCard({ project, showPrice = false, index = 0 }: Property
   // Stagger delay based on index
   const staggerDelay = Math.min(index * 0.05, 0.4);
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsFavorited(!isFavorited);
+
+    if (!user) {
+      router.push(`/login?redirectTo=${encodeURIComponent(`/properties/${project.slug}`)}`);
+      return;
+    }
+
     setIsHeartAnimating(true);
     setTimeout(() => setIsHeartAnimating(false), 600);
+    await toggleFavorite(project.id);
   };
 
   return (
@@ -62,7 +75,7 @@ export function PropertyCard({ project, showPrice = false, index = 0 }: Property
         <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
           {primaryImage ? (
             <img
-              src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/w_600,h_450,c_fill,f_auto,q_auto/${primaryImage.cloudinary_public_id}`}
+              src={getImageUrl(primaryImage.image_path, "card")}
               alt={primaryImage.alt_text || project.name}
               className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
