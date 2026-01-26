@@ -62,7 +62,7 @@ export interface Configuration {
 export interface ProjectImage {
   id: string;
   project_id: string;
-  cloudinary_public_id: string;
+  image_path: string;
   width: number | null;
   height: number | null;
   image_type: ImageType | null;
