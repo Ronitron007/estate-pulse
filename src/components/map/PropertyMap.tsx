@@ -26,7 +26,7 @@ export function PropertyMap({ projects, center, zoom = 12 }: PropertyMapProps) {
       <Map
         defaultCenter={center}
         defaultZoom={zoom}
-        mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
+        mapId="map-dark"
         gestureHandling="greedy"
         disableDefaultUI={false}
         className="w-full h-full"

@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types/database";
 
 interface FavoriteWithProject {
-  id: string;
   project_id: string;
   created_at: string;
   project: Project;
@@ -14,7 +13,6 @@ export async function getFavorites(userId: string): Promise<FavoriteWithProject[
   const { data, error } = await supabase
     .from("saved_properties")
     .select(`
-      id,
       project_id,
       created_at,
       project:projects(
@@ -73,7 +71,7 @@ export async function isFavorite(userId: string, projectId: string): Promise<boo
 
   const { data, error } = await supabase
     .from("saved_properties")
-    .select("id")
+    .select("project_id")
     .eq("user_id", userId)
     .eq("project_id", projectId)
     .single();

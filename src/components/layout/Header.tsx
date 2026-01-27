@@ -4,14 +4,15 @@ import Link from "next/link";
 import { Building2, Map, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-
-// Simulated auth state for demo purposes
-// In production, use createClient from @/lib/supabase/client
+import { useAuth } from "@/components/auth/AuthProvider";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export function Header() {
-  const [user, setUser] = useState<{ email: string } | null>(null);
+  const { user, loading } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +24,9 @@ export function Header() {
   }, []);
 
   const handleSignOut = async () => {
-    setUser(null);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
   };
 
   return (
@@ -70,7 +73,9 @@ export function Header() {
 
           {/* Auth buttons with hover effects */}
           <div className="flex items-center gap-3">
-            {user ? (
+            {loading ? (
+              <div className="w-20 h-8 bg-gray-100 rounded animate-pulse" />
+            ) : user ? (
               <>
                 <Link
                   href="/saved"

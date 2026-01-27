@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -20,6 +20,26 @@ export default function LoginPage() {
   const redirectTo = searchParams.get("redirectTo") || "/";
 
   const supabase = createClient();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        router.push(redirectTo);
+      }
+    };
+    checkUser();
+
+    // Also listen for auth state changes (e.g., after OAuth callback)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        router.push(redirectTo);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth, router, redirectTo]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();

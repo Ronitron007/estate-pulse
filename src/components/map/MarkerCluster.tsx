@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-import { useMap, AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { InfoWindow } from "@vis.gl/react-google-maps";
 import Link from "next/link";
 import type { Project } from "@/types/database";
 import { formatPriceRange } from "@/lib/format";
+import { MapMarker } from "./MapMarker";
 
 interface MarkerClusterProps {
   projects: Pick<Project, "id" | "slug" | "name" | "location" | "price_min" | "price_max" | "property_type">[];
 }
 
 export function MarkerCluster({ projects }: MarkerClusterProps) {
-  const map = useMap();
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
   // Filter projects with valid locations
@@ -31,17 +30,11 @@ export function MarkerCluster({ projects }: MarkerClusterProps) {
   return (
     <>
       {projectsWithLocation.map((project) => (
-        <AdvancedMarker
+        <MapMarker
           key={project.id}
-          position={{ lat: project.location!.lat, lng: project.location!.lng }}
+          project={project}
           onClick={() => handleMarkerClick(project)}
-        >
-          <Pin
-            background="#3b82f6"
-            borderColor="#1d4ed8"
-            glyphColor="#ffffff"
-          />
-        </AdvancedMarker>
+        />
       ))}
 
       {selectedProject && selectedProject.location && (

@@ -15,7 +15,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const [propertiesRes, inquiriesRes, favoritesRes] = await Promise.all([
     supabase.from("projects").select("id", { count: "exact", head: true }).is("deleted_at", null),
     supabase.from("inquiries").select("id, status"),
-    supabase.from("saved_properties").select("id", { count: "exact", head: true }),
+    supabase.from("saved_properties").select("project_id", { count: "exact", head: true }),
   ]);
 
   const inquiries = inquiriesRes.data || [];
