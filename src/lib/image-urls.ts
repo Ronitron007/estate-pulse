@@ -1,6 +1,5 @@
-const CDN_URL =
-  process.env.NEXT_PUBLIC_CDN_URL ||
-  `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GCP_BUCKET_NAME}`;
+const rawCdnUrl = (process.env.NEXT_PUBLIC_CDN_URL || "cdn.aglaghar.com").trim();
+const CDN_URL = rawCdnUrl.startsWith("http") ? rawCdnUrl : `https://${rawCdnUrl}`;
 
 export type ImageVariant = "original" | "thumbnail" | "card" | "hero";
 
