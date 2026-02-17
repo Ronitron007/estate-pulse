@@ -6,12 +6,12 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const body = await request.json();
-  const { projectId, name, email, phone, message, whatsappOptIn } = body;
+  const { projectId, name, email, phone, budget, timeline, propertyTitle } = body;
 
   // Validate required fields
-  if (!name || !email || !phone) {
+  if (!name || !phone) {
     return NextResponse.json(
-      { error: "Name, email, and phone are required" },
+      { error: "Name and phone are required" },
       { status: 400 }
     );
   }
@@ -22,10 +22,11 @@ export async function POST(request: NextRequest) {
       user_id: user?.id || null,
       project_id: projectId || null,
       name,
-      email,
+      email: email || null,
       phone,
-      message: message || null,
-      whatsapp_opt_in: whatsappOptIn ?? false,
+      budget: budget || null,
+      timeline: timeline || null,
+      property_title: propertyTitle || null,
       source: "website",
       status: "new",
     })
