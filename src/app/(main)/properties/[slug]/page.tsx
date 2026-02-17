@@ -311,7 +311,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
           {/* Sidebar */}
           <div>
-            <div className="sticky top-4 space-y-6">
+            <div className="sticky top-20 space-y-6">
               <QuickCtaSidebar
                 projectId={project.id}
                 propertyTitle={project.name}
