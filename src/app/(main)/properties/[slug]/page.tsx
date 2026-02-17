@@ -1,6 +1,7 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Building2, Calendar, Home, Check } from "lucide-react";
+import { MapPin, Building2, Calendar, Home, Check, ChevronRight } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
 import { createClient } from "@/lib/supabase/server";
 import { formatPriceRange, formatArea, formatDate } from "@/lib/format";
@@ -8,6 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LocationMap } from "@/components/map/LocationMap";
 import { getImageUrl } from "@/lib/image-urls";
+import { LocationAdvantages } from "@/components/property/LocationAdvantages";
+import { InvestmentInsights } from "@/components/property/InvestmentInsights";
+import { ProjectDetailStats } from "@/components/property/ProjectDetailStats";
+import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
+import { InquiryForm } from "@/components/property/InquiryForm";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -88,6 +94,15 @@ export default async function PropertyDetailPage({ params }: PageProps) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <ChevronRight className="h-3.5 w-3.5" />
+          <Link href="/properties" className="hover:text-foreground transition-colors">Properties</Link>
+          <ChevronRight className="h-3.5 w-3.5" />
+          <span className="text-foreground">{project.name}</span>
+        </nav>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
@@ -164,6 +179,29 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <p className="text-gray-700 whitespace-pre-line">{project.description}</p>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Location Advantages */}
+            {project.location_advantages && Object.keys(project.location_advantages).length > 0 && (
+              <LocationAdvantages data={project.location_advantages} />
+            )}
+
+            {/* Project Details */}
+            {project.project_details_extra && (
+              <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
+            )}
+
+            {/* Investment Insights */}
+            {project.investment_data && (
+              <InvestmentInsights data={project.investment_data} />
+            )}
+
+            {/* 3D Walkthrough */}
+            {(project.matterport_url || project.video_url) && (
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h3 className="font-display text-lg font-semibold mb-4">3D Walkthrough</h3>
+                <div className="aspect-video rounded-lg bg-muted" />
+              </div>
             )}
 
             {/* Configurations */}
@@ -250,32 +288,28 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Contact Card */}
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Interested in this property?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {user ? (
-                  <>
-                    <p className="text-sm text-gray-600">
-                      Get in touch with our team for more information or to schedule a site visit.
-                    </p>
-                    <Button className="w-full">Send Inquiry</Button>
-                    <Button variant="outline" className="w-full">Save Property</Button>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-sm text-gray-600">
-                      Login or create an account to see prices, save properties, and send inquiries.
-                    </p>
-                    <Button className="w-full" asChild>
-                      <a href="/login">Login to Continue</a>
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            {/* Quick CTA */}
+            <div className="sticky top-4 space-y-6">
+              <QuickCtaSidebar
+                projectId={project.id}
+                propertyTitle={project.name}
+                price={user ? formatPriceRange(project.price_min, project.price_max, project.price_on_request) : undefined}
+              />
+
+              {/* Inquiry Form */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Request Callback</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <InquiryForm
+                    projectId={project.id}
+                    propertyTitle={project.name}
+                    compact
+                  />
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Builder Info */}
             {project.builder && (
@@ -286,12 +320,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 <CardContent>
                   <p className="font-semibold">{project.builder.name}</p>
                   {project.builder.established_year && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       Established {project.builder.established_year}
                     </p>
                   )}
                   {project.builder.description && (
-                    <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
                       {project.builder.description}
                     </p>
                   )}
