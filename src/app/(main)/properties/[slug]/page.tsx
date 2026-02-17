@@ -43,6 +43,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function buildSpecs(project: NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>) {
+  const parts: string[] = [];
+  // Get BHK types from configurations
+  if (project.configurations?.length) {
+    const bhks = [...new Set(project.configurations.map(c => c.bedrooms).filter(Boolean))].sort();
+    if (bhks.length === 1) {
+      parts.push(`${bhks[0]} BHK`);
+    } else if (bhks.length > 1) {
+      parts.push(`${bhks[0]}–${bhks[bhks.length - 1]} BHK`);
+    }
+    // Get representative area
+    const areas = project.configurations.map(c => c.carpet_area_sqft).filter(Boolean) as number[];
+    if (areas.length === 1) {
+      parts.push(`${areas[0]} sq.ft`);
+    } else if (areas.length > 1) {
+      parts.push(`${Math.min(...areas)}–${Math.max(...areas)} sq.ft`);
+    }
+  }
+  if (project.locality) parts.push(project.locality);
+  else if (project.city) parts.push(project.city);
+  return parts.length ? parts.join(' \u2022 ') : undefined;
+}
+
 export default async function PropertyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
@@ -287,13 +310,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick CTA */}
+          <div>
             <div className="sticky top-4 space-y-6">
               <QuickCtaSidebar
                 projectId={project.id}
                 propertyTitle={project.name}
                 price={user ? formatPriceRange(project.price_min, project.price_max, project.price_on_request) : undefined}
+                specs={buildSpecs(project)}
               />
 
               {/* Inquiry Form */}
@@ -309,29 +332,29 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   />
                 </CardContent>
               </Card>
-            </div>
 
-            {/* Builder Info */}
-            {project.builder && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>About the Builder</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="font-semibold">{project.builder.name}</p>
-                  {project.builder.established_year && (
-                    <p className="text-sm text-muted-foreground">
-                      Established {project.builder.established_year}
-                    </p>
-                  )}
-                  {project.builder.description && (
-                    <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
-                      {project.builder.description}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+              {/* Builder Info */}
+              {project.builder && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About the Builder</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="font-semibold">{project.builder.name}</p>
+                    {project.builder.established_year && (
+                      <p className="text-sm text-muted-foreground">
+                        Established {project.builder.established_year}
+                      </p>
+                    )}
+                    {project.builder.description && (
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
+                        {project.builder.description}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
         </div>
       </div>
