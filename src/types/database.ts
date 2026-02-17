@@ -36,6 +36,27 @@ export interface Project {
   builder_id: string | null;
   meta_title: string | null;
   meta_description: string | null;
+  booking_amount: number | null;
+  maintenance_charges: number | null;
+  price_per_sqft: number | null;
+  vastu_compliant: boolean;
+  gated_community: boolean;
+  matterport_url: string | null;
+  video_url: string | null;
+  location_advantages: Record<string, number> | null;
+  project_details_extra: {
+    totalTowers?: number;
+    totalUnits?: number;
+    floors?: number;
+    constructionStatus?: string;
+    facingOptions?: string[];
+  } | null;
+  investment_data: {
+    rentalYieldPct?: number;
+    appreciationTrendText?: string;
+    futureInfrastructureText?: string;
+    developerTrackRecordSummary?: string;
+  } | null;
   created_at: string;
   updated_at: string;
   published_at: string | null;
