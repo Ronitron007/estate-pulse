@@ -137,35 +137,43 @@ export function InquiryRow({ inquiry }: InquiryRowProps) {
               <div className="absolute right-0 top-full mt-1 w-36 bg-background border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
                 <div className="py-1">
                   {inquiry.status !== "contacted" && (
-                    <button
-                      onClick={() => handleStatusUpdate("contacted")}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
-                    >
+                    <button onClick={() => handleStatusUpdate("contacted")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
                       Mark Contacted
                     </button>
                   )}
+                  {inquiry.status !== "site_visit_scheduled" && (
+                    <button onClick={() => handleStatusUpdate("site_visit_scheduled")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
+                      Schedule Visit
+                    </button>
+                  )}
+                  {inquiry.status !== "site_visit_done" && (
+                    <button onClick={() => handleStatusUpdate("site_visit_done")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
+                      Visit Done
+                    </button>
+                  )}
+                  {inquiry.status !== "negotiation" && (
+                    <button onClick={() => handleStatusUpdate("negotiation")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
+                      Negotiation
+                    </button>
+                  )}
                   {inquiry.status !== "qualified" && (
-                    <button
-                      onClick={() => handleStatusUpdate("qualified")}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
-                    >
+                    <button onClick={() => handleStatusUpdate("qualified")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
                       Mark Qualified
                     </button>
                   )}
                   {inquiry.status !== "converted" && (
-                    <button
-                      onClick={() => handleStatusUpdate("converted")}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
-                    >
+                    <button onClick={() => handleStatusUpdate("converted")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors">
                       Mark Converted
                     </button>
                   )}
                   {inquiry.status !== "closed" && (
-                    <button
-                      onClick={() => handleStatusUpdate("closed")}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-muted-foreground"
-                    >
-                      Close Inquiry
+                    <button onClick={() => handleStatusUpdate("closed")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-muted-foreground">
+                      Close
+                    </button>
+                  )}
+                  {inquiry.status !== "lost" && (
+                    <button onClick={() => handleStatusUpdate("lost")} className="w-full px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-red-600">
+                      Mark Lost
                     </button>
                   )}
                 </div>
@@ -188,18 +196,37 @@ function StatusBadge({ status }: { status: InquiryStatus }) {
     new: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
     contacted:
       "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    site_visit_scheduled:
+      "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+    site_visit_done:
+      "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
+    negotiation:
+      "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
     qualified:
       "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
     converted:
       "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
     closed: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+    lost: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  };
+
+  const statusLabels: Record<InquiryStatus, string> = {
+    new: "New",
+    contacted: "Contacted",
+    site_visit_scheduled: "Visit Scheduled",
+    site_visit_done: "Visit Done",
+    negotiation: "Negotiation",
+    qualified: "Qualified",
+    converted: "Converted",
+    closed: "Closed",
+    lost: "Lost",
   };
 
   return (
     <span
-      className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${statusStyles[status]}`}
+      className={`text-xs px-2 py-1 rounded-full font-medium ${statusStyles[status]}`}
     >
-      {status}
+      {statusLabels[status]}
     </span>
   );
 }

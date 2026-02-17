@@ -1,7 +1,16 @@
 export type ProjectStatus = "upcoming" | "ongoing" | "completed";
 export type PropertyType = "apartment" | "villa" | "plot" | "commercial" | "penthouse";
 export type ImageType = "exterior" | "interior" | "amenity" | "location" | "floor_plan" | "brochure";
-export type InquiryStatus = "new" | "contacted" | "qualified" | "converted" | "closed";
+export type InquiryStatus =
+  | "new"
+  | "contacted"
+  | "site_visit_scheduled"
+  | "site_visit_done"
+  | "negotiation"
+  | "qualified"
+  | "converted"
+  | "closed"
+  | "lost";
 
 export interface Builder {
   id: string;
@@ -108,6 +117,10 @@ export interface Inquiry {
   phone: string;
   message: string | null;
   whatsapp_opt_in: boolean;
+  budget: string | null;
+  timeline: string | null;
+  property_title: string | null;
+  notes: string | null;
   source: string | null;
   status: InquiryStatus;
   created_at: string;

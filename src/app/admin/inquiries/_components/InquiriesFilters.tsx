@@ -14,9 +14,13 @@ const statuses: { value: InquiryStatus | ""; label: string }[] = [
   { value: "", label: "All" },
   { value: "new", label: "New" },
   { value: "contacted", label: "Contacted" },
+  { value: "site_visit_scheduled", label: "Visit Scheduled" },
+  { value: "site_visit_done", label: "Visit Done" },
+  { value: "negotiation", label: "Negotiation" },
   { value: "qualified", label: "Qualified" },
   { value: "converted", label: "Converted" },
   { value: "closed", label: "Closed" },
+  { value: "lost", label: "Lost" },
 ];
 
 export function InquiriesFilters({ currentStatus }: InquiriesFiltersProps) {
