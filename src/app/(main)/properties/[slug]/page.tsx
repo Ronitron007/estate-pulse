@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: project.meta_title || `${project.name} - ${project.city} | Estate Pulse`,
+    title: project.meta_title || `${project.name} - ${project.city} | PerfectGhar.in`,
     description: project.meta_description || project.description?.slice(0, 160),
     openGraph: {
       title: project.name,

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Building2 } from "lucide-react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -80,8 +80,8 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href="/" className="flex items-center justify-center gap-2 mb-4">
-            <Building2 className="w-8 h-8 text-blue-600" />
-            <span className="font-bold text-xl">Estate Pulse</span>
+            <Image src="/logo.png" alt="PerfectGhar.in" width={36} height={36} className="h-9 w-auto" />
+            <span className="font-bold text-xl">PerfectGhar.in</span>
           </Link>
           <CardTitle>Welcome back</CardTitle>
           <CardDescription>Sign in to view prices and save properties</CardDescription>

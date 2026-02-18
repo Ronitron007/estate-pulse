@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
-  { id: 1, name: 'Rajesh Sharma', text: 'Found our dream 3BHK in Zirakpur within a week. The 3D tour saved us multiple site visits. Highly recommend Estate Pulse!', rating: 5, propertyBought: '3 BHK Apartment', location: 'Zirakpur' },
+  { id: 1, name: 'Rajesh Sharma', text: 'Found our dream 3BHK in Zirakpur within a week. The 3D tour saved us multiple site visits. Highly recommend PerfectGhar.in!', rating: 5, propertyBought: '3 BHK Apartment', location: 'Zirakpur' },
   { id: 2, name: 'Priya Kaur', text: 'As an NRI, the virtual walkthroughs were a game-changer. The team handled everything from documentation to possession smoothly.', rating: 5, propertyBought: '4 BHK Villa', location: 'Mohali' },
   { id: 3, name: 'Amit Gupta', text: 'Transparent pricing with no hidden charges. The RERA verification gave us confidence in our investment decision.', rating: 5, propertyBought: '2 BHK Apartment', location: 'Panchkula' },
   { id: 4, name: 'Neha Verma', text: 'The property advisor was incredibly knowledgeable about the Tricity market. Got a great deal on a premium project.', rating: 4, propertyBought: '3 BHK Apartment', location: 'New Chandigarh' },

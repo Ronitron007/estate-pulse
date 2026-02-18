@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -103,10 +104,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Logo */}
       <div className="p-6 border-b">
         <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">EP</span>
-          </div>
-          <span className="font-semibold text-lg">Estate Pulse</span>
+          <Image src="/logo.png" alt="PerfectGhar.in" width={32} height={32} className="h-8 w-auto" />
+          <span className="font-semibold text-lg">PerfectGhar.in</span>
         </Link>
       </div>
 

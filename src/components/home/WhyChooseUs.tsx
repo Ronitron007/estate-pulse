@@ -25,7 +25,7 @@ export function WhyChooseUs() {
           className="text-center mb-14"
         >
           <p className="text-primary text-sm font-semibold tracking-wider uppercase mb-2">Our Promise</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Why Choose Estate Pulse</h2>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Why Choose PerfectGhar.in</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Building2, Map, Heart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -71,8 +72,8 @@ export function MobileNav({ user }: MobileNavProps) {
                 className="flex items-center gap-2 group"
                 onClick={handleClose}
               >
-                <Building2 className="w-6 h-6 text-blue-600 transition-transform duration-300 group-hover:scale-110" />
-                <span className="font-bold">Estate Pulse</span>
+                <Image src="/logo.png" alt="PerfectGhar.in" width={28} height={28} className="h-7 w-auto" />
+                <span className="font-bold">PerfectGhar.in</span>
               </Link>
               <Button
                 variant="ghost"

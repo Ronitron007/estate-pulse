@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -52,15 +53,19 @@ export function Header() {
       <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-gold rounded-sm flex items-center justify-center">
-            <span className="text-white font-display font-bold text-lg">E</span>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="PerfectGhar.in"
+            width={40}
+            height={40}
+            className="h-8 w-auto md:h-10"
+          />
           <span
             className={`font-display text-xl font-semibold tracking-tight transition-colors ${
               showSolid ? "text-foreground" : "text-white"
             }`}
           >
-            Estate Pulse
+            PerfectGhar.in
           </span>
         </Link>
 

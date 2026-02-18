@@ -3,7 +3,7 @@ import { getCurrentAdmin } from "@/lib/queries/admin";
 import { AdminSidebar } from "./_components/AdminSidebar";
 
 export const metadata = {
-  title: "Admin Dashboard - Estate Pulse",
+  title: "Admin Dashboard - PerfectGhar.in",
   description: "Manage properties and inquiries",
 };
 

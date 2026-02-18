@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { FavoritesProvider } from "@/components/auth/FavoritesProvider";
+import { SettingsProvider } from "@/components/settings/SettingsProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Estate Pulse - Find Your Dream Property",
+  title: "PerfectGhar.in - Buy Property With Confidence",
   description: "Browse residential and commercial properties from top builders. Search, compare, and find your perfect home.",
 };
 
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <FavoritesProvider>
-            {children}
+            <SettingsProvider>
+              {children}
+            </SettingsProvider>
           </FavoritesProvider>
         </AuthProvider>
       </body>

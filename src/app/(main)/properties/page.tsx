@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { ProjectFilters, PropertyType, ProjectStatus } from "@/types/database";
 
 export const metadata: Metadata = {
-  title: "Properties | Estate Pulse",
+  title: "Properties | PerfectGhar.in",
   description: "Browse residential and commercial properties from top builders",
 };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
 
 export function Footer() {
@@ -10,10 +11,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-gold rounded-sm flex items-center justify-center">
-                <span className="text-white font-display font-bold text-lg">E</span>
-              </div>
-              <span className="font-display text-xl font-semibold text-white">Estate Pulse</span>
+              <Image src="/logo.png" alt="PerfectGhar.in" width={36} height={36} className="h-9 w-auto" />
+              <span className="font-display text-xl font-semibold text-white">PerfectGhar.in</span>
             </Link>
             <p className="text-sm leading-relaxed text-white/60">
               Premium verified real estate listings across Chandigarh Tricity.
@@ -77,7 +76,7 @@ export function Footer() {
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-white/40">
-            &copy; {new Date().getFullYear()} Estate Pulse. All rights reserved.
+            &copy; {new Date().getFullYear()} PerfectGhar.in. All rights reserved.
           </p>
           <p className="text-xs text-white/40">RERA Registered | Transparent Real Estate</p>
         </div>

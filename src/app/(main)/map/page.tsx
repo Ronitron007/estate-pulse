@@ -4,7 +4,7 @@ import { getProjectsForMap } from "@/lib/queries/projects";
 import { MapWithUserLocation } from "@/components/map/MapWithUserLocation";
 
 export const metadata: Metadata = {
-  title: "Map View | Estate Pulse",
+  title: "Map View | PerfectGhar.in",
   description: "Explore properties on an interactive map",
 };
 

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Saved Properties | Estate Pulse",
+  title: "Saved Properties | PerfectGhar.in",
   description: "Your saved properties",
 };
 
