@@ -4,3 +4,6 @@ DROP POLICY IF EXISTS "Users can create inquiries" ON inquiries;
 
 CREATE POLICY "Anyone can create inquiries" ON inquiries
   FOR INSERT WITH CHECK (true);
+
+-- Grant anon role INSERT privilege on inquiries table
+GRANT INSERT ON inquiries TO anon;
