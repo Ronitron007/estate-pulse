@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+dist
+coverage
+.turbo
+
+# Supabase local/dev artifacts (if present)
+supabase/.temp
+supabase/.branches
+
