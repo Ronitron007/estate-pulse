@@ -5,8 +5,23 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
-import { updateInquiryStatusAction } from "../actions";
+import { Phone, MessageCircle } from "lucide-react";
+import { updateInquiryStatusAction, updateInquiryNotesAction } from "../actions";
 import type { Inquiry, InquiryStatus } from "@/types/database";
+
+const BUDGET_LABELS: Record<string, string> = {
+  under_50l: "Under \u20B950L",
+  "50l_1cr": "\u20B950L\u20131Cr",
+  "1cr_2cr": "\u20B91\u20132Cr",
+  "2cr_plus": "\u20B92Cr+",
+};
+
+const TIMELINE_LABELS: Record<string, string> = {
+  immediately: "Immediately",
+  "1_3_months": "1\u20133 Mo",
+  "3_6_months": "3\u20136 Mo",
+  exploring: "Exploring",
+};
 
 interface InquiryRowProps {
   inquiry: Inquiry;
@@ -56,6 +71,12 @@ export function InquiryRow({ inquiry }: InquiryRowProps) {
         </td>
         <td className="p-4 hidden sm:table-cell">
           <StatusBadge status={inquiry.status} />
+        </td>
+        <td className="p-4 hidden xl:table-cell text-xs text-muted-foreground">
+          {inquiry.budget ? BUDGET_LABELS[inquiry.budget] ?? inquiry.budget : "\u2014"}
+        </td>
+        <td className="p-4 hidden xl:table-cell text-xs text-muted-foreground">
+          {inquiry.timeline ? TIMELINE_LABELS[inquiry.timeline] ?? inquiry.timeline : "\u2014"}
         </td>
         <td className="p-4 hidden xl:table-cell text-sm text-muted-foreground">
           {formatDate(inquiry.created_at)}
@@ -240,7 +261,7 @@ function InquiryModal({
 }) {
   return (
     <tr>
-      <td colSpan={6} className="p-0">
+      <td colSpan={8} className="p-0">
         <div
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
           onClick={onClose}
@@ -256,18 +277,8 @@ function InquiryModal({
                 onClick={onClose}
                 className="p-1 hover:bg-muted rounded-lg transition-colors"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -285,19 +296,13 @@ function InquiryModal({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <a
-                    href={`mailto:${inquiry.email}`}
-                    className="text-primary hover:underline"
-                  >
+                  <a href={`mailto:${inquiry.email}`} className="text-primary hover:underline">
                     {inquiry.email}
                   </a>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Phone</p>
-                  <a
-                    href={`tel:${inquiry.phone}`}
-                    className="text-primary hover:underline"
-                  >
+                  <a href={`tel:${inquiry.phone}`} className="text-primary hover:underline">
                     {inquiry.phone}
                   </a>
                 </div>
@@ -305,11 +310,7 @@ function InquiryModal({
                   <p className="text-sm text-muted-foreground">Property</p>
                   <p>
                     {inquiry.project ? (
-                      <Link
-                        href={`/properties/${inquiry.project.slug}`}
-                        target="_blank"
-                        className="text-primary hover:underline"
-                      >
+                      <Link href={`/properties/${inquiry.project.slug}`} target="_blank" className="text-primary hover:underline">
                         {inquiry.project.name}
                       </Link>
                     ) : (
@@ -321,26 +322,66 @@ function InquiryModal({
                   <p className="text-sm text-muted-foreground">Date</p>
                   <p>{formatDate(inquiry.created_at)}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">WhatsApp</p>
-                  <p>{inquiry.whatsapp_opt_in ? "Opted in" : "Not opted in"}</p>
-                </div>
+                {inquiry.budget && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">Budget</p>
+                    <p>{BUDGET_LABELS[inquiry.budget] ?? inquiry.budget}</p>
+                  </div>
+                )}
+                {inquiry.timeline && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">Timeline</p>
+                    <p>{TIMELINE_LABELS[inquiry.timeline] ?? inquiry.timeline}</p>
+                  </div>
+                )}
                 <div>
                   <p className="text-sm text-muted-foreground">Source</p>
                   <p className="capitalize">{inquiry.source || "website"}</p>
                 </div>
               </div>
 
+              {/* WhatsApp + Call buttons */}
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${inquiry.phone}`}
+                  className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-sm font-medium hover:bg-muted/80"
+                >
+                  <Phone className="h-4 w-4" /> Call
+                </a>
+                <a
+                  href={`https://wa.me/${inquiry.phone.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded-lg bg-[hsl(142,70%,40%)] px-3 py-2 text-sm font-medium text-white hover:opacity-90"
+                >
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              </div>
+
               {inquiry.message && (
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Message</p>
                   <div className="p-3 bg-muted/50 rounded-lg">
-                    <p className="text-sm whitespace-pre-wrap">
-                      {inquiry.message}
-                    </p>
+                    <p className="text-sm whitespace-pre-wrap">{inquiry.message}</p>
                   </div>
                 </div>
               )}
+
+              {/* Internal Notes */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Internal Notes</label>
+                <textarea
+                  defaultValue={inquiry.notes ?? ""}
+                  onBlur={async (e) => {
+                    if (e.target.value !== (inquiry.notes ?? "")) {
+                      await updateInquiryNotesAction(inquiry.id, e.target.value);
+                    }
+                  }}
+                  placeholder="Add internal notes..."
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  rows={3}
+                />
+              </div>
             </div>
 
             {/* Footer */}
@@ -350,18 +391,8 @@ function InquiryModal({
               </Button>
               <Button asChild>
                 <a href={`mailto:${inquiry.email}`}>
-                  <svg
-                    className="w-4 h-4 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   Send Email
                 </a>

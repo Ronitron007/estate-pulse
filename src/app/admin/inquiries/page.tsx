@@ -78,6 +78,12 @@ async function InquiriesTable({ status }: { status?: InquiryStatus }) {
                   Status
                 </th>
                 <th className="text-left p-4 font-medium text-sm hidden xl:table-cell">
+                  Budget
+                </th>
+                <th className="text-left p-4 font-medium text-sm hidden xl:table-cell">
+                  Timeline
+                </th>
+                <th className="text-left p-4 font-medium text-sm hidden xl:table-cell">
                   Date
                 </th>
                 <th className="text-left p-4 font-medium text-sm">Actions</th>
