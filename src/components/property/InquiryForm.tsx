@@ -1,11 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { CheckCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name required').max(100),
@@ -42,8 +52,9 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: { name: '', phone: '', email: '', budget: '', timeline: '' },
   });
 
   const onSubmit = async (data: FormData) => {
@@ -90,46 +101,104 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
     );
   }
 
-  const spacing = compact ? 'space-y-3' : 'space-y-4';
-  const inputClass = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
+  const gap = compact ? 'space-y-3' : 'space-y-4';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={spacing}>
+    <form onSubmit={handleSubmit(onSubmit)} className={gap}>
       {error && (
-        <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+        <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
           {error}
         </div>
       )}
-      <div>
-        <input {...register('name')} placeholder="Full Name *" className={inputClass} />
-        {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>}
+
+      {/* Name */}
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-name">Full Name <span className="text-destructive">*</span></Label>
+        <Input
+          id="inquiry-name"
+          placeholder="Enter your full name"
+          aria-invalid={!!errors.name}
+          {...register('name')}
+        />
+        {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
       </div>
-      <div>
-        <input {...register('phone')} placeholder="Phone Number *" type="tel" className={inputClass} />
-        {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone.message}</p>}
+
+      {/* Phone */}
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-phone">Phone Number <span className="text-destructive">*</span></Label>
+        <Input
+          id="inquiry-phone"
+          type="tel"
+          placeholder="e.g. +91 98765 43210"
+          aria-invalid={!!errors.phone}
+          {...register('phone')}
+        />
+        {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
       </div>
-      <input {...register('email')} placeholder="Email Address (optional)" type="email" className={inputClass} />
-      <select
-        {...register('budget')}
-        className={`${inputClass} text-muted-foreground`}
-      >
-        <option value="">Budget Range (optional)</option>
-        {BUDGET_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
-      <select
-        {...register('timeline')}
-        className={`${inputClass} text-muted-foreground`}
-      >
-        <option value="">Timeline to Buy (optional)</option>
-        {TIMELINE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
-      <button
+
+      {/* Email */}
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-email">Email <span className="text-muted-foreground font-normal">(optional)</span></Label>
+        <Input
+          id="inquiry-email"
+          type="email"
+          placeholder="you@example.com"
+          {...register('email')}
+        />
+      </div>
+
+      {/* Budget */}
+      <div className="space-y-1.5">
+        <Label>Budget Range <span className="text-muted-foreground font-normal">(optional)</span></Label>
+        <Controller
+          control={control}
+          name="budget"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select budget range" />
+              </SelectTrigger>
+              <SelectContent>
+                {BUDGET_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+      {/* Timeline */}
+      <div className="space-y-1.5">
+        <Label>Timeline to Buy <span className="text-muted-foreground font-normal">(optional)</span></Label>
+        <Controller
+          control={control}
+          name="timeline"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select timeline" />
+              </SelectTrigger>
+              <SelectContent>
+                {TIMELINE_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+      {/* Submit */}
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-gradient-gold px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="w-full bg-gradient-gold hover:opacity-90 text-white font-semibold shadow-gold"
+        size="lg"
       >
+        <Send className="w-4 h-4 mr-2" />
         {loading ? 'Sending\u2026' : 'Request Callback'}
-      </button>
+      </Button>
     </form>
   );
 }
