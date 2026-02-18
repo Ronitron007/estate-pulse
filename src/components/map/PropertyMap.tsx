@@ -2,15 +2,17 @@
 
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { MarkerCluster } from "./MarkerCluster";
+import { UserLocationMarker } from "./UserLocationMarker";
 import type { Project } from "@/types/database";
 
 interface PropertyMapProps {
   projects: Pick<Project, "id" | "slug" | "name" | "location" | "price_min" | "price_max" | "property_type">[];
   center: { lat: number; lng: number };
   zoom?: number;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
-export function PropertyMap({ projects, center, zoom = 12 }: PropertyMapProps) {
+export function PropertyMap({ projects, center, zoom = 12, userLocation }: PropertyMapProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
   if (!apiKey) {
@@ -32,6 +34,7 @@ export function PropertyMap({ projects, center, zoom = 12 }: PropertyMapProps) {
         className="w-full h-full"
       >
         <MarkerCluster projects={projects} />
+        {userLocation && <UserLocationMarker position={userLocation} />}
       </Map>
     </APIProvider>
   );
