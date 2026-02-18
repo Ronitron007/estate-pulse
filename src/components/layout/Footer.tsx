@@ -1,126 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Heart, ArrowUp } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-400">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand section */}
+    <footer className="bg-charcoal text-white/80">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <Building2 className="w-6 h-6 text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-5deg]" />
-              <span className="font-bold text-white">Estate Pulse</span>
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-gradient-gold rounded-sm flex items-center justify-center">
+                <span className="text-white font-display font-bold text-lg">E</span>
+              </div>
+              <span className="font-display text-xl font-semibold text-white">Estate Pulse</span>
             </Link>
-            <p className="text-sm">
-              Your trusted partner in finding the perfect property.
+            <p className="text-sm leading-relaxed text-white/60">
+              Premium verified real estate listings across Chandigarh Tricity.
+              Transparent pricing, 3D walkthroughs, and RERA-approved properties.
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
+            <h4 className="font-display text-lg text-white mb-4">Quick Links</h4>
+            <div className="space-y-2">
+              {[
+                { label: "Properties", href: "/properties" },
+                { label: "Map View", href: "/map" },
+                { label: "About Us", href: "/#why-us" },
+                { label: "Contact", href: "/#contact" },
+              ].map((link) => (
                 <Link
-                  href="/properties"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
+                  key={link.href}
+                  href={link.href}
+                  className="block text-sm text-white/60 hover:text-primary transition-colors"
                 >
-                  Properties
+                  {link.label}
                 </Link>
-              </li>
-              <li>
-                <Link
-                  href="/map"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
-                >
-                  Map View
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/saved"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
-                >
-                  Saved
-                </Link>
-              </li>
-            </ul>
+              ))}
+            </div>
           </div>
 
-          {/* Property Types */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Property Types</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
+            <h4 className="font-display text-lg text-white mb-4">Locations</h4>
+            <div className="space-y-2">
+              {["Chandigarh", "Mohali", "Panchkula", "Zirakpur", "New Chandigarh"].map((loc) => (
                 <Link
-                  href="/properties?type=apartment"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
+                  key={loc}
+                  href={`/properties?city=${encodeURIComponent(loc)}`}
+                  className="flex items-center gap-2 text-sm text-white/60 hover:text-primary transition-colors"
                 >
-                  Apartments
+                  <MapPin className="w-3 h-3" /> {loc}
                 </Link>
-              </li>
-              <li>
-                <Link
-                  href="/properties?type=villa"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
-                >
-                  Villas
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/properties?type=plot"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
-                >
-                  Plots
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/properties?type=commercial"
-                  className="hover:text-white transition-all duration-200 inline-block hover:translate-x-1"
-                >
-                  Commercial
-                </Link>
-              </li>
-            </ul>
+              ))}
+            </div>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm">
-              <li className="hover:text-white transition-colors duration-200 cursor-pointer">
-                contact@estatepulse.com
-              </li>
-              <li className="hover:text-white transition-colors duration-200 cursor-pointer">
-                +91 98765 43210
-              </li>
-            </ul>
+            <h4 className="font-display text-lg text-white mb-4">Contact Us</h4>
+            <div className="space-y-3">
+              <a
+                href="tel:+919646684712"
+                className="flex items-center gap-2 text-sm text-white/60 hover:text-primary transition-colors"
+              >
+                <Phone className="w-4 h-4" /> +91 96466 84712
+              </a>
+              <a
+                href="mailto:hello@estatepulse.in"
+                className="flex items-center gap-2 text-sm text-white/60 hover:text-primary transition-colors"
+              >
+                <Mail className="w-4 h-4" /> hello@estatepulse.in
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Bottom bar with fun hover effect */}
-        <div className="border-t border-gray-800 mt-8 pt-8 text-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="flex items-center gap-1">
-            Made with{" "}
-            <Heart className="w-4 h-4 text-red-500 animate-gentle-pulse" />{" "}
-            by Estate Pulse Team
-          </p>
-          <p>
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-white/40">
             &copy; {new Date().getFullYear()} Estate Pulse. All rights reserved.
           </p>
-          {/* Scroll to top button */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-6 right-6 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:bg-blue-700 hover:scale-110 active:scale-95 [.scrolled_&]:opacity-100 [.scrolled_&]:pointer-events-auto group"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5" />
-          </button>
+          <p className="text-xs text-white/40">RERA Registered | Transparent Real Estate</p>
         </div>
       </div>
     </footer>

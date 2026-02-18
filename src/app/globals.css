@@ -159,6 +159,33 @@
   color: var(--gold);
 }
 
+.text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-charcoal {
+  background-color: var(--charcoal);
+}
+
+.bg-charcoal-light {
+  background-color: var(--charcoal-light);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-card-hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.shadow-gold {
+  box-shadow: var(--shadow-gold);
+}
+
 /* ========================================
    WHIMSY ANIMATIONS & MICRO-INTERACTIONS
    ======================================== */

@@ -1,24 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Map, LogOut, Menu } from "lucide-react";
+import { Phone, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { MobileNav } from "./MobileNav";
+
+const navLinks = [
+  { label: "Home", path: "/" },
+  { label: "Properties", path: "/properties" },
+  { label: "Map", path: "/map" },
+  { label: "About", path: "/#why-us" },
+  { label: "Contact", path: "/#contact" },
+];
 
 export function Header() {
   const { user, loading } = useAuth();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [logoHovered, setLogoHovered] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -29,93 +37,100 @@ export function Header() {
     router.refresh();
   };
 
+  // On homepage: transparent when at top, solid on scroll
+  // On other pages: always solid
+  const showSolid = !isHome || scrolled;
+
   return (
     <header
-      className={`bg-white border-b sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "shadow-md" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        showSolid
+          ? "bg-card/95 backdrop-blur-md shadow-card border-b border-border"
+          : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo with hover animation */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 group"
-            onMouseEnter={() => setLogoHovered(true)}
-            onMouseLeave={() => setLogoHovered(false)}
+      <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-gold rounded-sm flex items-center justify-center">
+            <span className="text-white font-display font-bold text-lg">E</span>
+          </div>
+          <span
+            className={`font-display text-xl font-semibold tracking-tight transition-colors ${
+              showSolid ? "text-foreground" : "text-white"
+            }`}
           >
-            <Building2
-              className={`w-8 h-8 text-blue-600 transition-all duration-300 ${
-                logoHovered ? "scale-110 rotate-[-5deg]" : ""
-              }`}
-            />
-            <span className="font-bold text-xl transition-colors duration-200 group-hover:text-blue-600">
-              Estate Pulse
-            </span>
-          </Link>
+            Estate Pulse
+          </span>
+        </Link>
 
-          {/* Navigation with underline animation */}
-          <nav className="hidden md:flex items-center gap-8">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <Link
-              href="/properties"
-              className="text-gray-600 hover:text-gray-900 nav-link-hover py-1"
+              key={link.path}
+              href={link.path}
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                showSolid ? "text-foreground" : "text-white/90"
+              } ${pathname === link.path ? "text-primary" : ""}`}
             >
-              Properties
+              {link.label}
             </Link>
-            <Link
-              href="/map"
-              className="text-gray-600 hover:text-gray-900 flex items-center gap-1.5 nav-link-hover py-1 group"
-            >
-              <Map className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-              Map View
-            </Link>
-          </nav>
+          ))}
+        </nav>
 
-          {/* Auth buttons with hover effects */}
-          <div className="flex items-center gap-3">
-            {loading ? (
-              <div className="w-20 h-8 bg-gray-100 rounded animate-pulse" />
-            ) : user ? (
-              <>
-                <Link
-                  href="/saved"
-                  className="text-gray-600 hover:text-gray-900 nav-link-hover py-1 hidden sm:block"
-                >
-                  Saved
-                </Link>
+        {/* Right side */}
+        <div className="hidden md:flex items-center gap-3">
+          <a
+            href="tel:+919646684712"
+            className={`flex items-center gap-2 text-sm font-medium transition-colors ${
+              showSolid ? "text-foreground" : "text-white/90"
+            }`}
+          >
+            <Phone className="w-4 h-4" />
+            +91 96466 84712
+          </a>
+
+          {loading ? (
+            <div className="w-20 h-8 bg-muted rounded animate-pulse" />
+          ) : user ? (
+            <>
+              <Link
+                href="/saved"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  showSolid ? "text-foreground" : "text-white/90"
+                }`}
+              >
+                Saved
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="group">
+                <LogOut className="w-4 h-4 mr-2 transition-transform duration-200 group-hover:-translate-x-0.5" />
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleSignOut}
-                  className="group"
+                  className={showSolid ? "" : "text-white hover:text-white hover:bg-white/10"}
                 >
-                  <LogOut className="w-4 h-4 mr-2 transition-transform duration-200 group-hover:-translate-x-0.5" />
-                  Logout
+                  Login
                 </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost" size="sm">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm" className="relative overflow-hidden group">
-                    <span className="relative z-10">Sign Up</span>
-                    {/* Subtle shine effect on hover */}
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            {/* Mobile menu button */}
-            <Button variant="ghost" size="icon-sm" className="md:hidden">
-              <Menu className="w-5 h-5" />
-            </Button>
-          </div>
+              </Link>
+              <Link
+                href="/properties"
+                className="bg-gradient-gold text-white px-5 py-2 rounded-sm text-sm font-semibold hover:opacity-90 transition-opacity"
+              >
+                View Properties
+              </Link>
+            </>
+          )}
         </div>
+
+        {/* Mobile nav */}
+        <MobileNav user={user ? { email: user.email ?? "" } : null} />
       </div>
     </header>
   );

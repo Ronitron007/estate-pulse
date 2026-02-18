@@ -89,7 +89,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-16 md:pt-20">
       {/* Hero Image */}
       <div className="relative h-[400px] bg-gray-200">
         {primaryImage ? (
