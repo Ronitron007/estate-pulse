@@ -1,6 +1,7 @@
 "use client";
 
 import { PropertyCard, PropertyCardSkeleton } from "./PropertyCard";
+import { AnimateIn } from "@/components/ui/AnimateIn";
 import { Home, Search } from "lucide-react";
 import type { Project } from "@/types/database";
 
@@ -53,12 +54,13 @@ export function PropertyGrid({ projects, showPrice = false, isLoading = false }:
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {projects.map((project, index) => (
-        <PropertyCard
-          key={project.id}
-          project={project}
-          showPrice={showPrice}
-          index={index}
-        />
+        <AnimateIn key={project.id} delay={index * 0.05}>
+          <PropertyCard
+            project={project}
+            showPrice={showPrice}
+            index={index}
+          />
+        </AnimateIn>
       ))}
     </div>
   );

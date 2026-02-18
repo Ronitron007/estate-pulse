@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Building2, Map, Heart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface MobileNavProps {
   user: { email: string } | null;
@@ -11,7 +12,6 @@ interface MobileNavProps {
 
 export function MobileNav({ user }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
 
   // Prevent body scroll when drawer is open
   useEffect(() => {
@@ -25,13 +25,7 @@ export function MobileNav({ user }: MobileNavProps) {
     };
   }, [isOpen]);
 
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setIsClosing(false);
-    }, 200);
-  };
+  const handleClose = () => setIsOpen(false);
 
   const handleSignOut = async () => {
     // Simulate sign out
@@ -49,22 +43,27 @@ export function MobileNav({ user }: MobileNavProps) {
         <Menu className="w-6 h-6 transition-transform duration-200 group-hover:scale-110" />
       </Button>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop with fade animation */}
-          <div
-            className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${
-              isClosing ? "opacity-0" : "animate-fade-in"
-            }`}
-            onClick={handleClose}
-          />
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50">
+            {/* Backdrop with fade animation */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={handleClose}
+            />
 
-          {/* Drawer with slide animation */}
-          <div
-            className={`absolute right-0 top-0 h-full w-72 bg-white shadow-2xl transition-transform duration-300 ease-out ${
-              isClosing ? "translate-x-full" : "animate-slide-in-right"
-            }`}
-          >
+            {/* Drawer with slide animation */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute right-0 top-0 h-full w-72 bg-white shadow-2xl"
+            >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b">
               <Link
@@ -171,9 +170,10 @@ export function MobileNav({ user }: MobileNavProps) {
                 </>
               )}
             </nav>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { InvestmentInsights } from "@/components/property/InvestmentInsights";
 import { ProjectDetailStats } from "@/components/property/ProjectDetailStats";
 import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
 import { InquiryForm } from "@/components/property/InquiryForm";
+import { AnimateIn } from "@/components/ui/AnimateIn";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -130,40 +131,43 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Info */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Price Range</p>
-                    {user ? (
+            <AnimateIn>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Price Range</p>
+                      {user ? (
+                        <p className="font-semibold">
+                          {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
+                        </p>
+                      ) : (
+                        <p className="font-semibold text-blue-600">Login to view</p>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Property Type</p>
+                      <p className="font-semibold capitalize">{project.property_type || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Possession</p>
+                      <p className="font-semibold">{formatDate(project.possession_date) || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Units</p>
                       <p className="font-semibold">
-                        {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
+                        {project.available_units !== null && project.total_units
+                          ? `${project.available_units}/${project.total_units} available`
+                          : "N/A"}
                       </p>
-                    ) : (
-                      <p className="font-semibold text-blue-600">Login to view</p>
-                    )}
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Property Type</p>
-                    <p className="font-semibold capitalize">{project.property_type || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Possession</p>
-                    <p className="font-semibold">{formatDate(project.possession_date) || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Units</p>
-                    <p className="font-semibold">
-                      {project.available_units !== null && project.total_units
-                        ? `${project.available_units}/${project.total_units} available`
-                        : "N/A"}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </AnimateIn>
 
             {/* Location */}
+            <AnimateIn delay={0.1}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -191,9 +195,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 )}
               </CardContent>
             </Card>
+            </AnimateIn>
 
             {/* Description */}
             {project.description && (
+              <AnimateIn delay={0.15}>
               <Card>
                 <CardHeader>
                   <CardTitle>About this Project</CardTitle>
@@ -202,21 +208,28 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <p className="text-gray-700 whitespace-pre-line">{project.description}</p>
                 </CardContent>
               </Card>
+              </AnimateIn>
             )}
 
             {/* Location Advantages */}
             {project.location_advantages && Object.keys(project.location_advantages).length > 0 && (
-              <LocationAdvantages data={project.location_advantages} />
+              <AnimateIn delay={0.2}>
+                <LocationAdvantages data={project.location_advantages} />
+              </AnimateIn>
             )}
 
             {/* Project Details */}
             {project.project_details_extra && (
-              <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
+              <AnimateIn delay={0.25}>
+                <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
+              </AnimateIn>
             )}
 
             {/* Investment Insights */}
             {project.investment_data && (
-              <InvestmentInsights data={project.investment_data} />
+              <AnimateIn delay={0.3}>
+                <InvestmentInsights data={project.investment_data} />
+              </AnimateIn>
             )}
 
             {/* 3D Walkthrough */}
@@ -311,6 +324,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
           {/* Sidebar */}
           <div>
+            <AnimateIn direction="right">
             <div className="sticky top-20 space-y-6">
               <QuickCtaSidebar
                 projectId={project.id}
@@ -355,6 +369,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 </Card>
               )}
             </div>
+            </AnimateIn>
           </div>
         </div>
       </div>

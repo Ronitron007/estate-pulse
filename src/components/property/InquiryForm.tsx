@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name required').max(100),
@@ -68,7 +69,12 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center gap-3 py-6 text-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        className="flex flex-col items-center gap-3 py-6 text-center"
+      >
         <CheckCircle className="h-10 w-10 text-green-600" />
         <p className="font-display text-lg font-semibold">Thank you!</p>
         <p className="text-sm text-muted-foreground">Our expert will call you within 30 minutes.</p>
@@ -80,7 +86,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
         >
           Chat on WhatsApp
         </a>
-      </div>
+      </motion.div>
     );
   }
 
