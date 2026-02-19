@@ -13,11 +13,10 @@ import type { Project } from "@/types/database";
 
 interface PropertyCardProps {
   project: Project;
-  showPrice?: boolean;
   index?: number; // For staggered animations
 }
 
-export function PropertyCard({ project, showPrice = false, index = 0 }: PropertyCardProps) {
+export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
   const { user } = useAuth();
@@ -126,15 +125,9 @@ export function PropertyCard({ project, showPrice = false, index = 0 }: Property
         <CardContent className="p-4">
           {/* Price with subtle entrance animation */}
           <div className="mb-2">
-            {showPrice ? (
-              <p className="text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600">
-                {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
-              </p>
-            ) : (
-              <p className="text-lg font-semibold text-blue-600 group-hover:text-blue-700 transition-colors duration-200">
-                Login to see price
-              </p>
-            )}
+            <p className="text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600">
+              {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
+            </p>
           </div>
 
           {/* Name with hover underline effect */}

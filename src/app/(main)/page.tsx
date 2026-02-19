@@ -1,5 +1,4 @@
 import { getProjects } from '@/lib/queries/projects';
-import { createClient } from '@/lib/supabase/server';
 import { Hero } from '@/components/home/Hero';
 import { FeaturedListings } from '@/components/home/FeaturedListings';
 import { WhyChooseUs } from '@/components/home/WhyChooseUs';
@@ -13,13 +12,10 @@ export default async function Home() {
   const [projects] = await Promise.all([getProjects()]);
   const featuredProjects = projects.slice(0, 8);
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      <FeaturedListings projects={featuredProjects} showPrice={!!user} />
+      <FeaturedListings projects={featuredProjects} />
       <WhyChooseUs />
       <VirtualTourSection />
       <MarketInsights />

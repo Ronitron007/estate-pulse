@@ -26,11 +26,7 @@ const TIMELINE_LABELS: Record<string, string> = {
 };
 
 export async function sendInquiryNotification(data: InquiryEmailData) {
-  const to = 'rohan.maliko99@gmail.com';
-  if (!to) {
-    console.warn('INQUIRY_NOTIFICATION_EMAIL not set \u2014 skipping email');
-    return;
-  }
+ 
 
   const subject = data.propertyTitle
     ? `New Inquiry: ${data.propertyTitle}`
@@ -48,8 +44,6 @@ export async function sendInquiryNotification(data: InquiryEmailData) {
     </table>
     <p style="font-family: sans-serif; color: #999; font-size: 12px; margin-top: 24px;">Sent from Estate Pulse inquiry form</p>
   `;
-
-  console.log('Sending email to:', to, 'with subject:', subject, 'and html:', html);
 
   await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? 'inquiries@perfectghar.in',
