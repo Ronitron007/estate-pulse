@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Building2, Calendar, Home, Check, ChevronRight } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
-import { createClient } from "@/lib/supabase/server";
 import { formatPriceRange, formatArea, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,10 +74,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  // Check if user is logged in
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
   const primaryImage = project.images?.find((img) => img.is_primary) || project.images?.[0];
   const galleryImages = project.images?.filter((img) => !img.is_primary).slice(0, 4) || [];
 
@@ -137,13 +132,9 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm text-gray-500">Price Range</p>
-                      {user ? (
-                        <p className="font-semibold">
+                      <p className="font-semibold">
                           {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
                         </p>
-                      ) : (
-                        <p className="font-semibold text-blue-600">Login to view</p>
-                      )}
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Property Type</p>
@@ -265,11 +256,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                             <td className="py-3">{config.config_name || `${config.bedrooms} BHK`}</td>
                             <td className="py-3">{formatArea(config.carpet_area_sqft)}</td>
                             <td className="py-3">
-                              {user ? (
-                                config.price ? formatPriceRange(config.price, null, false) : "On Request"
-                              ) : (
-                                <span className="text-blue-600">Login to view</span>
-                              )}
+                              {config.price ? formatPriceRange(config.price, null, false) : "On Request"}
                             </td>
                           </tr>
                         ))}
@@ -329,7 +316,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               <QuickCtaSidebar
                 projectId={project.id}
                 propertyTitle={project.name}
-                price={user ? formatPriceRange(project.price_min, project.price_max, project.price_on_request) : undefined}
+                price={formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
                 specs={buildSpecs(project)}
               />
 

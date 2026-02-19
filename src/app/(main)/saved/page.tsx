@@ -48,7 +48,7 @@ export default async function SavedPage() {
             </Link>
           </div>
         ) : (
-          <PropertyGrid projects={favorites.map(f => f.project)} showPrice={true} />
+          <PropertyGrid projects={favorites.map(f => f.project)} />
         )}
       </div>
     </div>

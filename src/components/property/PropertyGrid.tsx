@@ -7,11 +7,10 @@ import type { Project } from "@/types/database";
 
 interface PropertyGridProps {
   projects: Project[];
-  showPrice?: boolean;
   isLoading?: boolean;
 }
 
-export function PropertyGrid({ projects, showPrice = false, isLoading = false }: PropertyGridProps) {
+export function PropertyGrid({ projects, isLoading = false }: PropertyGridProps) {
   // Loading state with animated skeleton cards
   if (isLoading) {
     return (
@@ -57,7 +56,6 @@ export function PropertyGrid({ projects, showPrice = false, isLoading = false }:
         <AnimateIn key={project.id} delay={index * 0.05}>
           <PropertyCard
             project={project}
-            showPrice={showPrice}
             index={index}
           />
         </AnimateIn>

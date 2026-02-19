@@ -4,7 +4,6 @@ import { getProjects, getCities } from "@/lib/queries/projects";
 import { PropertyGrid } from "@/components/property/PropertyGrid";
 import { PropertyFilters } from "@/components/property/PropertyFilters";
 import { MapListToggle } from "@/components/map/MapListToggle";
-import { createClient } from "@/lib/supabase/server";
 import type { ProjectFilters, PropertyType, ProjectStatus } from "@/types/database";
 
 export const metadata: Metadata = {
@@ -36,15 +35,11 @@ async function PropertiesContent({ searchParams }: PageProps) {
     getCities(),
   ]);
 
-  // Check if user is logged in
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
   return (
     <>
       <PropertyFilters cities={cities} />
       <p className="text-sm text-gray-500 mb-4">{projects.length} properties found</p>
-      <PropertyGrid projects={projects} showPrice={!!user} />
+      <PropertyGrid projects={projects} />
     </>
   );
 }

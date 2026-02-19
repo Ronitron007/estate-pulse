@@ -9,10 +9,9 @@ import type { Project } from '@/types/database';
 
 interface FeaturedListingsProps {
   projects: Project[];
-  showPrice: boolean;
 }
 
-export function FeaturedListings({ projects, showPrice }: FeaturedListingsProps) {
+export function FeaturedListings({ projects }: FeaturedListingsProps) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -59,7 +58,7 @@ export function FeaturedListings({ projects, showPrice }: FeaturedListingsProps)
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className="min-w-[320px] max-w-[340px] snap-start flex-shrink-0"
             >
-              <PropertyCard project={project} showPrice={showPrice} index={i} />
+              <PropertyCard project={project} index={i} />
             </motion.div>
           ))}
         </div>

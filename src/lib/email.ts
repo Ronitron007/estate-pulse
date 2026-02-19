@@ -26,11 +26,7 @@ const TIMELINE_LABELS: Record<string, string> = {
 };
 
 export async function sendInquiryNotification(data: InquiryEmailData) {
-  const to = process.env.INQUIRY_NOTIFICATION_EMAIL;
-  if (!to) {
-    console.warn('INQUIRY_NOTIFICATION_EMAIL not set \u2014 skipping email');
-    return;
-  }
+ 
 
   const subject = data.propertyTitle
     ? `New Inquiry: ${data.propertyTitle}`
@@ -50,8 +46,8 @@ export async function sendInquiryNotification(data: InquiryEmailData) {
   `;
 
   await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL ?? 'inquiries@estatepulse.in',
-    to,
+    from: process.env.RESEND_FROM_EMAIL ?? 'inquiries@perfectghar.in',
+    to:['rohan.maliko99@gmail.com', 'goyalmayank48@gmail.com'],
     subject,
     html,
   });

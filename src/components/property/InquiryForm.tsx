@@ -90,7 +90,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
         <p className="font-display text-lg font-semibold">Thank you!</p>
         <p className="text-sm text-muted-foreground">Our expert will call you within 30 minutes.</p>
         <a
-          href={`https://wa.me/919646684712?text=${encodeURIComponent(`Hi, I'm interested in ${propertyTitle ?? 'a property'}.`)}`}
+          href={`https://wa.me/917719784712?text=${encodeURIComponent(`Hi, I'm interested in ${propertyTitle ?? 'a property'}.`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-1 rounded-lg bg-[hsl(142,70%,40%)] px-4 py-2 text-sm font-medium text-white"
@@ -129,7 +129,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
         <Input
           id="inquiry-phone"
           type="tel"
-          placeholder="e.g. +91 98765 43210"
+          placeholder="e.g. +91 77197 84712"
           aria-invalid={!!errors.phone}
           {...register('phone')}
         />

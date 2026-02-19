@@ -49,7 +49,7 @@ export function Hero() {
               <Play className="w-4 h-4" /> Schedule Site Visit
             </Link>
             <a
-              href="tel:+919646684712"
+              href="tel:+917719784712"
               className="border border-white/30 text-white px-8 py-4 rounded-sm font-semibold text-sm hover:bg-white/10 transition-colors flex items-center justify-center gap-2 sm:hidden lg:flex"
             >
               <Phone className="w-4 h-4" /> Talk to Expert

@@ -80,8 +80,8 @@ export const COMMON_AMENITIES = [
 // Contact info
 export const CONTACT = {
   email: "contact@estatepulse.com",
-  phone: "+91 98765 43210",
-  whatsapp: "+919876543210",
+  phone: "+91 77197 84712",
+  whatsapp: "+917719784712",
 } as const;
 
 // Social links

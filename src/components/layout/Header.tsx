@@ -87,13 +87,13 @@ export function Header() {
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="tel:+919646684712"
+            href="tel:+917719784712"
             className={`flex items-center gap-2 text-sm font-medium transition-colors ${
               showSolid ? "text-foreground" : "text-white/90"
             }`}
           >
             <Phone className="w-4 h-4" />
-            +91 96466 84712
+            +91 77197 84712
           </a>
 
           {loading ? (
