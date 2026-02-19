@@ -10,7 +10,7 @@ interface QuickCtaSidebarProps {
   phone?: string;
 }
 
-export function QuickCtaSidebar({ propertyTitle, price, specs, phone = '919646684712' }: QuickCtaSidebarProps) {
+export function QuickCtaSidebar({ propertyTitle, price, specs, phone = '917719784712' }: QuickCtaSidebarProps) {
   const waMessage = encodeURIComponent(`Hi, I'm interested in ${propertyTitle}.`);
 
   return (
