@@ -59,10 +59,10 @@ export function Footer() {
             <h4 className="font-display text-lg text-white mb-4">Contact Us</h4>
             <div className="space-y-3">
               <a
-                href="tel:+919646684712"
+                href="tel:+917719784712"
                 className="flex items-center gap-2 text-sm text-white/60 hover:text-primary transition-colors"
               >
-                <Phone className="w-4 h-4" /> +91 96466 84712
+                <Phone className="w-4 h-4" /> +91 77197 84712
               </a>
               <a
                 href="mailto:hello@estatepulse.in"

@@ -148,7 +148,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+91 98765 43210"
+            placeholder="+91 77197 84712"
             required
           />
         </div>

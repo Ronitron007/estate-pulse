@@ -129,7 +129,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
         <Input
           id="inquiry-phone"
           type="tel"
-          placeholder="e.g. +91 98765 43210"
+          placeholder="e.g. +91 77197 84712"
           aria-invalid={!!errors.phone}
           {...register('phone')}
         />

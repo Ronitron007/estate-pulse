@@ -170,7 +170,7 @@ export default function SignupPage() {
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+91 98765 43210"
+                placeholder="+91 77197 84712"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
