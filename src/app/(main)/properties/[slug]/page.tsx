@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Building2, Calendar, Home, Check, ChevronRight } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
-import { createClient } from "@/lib/supabase/server";
 import { formatPriceRange, formatArea, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
