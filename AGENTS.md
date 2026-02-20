@@ -114,6 +114,12 @@
 - There are no `.cursor`, `.cursorrules`, or `.github/copilot-instructions.md` files in the repo.
 - If such rules are added later, copy them verbatim into this section and mention their scope.
 
+## Agent Delegation
+- Proactively use `frontend-developer` and `ui-designer` subagents for any UI work — component creation, styling, layout fixes, responsive design, visual polish.
+- `ui-designer` for design review, visual hierarchy, color consistency, spacing, accessibility audits.
+- `frontend-developer` for writing/editing React components, Tailwind styling, state management, performance.
+- Dispatch both in parallel when creating new UI components (designer reviews while developer builds).
+
 ## Additional Notes
 - Use the `cn` helper (which wraps `clsx` + `twMerge`) whenever Tailwind lists branch on logic.
 - Keep shared UI elements inside `src/components/ui` and `src/components/layout` so variants stay consistent.
