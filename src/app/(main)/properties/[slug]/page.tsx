@@ -17,6 +17,7 @@ import { InquiryForm } from "@/components/property/InquiryForm";
 import { AnimateIn } from "@/components/ui/AnimateIn";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
 import { UnitShowcase } from "@/components/property/UnitShowcase";
+import { MobileCtaBar } from "@/components/property/MobileCtaBar";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -397,7 +398,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               />
 
               {/* Inquiry Form */}
-              <Card>
+              <Card id="inquiry-form">
                 <CardHeader>
                   <CardTitle className="text-lg">Request Callback</CardTitle>
                 </CardHeader>
@@ -436,6 +437,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* Floating mobile CTA — visible when inquiry form scrolled out of view */}
+      <MobileCtaBar
+        propertyTitle={project.name}
+        observeId="inquiry-form"
+      />
     </div>
   );
 }

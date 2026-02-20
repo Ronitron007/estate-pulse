@@ -1,6 +1,6 @@
 'use client';
 
-import { Phone, MessageCircle, Calendar, ShieldCheck, FileCheck, Building2 } from 'lucide-react';
+import { MessageCircle, Calendar, ShieldCheck, FileCheck, Building2 } from 'lucide-react';
 
 interface QuickCtaSidebarProps {
   projectId: string;
@@ -23,12 +23,6 @@ export function QuickCtaSidebar({ propertyTitle, price, specs, phone = '91771978
       )}
 
       <div className="space-y-2">
-        <a
-          href={`tel:+${phone}`}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-gold px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          <Phone className="h-4 w-4" /> Call Now
-        </a>
         <a
           href={`https://wa.me/${phone}?text=${waMessage}`}
           target="_blank"
