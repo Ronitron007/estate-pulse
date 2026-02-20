@@ -1,11 +1,12 @@
 import { z } from "zod";
-import type { Project, Configuration, ProjectImage } from "@/types/database";
+import type { Project, Configuration, ProjectImage, ProjectHighlight, ProjectSpecification, ProjectParking, Tower, PointOfInterest } from "@/types/database";
 
 // Form schema - all string inputs, transform in submit handler
 export const propertyFormSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug required").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens"),
   description: z.string().optional(),
+  tagline: z.string().optional(),
   status: z.enum(["upcoming", "ongoing", "completed"]),
   property_type: z.enum(["apartment", "villa", "plot", "commercial", "penthouse", ""]),
   price_min: z.string(),
@@ -48,9 +49,15 @@ export interface PropertyFormData {
   rera_id?: string;
   builder_id: string | null;
   published: boolean;
+  tagline?: string;
   images: Partial<ProjectImage>[];
   configurations: Partial<Configuration>[];
   amenityIds: string[];
+  highlights: ProjectHighlight[];
+  specifications: ProjectSpecification[];
+  parking: ProjectParking | null;
+  towers: Partial<Tower>[];
+  points_of_interest: PointOfInterest[];
 }
 
 // Transform form values to proper types for submission
@@ -58,12 +65,18 @@ export function transformFormData(
   values: PropertyFormValues,
   images: Partial<ProjectImage>[],
   configurations: Partial<Configuration>[],
-  amenityIds: string[]
+  amenityIds: string[],
+  highlights: ProjectHighlight[],
+  specifications: ProjectSpecification[],
+  parking: ProjectParking | null,
+  towers: Partial<Tower>[],
+  points_of_interest: PointOfInterest[]
 ): PropertyFormData {
   return {
     name: values.name,
     slug: values.slug,
     description: values.description,
+    tagline: values.tagline,
     status: values.status,
     property_type: values.property_type === "" ? null : values.property_type,
     price_min: values.price_min === "" ? null : Number(values.price_min),
@@ -84,6 +97,11 @@ export function transformFormData(
     images,
     configurations,
     amenityIds,
+    highlights,
+    specifications,
+    parking,
+    towers,
+    points_of_interest,
   };
 }
 
@@ -92,11 +110,17 @@ export function projectToFormValues(project: Project): PropertyFormValues & {
   images: Partial<ProjectImage>[];
   configurations: Partial<Configuration>[];
   amenityIds: string[];
+  highlights: ProjectHighlight[];
+  specifications: ProjectSpecification[];
+  parking: ProjectParking | null;
+  towers: Partial<Tower>[];
+  points_of_interest: PointOfInterest[];
 } {
   return {
     name: project.name || "",
     slug: project.slug || "",
     description: project.description || "",
+    tagline: project.tagline || "",
     status: project.status || "upcoming",
     property_type: project.property_type || "",
     price_min: project.price_min?.toString() ?? "",
@@ -117,5 +141,10 @@ export function projectToFormValues(project: Project): PropertyFormValues & {
     images: project.images || [],
     configurations: project.configurations || [],
     amenityIds: project.amenities?.map((a) => a.id) || [],
+    highlights: project.highlights || [],
+    specifications: project.specifications || [],
+    parking: project.parking || null,
+    towers: project.towers || [],
+    points_of_interest: project.points_of_interest || [],
   };
 }

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
-import type { Project, ProjectFilters } from "@/types/database";
+import type { Project, ProjectFilters, Icon } from "@/types/database";
 
 // For use in generateStaticParams (build time, no cookies)
 function createBuildTimeClient() {
@@ -67,11 +67,11 @@ export async function getProjects(filters?: ProjectFilters): Promise<Project[]> 
       builder:builders(*),
       configurations(*),
       images:project_images(*),
-      amenities:project_amenities(amenity:amenities(*))
+      amenities:project_amenities(amenity:amenities(*)),
+      towers(*)
     `)
     .not("published_at", "is", null)
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+    .is("deleted_at", null);
 
   if (filters?.city) {
     query = query.ilike("city", `%${filters.city}%`);
@@ -105,6 +105,23 @@ export async function getProjects(filters?: ProjectFilters): Promise<Project[]> 
     query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
   }
 
+  // Sort
+  switch (filters?.sort) {
+    case "price_asc":
+      query = query.order("price_min", { ascending: true, nullsFirst: false });
+      break;
+    case "price_desc":
+      query = query.order("price_min", { ascending: false });
+      break;
+    case "possession":
+      query = query.order("possession_date", { ascending: true, nullsFirst: false });
+      break;
+    case "newest":
+    default:
+      query = query.order("created_at", { ascending: false });
+      break;
+  }
+
   const { data, error } = await query;
 
   if (error) {
@@ -117,6 +134,7 @@ export async function getProjects(filters?: ProjectFilters): Promise<Project[]> 
     ...project,
     location: parseWKBPoint(project.location as string | null),
     amenities: project.amenities?.map((pa: { amenity: unknown }) => pa.amenity) || [],
+    towers: project.towers || [],
   }));
 }
 
@@ -130,7 +148,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       builder:builders(*),
       configurations(*),
       images:project_images(*),
-      amenities:project_amenities(amenity:amenities(*))
+      amenities:project_amenities(amenity:amenities(*)),
+      towers(*)
     `)
     .eq("slug", slug)
     .not("published_at", "is", null)
@@ -146,6 +165,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     ...data,
     location: parseWKBPoint(data.location as string | null),
     amenities: data.amenities?.map((pa: { amenity: unknown }) => pa.amenity) || [],
+    towers: data.towers || [],
   };
 }
 
@@ -206,4 +226,19 @@ export async function getProjectsForMap(): Promise<Pick<Project, "id" | "slug" |
     ...project,
     location: parseWKBPoint(project.location as string | null),
   }));
+}
+
+export async function getIcons(): Promise<Icon[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("icons")
+    .select("*")
+    .order("category", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching icons:", error);
+    return [];
+  }
+  return data || [];
 }
