@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Building2, Calendar, Home, Check, ChevronRight, Car } from "lucide-react";
+import { MapPin, Building2, Calendar, Check, ChevronRight, Car } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
-import { formatPrice, formatPriceRange, formatArea, formatDate } from "@/lib/format";
+import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LocationMap } from "@/components/map/LocationMap";
@@ -16,6 +16,7 @@ import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
 import { InquiryForm } from "@/components/property/InquiryForm";
 import { AnimateIn } from "@/components/ui/AnimateIn";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
+import { UnitShowcase } from "@/components/property/UnitShowcase";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -275,31 +276,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </AnimateIn>
             )}
 
-            {/* Towers */}
-            {project.towers && project.towers.length > 0 && (
+            {/* Unit Plans & Configurations */}
+            {project.configurations && project.configurations.length > 0 && (
               <AnimateIn delay={0.28}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Tower Details</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {project.towers.map((tower) => (
-                        <div key={tower.id} className="p-4 rounded-lg border bg-gray-50">
-                          <h4 className="font-semibold mb-2">{tower.name}</h4>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            {tower.floor_from != null && tower.floor_to != null && (
-                              <p>Floors: {tower.floor_from} to {tower.floor_to}</p>
-                            )}
-                            {tower.units_per_floor && <p>{tower.units_per_floor} units per floor</p>}
-                            {tower.lifts_count && <p>{tower.lifts_count} {tower.lift_type || ""} lifts</p>}
-                            {tower.staircase_info && <p>{tower.staircase_info}</p>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <UnitShowcase
+                  configurations={project.configurations}
+                  towers={project.towers}
+                />
               </AnimateIn>
             )}
 
@@ -359,61 +342,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             )}
 
             {/* Configurations */}
-            {project.configurations && project.configurations.length > 0 && (() => {
-              const configs = project.configurations!;
-              const hasTypeLabel = configs.some((c) => c.type_label);
-              const hasTower = configs.some((c) => c.tower);
-              const hasFloorRange = configs.some((c) => c.floor_from != null);
-              const hasSuperArea = configs.some((c) => c.super_area_sqft);
-              return (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Home className="w-5 h-5" />
-                      Unit Configurations
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b">
-                            {hasTypeLabel && <th className="text-left py-2 font-medium">Type</th>}
-                            <th className="text-left py-2 font-medium">Config</th>
-                            {hasTower && <th className="text-left py-2 font-medium">Tower</th>}
-                            {hasFloorRange && <th className="text-left py-2 font-medium">Floors</th>}
-                            <th className="text-left py-2 font-medium">Carpet Area</th>
-                            {hasSuperArea && <th className="text-left py-2 font-medium">Super Area</th>}
-                            <th className="text-left py-2 font-medium">Price</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {configs.map((config) => (
-                            <tr key={config.id} className="border-b last:border-0">
-                              {hasTypeLabel && <td className="py-3">{config.type_label || "—"}</td>}
-                              <td className="py-3">{config.config_name || `${config.bedrooms} BHK`}</td>
-                              {hasTower && <td className="py-3">{config.tower?.name || "—"}</td>}
-                              {hasFloorRange && (
-                                <td className="py-3">
-                                  {config.floor_from != null && config.floor_to != null
-                                    ? `${config.floor_from}–${config.floor_to}`
-                                    : "—"}
-                                </td>
-                              )}
-                              <td className="py-3">{formatArea(config.carpet_area_sqft)}</td>
-                              {hasSuperArea && <td className="py-3">{formatArea(config.super_area_sqft)}</td>}
-                              <td className="py-3">
-                                {config.price ? formatPriceRange(config.price, null, false) : "On Request"}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })()}
 
             {/* Amenities */}
             {project.amenities && project.amenities.length > 0 && (
