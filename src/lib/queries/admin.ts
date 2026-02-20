@@ -192,7 +192,8 @@ export async function getProjectById(id: string): Promise<Project | null> {
       builder:builders(id, name),
       configurations(*),
       images:project_images(*),
-      amenities:project_amenities(amenity:amenities(*))
+      amenities:project_amenities(amenity:amenities(*)),
+      towers(*)
     `)
     .eq("id", id)
     .is("deleted_at", null)
@@ -206,6 +207,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
   return {
     ...data,
     amenities: data.amenities?.map((pa: { amenity: unknown }) => pa.amenity) || [],
+    towers: data.towers || [],
   } as Project;
 }
 

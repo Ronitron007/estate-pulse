@@ -11,13 +11,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageUploader } from "./ImageUploader";
 import { ConfigurationsEditor } from "./ConfigurationsEditor";
 import { AmenitiesSelector } from "./AmenitiesSelector";
+import { HighlightsEditor } from "./HighlightsEditor";
+import { SpecificationsEditor } from "./SpecificationsEditor";
+import { ParkingEditor } from "./ParkingEditor";
+import { TowersEditor } from "./TowersEditor";
+import { POIsEditor } from "./POIsEditor";
 import { propertyFormSchema, transformFormData, type PropertyFormValues, type PropertyFormData } from "./property-schema";
-import type { Configuration, ProjectImage } from "@/types/database";
+import type { Configuration, ProjectImage, ProjectHighlight, ProjectSpecification, ProjectParking, Tower, PointOfInterest, Icon } from "@/types/database";
 
 interface InitialData extends PropertyFormValues {
   images: Partial<ProjectImage>[];
   configurations: Partial<Configuration>[];
   amenityIds: string[];
+  highlights: ProjectHighlight[];
+  specifications: ProjectSpecification[];
+  parking: ProjectParking | null;
+  towers: Partial<Tower>[];
+  points_of_interest: PointOfInterest[];
 }
 
 interface PropertyFormProps {
@@ -26,6 +36,7 @@ interface PropertyFormProps {
   builders: { id: string; name: string }[];
   cities: string[];
   amenities: { id: string; name: string; category: string | null }[];
+  icons: Icon[];
   onSubmit: (data: PropertyFormData) => Promise<{ success: boolean; error?: string }>;
   onDelete?: () => Promise<{ success: boolean; error?: string }>;
 }
@@ -36,6 +47,7 @@ export function PropertyForm({
   builders,
   cities,
   amenities,
+  icons,
   onSubmit,
   onDelete,
 }: PropertyFormProps) {
@@ -47,6 +59,11 @@ export function PropertyForm({
   const [images, setImages] = useState<Partial<ProjectImage>[]>(initialData?.images || []);
   const [configurations, setConfigurations] = useState<Partial<Configuration>[]>(initialData?.configurations || []);
   const [amenityIds, setAmenityIds] = useState<string[]>(initialData?.amenityIds || []);
+  const [highlights, setHighlights] = useState<ProjectHighlight[]>(initialData?.highlights || []);
+  const [specifications, setSpecifications] = useState<ProjectSpecification[]>(initialData?.specifications || []);
+  const [parking, setParking] = useState<ProjectParking | null>(initialData?.parking || null);
+  const [towers, setTowers] = useState<Partial<Tower>[]>(initialData?.towers || []);
+  const [pois, setPois] = useState<PointOfInterest[]>(initialData?.points_of_interest || []);
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertyFormSchema),
@@ -54,6 +71,7 @@ export function PropertyForm({
       name: "",
       slug: "",
       description: "",
+      tagline: "",
       status: "upcoming",
       property_type: "",
       price_min: "",
@@ -77,7 +95,7 @@ export function PropertyForm({
   const handleSubmit = form.handleSubmit((data) => {
     setError(null);
     startTransition(async () => {
-      const fullData = transformFormData(data, images, configurations, amenityIds);
+      const fullData = transformFormData(data, images, configurations, amenityIds, highlights, specifications, parking, towers, pois);
       const result = await onSubmit(fullData);
       if (result.success) {
         router.push("/admin/properties");
@@ -134,6 +152,10 @@ export function PropertyForm({
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="description">Description</Label>
             <textarea id="description" {...form.register("description")} rows={3} className="w-full px-3 py-2 border rounded-md bg-background" />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="tagline">Tagline</Label>
+            <Input id="tagline" {...form.register("tagline")} placeholder="Short marketing line, e.g., 'Gateway of Chandigarh'" maxLength={100} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="status">Status *</Label>
@@ -245,7 +267,7 @@ export function PropertyForm({
           <CardTitle className="text-base">Configurations</CardTitle>
         </CardHeader>
         <CardContent>
-          <ConfigurationsEditor configurations={configurations} onChange={setConfigurations} />
+          <ConfigurationsEditor configurations={configurations} towers={towers} onChange={setConfigurations} />
         </CardContent>
       </Card>
 
@@ -256,6 +278,56 @@ export function PropertyForm({
         </CardHeader>
         <CardContent>
           <AmenitiesSelector allAmenities={amenities} selected={amenityIds} onChange={setAmenityIds} />
+        </CardContent>
+      </Card>
+
+      {/* Highlights */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Project Highlights</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <HighlightsEditor highlights={highlights} icons={icons} onChange={setHighlights} />
+        </CardContent>
+      </Card>
+
+      {/* Specifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Specifications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SpecificationsEditor specifications={specifications} icons={icons} onChange={setSpecifications} />
+        </CardContent>
+      </Card>
+
+      {/* Towers */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Towers</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TowersEditor towers={towers} onChange={setTowers} />
+        </CardContent>
+      </Card>
+
+      {/* Parking */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Parking</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ParkingEditor parking={parking} onChange={setParking} />
+        </CardContent>
+      </Card>
+
+      {/* Points of Interest */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Points of Interest</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <POIsEditor pois={pois} onChange={setPois} />
         </CardContent>
       </Card>
 

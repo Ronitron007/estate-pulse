@@ -1,12 +1,14 @@
 import { getUniqueCities, getAllBuilders, getAllAmenities } from "@/lib/queries/admin";
+import { getIcons } from "@/lib/queries/projects";
 import { PropertyForm } from "../_components/PropertyForm";
 import { createPropertyAction } from "../actions";
 
 export default async function NewPropertyPage() {
-  const [cities, builders, amenities] = await Promise.all([
+  const [cities, builders, amenities, icons] = await Promise.all([
     getUniqueCities(),
     getAllBuilders(),
     getAllAmenities(),
+    getIcons(),
   ]);
 
   return (
@@ -19,6 +21,7 @@ export default async function NewPropertyPage() {
         builders={builders}
         cities={cities}
         amenities={amenities}
+        icons={icons}
         onSubmit={createPropertyAction}
       />
     </div>

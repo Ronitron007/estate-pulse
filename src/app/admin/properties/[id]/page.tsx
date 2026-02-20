@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProjectById, getUniqueCities, getAllBuilders, getAllAmenities } from "@/lib/queries/admin";
+import { getIcons } from "@/lib/queries/projects";
 import { PropertyForm } from "../_components/PropertyForm";
 import { projectToFormValues } from "../_components/property-schema";
 import { updatePropertyAction, deletePropertyAction } from "../actions";
@@ -11,11 +12,12 @@ interface Props {
 export default async function EditPropertyPage({ params }: Props) {
   const { id } = await params;
 
-  const [project, cities, builders, amenities] = await Promise.all([
+  const [project, cities, builders, amenities, icons] = await Promise.all([
     getProjectById(id),
     getUniqueCities(),
     getAllBuilders(),
     getAllAmenities(),
+    getIcons(),
   ]);
 
   if (!project) notFound();
@@ -42,6 +44,7 @@ export default async function EditPropertyPage({ params }: Props) {
         builders={builders}
         cities={cities}
         amenities={amenities}
+        icons={icons}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
       />
