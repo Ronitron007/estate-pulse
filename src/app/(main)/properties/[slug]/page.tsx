@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LocationMap } from "@/components/map/LocationMap";
 import { getImageUrl } from "@/lib/image-urls";
 import { LocationAdvantages } from "@/components/property/LocationAdvantages";
+import { PointsOfInterest } from "@/components/property/PointsOfInterest";
 import { InvestmentInsights } from "@/components/property/InvestmentInsights";
 import { ProjectDetailStats } from "@/components/property/ProjectDetailStats";
 import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
@@ -256,12 +257,16 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </AnimateIn>
             )}
 
-            {/* Location Advantages */}
-            {project.location_advantages && Object.keys(project.location_advantages).length > 0 && (
+            {/* Points of Interest (new flexible) or Location Advantages (legacy) */}
+            {project.points_of_interest?.length > 0 ? (
+              <AnimateIn delay={0.2}>
+                <PointsOfInterest pois={project.points_of_interest} />
+              </AnimateIn>
+            ) : project.location_advantages && Object.keys(project.location_advantages).length > 0 ? (
               <AnimateIn delay={0.2}>
                 <LocationAdvantages data={project.location_advantages} />
               </AnimateIn>
-            )}
+            ) : null}
 
             {/* Project Details */}
             {project.project_details_extra && (
@@ -298,6 +303,46 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </AnimateIn>
             )}
 
+            {/* Parking */}
+            {project.parking && (
+              <AnimateIn delay={0.29}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Car className="w-5 h-5" />
+                      Parking
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      {project.parking.types?.length > 0 && (
+                        <div>
+                          <p className="text-sm text-gray-500">Parking Types</p>
+                          <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
+                        </div>
+                      )}
+                      {project.parking.basement_levels && (
+                        <div>
+                          <p className="text-sm text-gray-500">Basement Levels</p>
+                          <p className="font-medium">{project.parking.basement_levels}</p>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm text-gray-500">Guest Parking</p>
+                        <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
+                      </div>
+                      {project.parking.allotment && (
+                        <div>
+                          <p className="text-sm text-gray-500">Per Unit Allotment</p>
+                          <p className="font-medium">{project.parking.allotment}</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimateIn>
+            )}
+
             {/* Investment Insights */}
             {project.investment_data && (
               <AnimateIn delay={0.3}>
@@ -314,40 +359,61 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             )}
 
             {/* Configurations */}
-            {project.configurations && project.configurations.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Home className="w-5 h-5" />
-                    Unit Configurations
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2 font-medium">Type</th>
-                          <th className="text-left py-2 font-medium">Carpet Area</th>
-                          <th className="text-left py-2 font-medium">Price</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {project.configurations.map((config) => (
-                          <tr key={config.id} className="border-b last:border-0">
-                            <td className="py-3">{config.config_name || `${config.bedrooms} BHK`}</td>
-                            <td className="py-3">{formatArea(config.carpet_area_sqft)}</td>
-                            <td className="py-3">
-                              {config.price ? formatPriceRange(config.price, null, false) : "On Request"}
-                            </td>
+            {project.configurations && project.configurations.length > 0 && (() => {
+              const configs = project.configurations!;
+              const hasTypeLabel = configs.some((c) => c.type_label);
+              const hasTower = configs.some((c) => c.tower);
+              const hasFloorRange = configs.some((c) => c.floor_from != null);
+              const hasSuperArea = configs.some((c) => c.super_area_sqft);
+              return (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Home className="w-5 h-5" />
+                      Unit Configurations
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b">
+                            {hasTypeLabel && <th className="text-left py-2 font-medium">Type</th>}
+                            <th className="text-left py-2 font-medium">Config</th>
+                            {hasTower && <th className="text-left py-2 font-medium">Tower</th>}
+                            {hasFloorRange && <th className="text-left py-2 font-medium">Floors</th>}
+                            <th className="text-left py-2 font-medium">Carpet Area</th>
+                            {hasSuperArea && <th className="text-left py-2 font-medium">Super Area</th>}
+                            <th className="text-left py-2 font-medium">Price</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                        </thead>
+                        <tbody>
+                          {configs.map((config) => (
+                            <tr key={config.id} className="border-b last:border-0">
+                              {hasTypeLabel && <td className="py-3">{config.type_label || "—"}</td>}
+                              <td className="py-3">{config.config_name || `${config.bedrooms} BHK`}</td>
+                              {hasTower && <td className="py-3">{config.tower?.name || "—"}</td>}
+                              {hasFloorRange && (
+                                <td className="py-3">
+                                  {config.floor_from != null && config.floor_to != null
+                                    ? `${config.floor_from}–${config.floor_to}`
+                                    : "—"}
+                                </td>
+                              )}
+                              <td className="py-3">{formatArea(config.carpet_area_sqft)}</td>
+                              {hasSuperArea && <td className="py-3">{formatArea(config.super_area_sqft)}</td>}
+                              <td className="py-3">
+                                {config.price ? formatPriceRange(config.price, null, false) : "On Request"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })()}
 
             {/* Amenities */}
             {project.amenities && project.amenities.length > 0 && (
