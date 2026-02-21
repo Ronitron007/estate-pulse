@@ -12,6 +12,53 @@ export type InquiryStatus =
   | "closed"
   | "lost";
 
+export interface Icon {
+  id: string;
+  name: string;
+  lucide_name: string;
+  category: string | null;
+}
+
+export interface Tower {
+  id: string;
+  project_id: string;
+  name: string;
+  floor_from: number | null;
+  floor_to: number | null;
+  units_per_floor: number | null;
+  lifts_count: number | null;
+  lift_type: string | null;
+  staircase_info: string | null;
+  sort_order: number;
+}
+
+export interface ProjectHighlight {
+  text: string;
+  icon_id: string | null;
+  icon_name: string | null; // lucide_name, denormalized
+}
+
+export interface ProjectSpecification {
+  label: string;
+  value: string;
+  icon_id: string | null;
+  icon_name: string | null; // lucide_name, denormalized
+}
+
+export interface ProjectParking {
+  types: string[];
+  basement_levels: number | null;
+  guest_parking: boolean;
+  allotment: string | null;
+}
+
+export interface PointOfInterest {
+  name: string;
+  category: string;
+  distance_value: number;
+  distance_unit: string;
+}
+
 export interface Builder {
   id: string;
   name: string;
@@ -66,6 +113,11 @@ export interface Project {
     futureInfrastructureText?: string;
     developerTrackRecordSummary?: string;
   } | null;
+  tagline: string | null;
+  highlights: ProjectHighlight[];
+  specifications: ProjectSpecification[];
+  parking: ProjectParking | null;
+  points_of_interest: PointOfInterest[];
   created_at: string;
   updated_at: string;
   published_at: string | null;
@@ -75,6 +127,7 @@ export interface Project {
   configurations?: Configuration[];
   images?: ProjectImage[];
   amenities?: Amenity[];
+  towers?: Tower[];
 }
 
 export interface Configuration {
@@ -85,8 +138,17 @@ export interface Configuration {
   config_name: string | null;
   carpet_area_sqft: number | null;
   built_up_area_sqft: number | null;
+  balcony_area_sqft: number | null;
+  covered_area_sqft: number | null;
+  super_area_sqft: number | null;
   price: number | null;
   floor_plan_cloudinary_id: string | null;
+  tower_id: string | null;
+  floor_from: number | null;
+  floor_to: number | null;
+  type_label: string | null;
+  // Joined relation
+  tower?: Tower;
 }
 
 export interface ProjectImage {
@@ -167,6 +229,7 @@ export interface ProjectFilters {
   price_max?: number;
   builder_id?: string;
   search?: string;
+  sort?: "price_asc" | "price_desc" | "newest" | "possession";
 }
 
 // Map marker type (lightweight project data for map)

@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { getProjects, getCities } from "@/lib/queries/projects";
 import { PropertyGrid } from "@/components/property/PropertyGrid";
 import { PropertyFilters } from "@/components/property/PropertyFilters";
+import { SortDropdown } from "@/components/property/SortDropdown";
 import { MapListToggle } from "@/components/map/MapListToggle";
 import type { ProjectFilters, PropertyType, ProjectStatus } from "@/types/database";
 
@@ -17,6 +18,7 @@ interface PageProps {
     type?: string;
     status?: string;
     q?: string;
+    sort?: string;
   }>;
 }
 
@@ -28,6 +30,7 @@ async function PropertiesContent({ searchParams }: PageProps) {
     property_type: params.type as PropertyType,
     status: params.status as ProjectStatus,
     search: params.q,
+    sort: params.sort as ProjectFilters["sort"],
   };
 
   const [projects, cities] = await Promise.all([
@@ -38,7 +41,10 @@ async function PropertiesContent({ searchParams }: PageProps) {
   return (
     <>
       <PropertyFilters cities={cities} />
-      <p className="text-sm text-gray-500 mb-4">{projects.length} properties found</p>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-gray-500">{projects.length} properties found</p>
+        <SortDropdown />
+      </div>
       <PropertyGrid projects={projects} />
     </>
   );

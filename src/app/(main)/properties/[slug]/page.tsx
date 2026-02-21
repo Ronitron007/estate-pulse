@@ -1,19 +1,23 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Building2, Calendar, Home, Check, ChevronRight } from "lucide-react";
+import { MapPin, Building2, Calendar, Check, ChevronRight, Car } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
-import { formatPriceRange, formatArea, formatDate } from "@/lib/format";
+import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LocationMap } from "@/components/map/LocationMap";
 import { getImageUrl } from "@/lib/image-urls";
 import { LocationAdvantages } from "@/components/property/LocationAdvantages";
+import { PointsOfInterest } from "@/components/property/PointsOfInterest";
 import { InvestmentInsights } from "@/components/property/InvestmentInsights";
 import { ProjectDetailStats } from "@/components/property/ProjectDetailStats";
 import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
 import { InquiryForm } from "@/components/property/InquiryForm";
 import { AnimateIn } from "@/components/ui/AnimateIn";
+import { DynamicIcon } from "@/components/ui/DynamicIcon";
+import { UnitShowcase } from "@/components/property/UnitShowcase";
+import { MobileCtaBar } from "@/components/property/MobileCtaBar";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -152,10 +156,63 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                           : "N/A"}
                       </p>
                     </div>
+                    {project.price_per_sqft && (
+                      <div>
+                        <p className="text-sm text-gray-500">Price / Sq Ft</p>
+                        <p className="font-semibold">{formatPrice(project.price_per_sqft)}/sqft</p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             </AnimateIn>
+
+            {/* Highlights */}
+            {project.highlights?.length > 0 && (
+              <AnimateIn delay={0.05}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project Highlights</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {project.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
+                          <span className="text-primary mt-0.5">
+                            <DynamicIcon name={h.icon_name || "circle-check"} className="w-5 h-5" />
+                          </span>
+                          <span>{h.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimateIn>
+            )}
+
+            {/* Specifications */}
+            {project.specifications?.length > 0 && (
+              <AnimateIn delay={0.08}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Specifications</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="divide-y">
+                      {project.specifications.map((spec, i) => (
+                        <div key={i} className="flex items-center justify-between py-3">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <DynamicIcon name={spec.icon_name || "circle"} className="w-4 h-4" />
+                            <span>{spec.label}</span>
+                          </div>
+                          <span className="font-medium">{spec.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimateIn>
+            )}
 
             {/* Location */}
             <AnimateIn delay={0.1}>
@@ -202,17 +259,71 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </AnimateIn>
             )}
 
-            {/* Location Advantages */}
-            {project.location_advantages && Object.keys(project.location_advantages).length > 0 && (
+            {/* Points of Interest (new flexible) or Location Advantages (legacy) */}
+            {project.points_of_interest?.length > 0 ? (
+              <AnimateIn delay={0.2}>
+                <PointsOfInterest pois={project.points_of_interest} />
+              </AnimateIn>
+            ) : project.location_advantages && Object.keys(project.location_advantages).length > 0 ? (
               <AnimateIn delay={0.2}>
                 <LocationAdvantages data={project.location_advantages} />
               </AnimateIn>
-            )}
+            ) : null}
 
             {/* Project Details */}
             {project.project_details_extra && (
               <AnimateIn delay={0.25}>
                 <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
+              </AnimateIn>
+            )}
+
+            {/* Unit Plans & Configurations */}
+            {project.configurations && project.configurations.length > 0 && (
+              <AnimateIn delay={0.28}>
+                <UnitShowcase
+                  configurations={project.configurations}
+                  towers={project.towers}
+                />
+              </AnimateIn>
+            )}
+
+            {/* Parking */}
+            {project.parking && (
+              <AnimateIn delay={0.29}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Car className="w-5 h-5" />
+                      Parking
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      {project.parking.types?.length > 0 && (
+                        <div>
+                          <p className="text-sm text-gray-500">Parking Types</p>
+                          <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
+                        </div>
+                      )}
+                      {project.parking.basement_levels && (
+                        <div>
+                          <p className="text-sm text-gray-500">Basement Levels</p>
+                          <p className="font-medium">{project.parking.basement_levels}</p>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm text-gray-500">Guest Parking</p>
+                        <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
+                      </div>
+                      {project.parking.allotment && (
+                        <div>
+                          <p className="text-sm text-gray-500">Per Unit Allotment</p>
+                          <p className="font-medium">{project.parking.allotment}</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </AnimateIn>
             )}
 
@@ -232,40 +343,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             )}
 
             {/* Configurations */}
-            {project.configurations && project.configurations.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Home className="w-5 h-5" />
-                    Unit Configurations
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2 font-medium">Type</th>
-                          <th className="text-left py-2 font-medium">Carpet Area</th>
-                          <th className="text-left py-2 font-medium">Price</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {project.configurations.map((config) => (
-                          <tr key={config.id} className="border-b last:border-0">
-                            <td className="py-3">{config.config_name || `${config.bedrooms} BHK`}</td>
-                            <td className="py-3">{formatArea(config.carpet_area_sqft)}</td>
-                            <td className="py-3">
-                              {config.price ? formatPriceRange(config.price, null, false) : "On Request"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Amenities */}
             {project.amenities && project.amenities.length > 0 && (
@@ -321,7 +398,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               />
 
               {/* Inquiry Form */}
-              <Card>
+              <Card id="inquiry-form">
                 <CardHeader>
                   <CardTitle className="text-lg">Request Callback</CardTitle>
                 </CardHeader>
@@ -360,6 +437,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* Floating mobile CTA — visible when inquiry form scrolled out of view */}
+      <MobileCtaBar
+        propertyTitle={project.name}
+        observeId="inquiry-form"
+      />
     </div>
   );
 }

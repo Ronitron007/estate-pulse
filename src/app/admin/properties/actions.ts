@@ -46,6 +46,7 @@ export async function createPropertyAction(
         name: data.name,
         slug: data.slug,
         description: data.description || null,
+        tagline: data.tagline || null,
         status: data.status,
         property_type: data.property_type,
         price_min: data.price_min,
@@ -62,6 +63,10 @@ export async function createPropertyAction(
         rera_id: data.rera_id || null,
         builder_id: data.builder_id,
         published_at: data.published ? new Date().toISOString() : null,
+        highlights: data.highlights || [],
+        specifications: data.specifications || [],
+        parking: data.parking || null,
+        points_of_interest: data.points_of_interest || [],
       })
       .select("id")
       .single();
@@ -76,6 +81,27 @@ export async function createPropertyAction(
     }
 
     const projectId = project.id;
+
+    // Insert towers
+    if (data.towers.length > 0) {
+      const towersToInsert = data.towers.map((tower, index) => ({
+        project_id: projectId,
+        name: tower.name!,
+        floor_from: tower.floor_from ?? null,
+        floor_to: tower.floor_to ?? null,
+        units_per_floor: tower.units_per_floor ?? null,
+        lifts_count: tower.lifts_count ?? null,
+        lift_type: tower.lift_type || null,
+        staircase_info: tower.staircase_info || null,
+        sort_order: index,
+      }));
+
+      const { error: towersError } = await supabase
+        .from("towers")
+        .insert(towersToInsert);
+
+      if (towersError) console.error("Error inserting towers:", towersError);
+    }
 
     // Insert images
     if (data.images.length > 0) {
@@ -108,8 +134,15 @@ export async function createPropertyAction(
         config_name: config.config_name || null,
         carpet_area_sqft: config.carpet_area_sqft ?? null,
         built_up_area_sqft: config.built_up_area_sqft ?? null,
+        balcony_area_sqft: config.balcony_area_sqft ?? null,
+        covered_area_sqft: config.covered_area_sqft ?? null,
+        super_area_sqft: config.super_area_sqft ?? null,
         price: config.price ?? null,
         floor_plan_cloudinary_id: config.floor_plan_cloudinary_id || null,
+        tower_id: config.tower_id || null,
+        floor_from: config.floor_from ?? null,
+        floor_to: config.floor_to ?? null,
+        type_label: config.type_label || null,
       }));
 
       const { error: configsError } = await supabase
@@ -187,6 +220,7 @@ export async function updatePropertyAction(
         name: data.name,
         slug: data.slug,
         description: data.description || null,
+        tagline: data.tagline || null,
         status: data.status,
         property_type: data.property_type,
         price_min: data.price_min,
@@ -204,6 +238,10 @@ export async function updatePropertyAction(
         builder_id: data.builder_id,
         published_at,
         updated_at: new Date().toISOString(),
+        highlights: data.highlights || [],
+        specifications: data.specifications || [],
+        parking: data.parking || null,
+        points_of_interest: data.points_of_interest || [],
       })
       .eq("id", id);
 
@@ -239,6 +277,29 @@ export async function updatePropertyAction(
       }
     }
 
+    // Replace towers: delete existing, insert new
+    await supabase.from("towers").delete().eq("project_id", id);
+
+    if (data.towers.length > 0) {
+      const towersToInsert = data.towers.map((tower, index) => ({
+        project_id: id,
+        name: tower.name!,
+        floor_from: tower.floor_from ?? null,
+        floor_to: tower.floor_to ?? null,
+        units_per_floor: tower.units_per_floor ?? null,
+        lifts_count: tower.lifts_count ?? null,
+        lift_type: tower.lift_type || null,
+        staircase_info: tower.staircase_info || null,
+        sort_order: index,
+      }));
+
+      const { error: towersError } = await supabase
+        .from("towers")
+        .insert(towersToInsert);
+
+      if (towersError) console.error("Error inserting towers:", towersError);
+    }
+
     // Replace configurations: delete existing, insert new
     await supabase.from("configurations").delete().eq("project_id", id);
 
@@ -250,8 +311,15 @@ export async function updatePropertyAction(
         config_name: config.config_name || null,
         carpet_area_sqft: config.carpet_area_sqft ?? null,
         built_up_area_sqft: config.built_up_area_sqft ?? null,
+        balcony_area_sqft: config.balcony_area_sqft ?? null,
+        covered_area_sqft: config.covered_area_sqft ?? null,
+        super_area_sqft: config.super_area_sqft ?? null,
         price: config.price ?? null,
         floor_plan_cloudinary_id: config.floor_plan_cloudinary_id || null,
+        tower_id: config.tower_id || null,
+        floor_from: config.floor_from ?? null,
+        floor_to: config.floor_to ?? null,
+        type_label: config.type_label || null,
       }));
 
       const { error: configsError } = await supabase

@@ -3,14 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Configuration } from "@/types/database";
+import type { Configuration, Tower } from "@/types/database";
 
 interface ConfigurationsEditorProps {
   configurations: Partial<Configuration>[];
+  towers: Partial<Tower>[];
   onChange: (configs: Partial<Configuration>[]) => void;
 }
 
-export function ConfigurationsEditor({ configurations, onChange }: ConfigurationsEditorProps) {
+export function ConfigurationsEditor({ configurations, towers, onChange }: ConfigurationsEditorProps) {
   const addConfig = () => {
     onChange([
       ...configurations,
@@ -21,7 +22,14 @@ export function ConfigurationsEditor({ configurations, onChange }: Configuration
         config_name: "",
         carpet_area_sqft: null,
         built_up_area_sqft: null,
+        balcony_area_sqft: null,
+        covered_area_sqft: null,
+        super_area_sqft: null,
         price: null,
+        tower_id: null,
+        floor_from: null,
+        floor_to: null,
+        type_label: null,
       },
     ]);
   };
@@ -63,6 +71,15 @@ export function ConfigurationsEditor({ configurations, onChange }: Configuration
             </div>
 
             <div className="space-y-2">
+              <Label>Type Label</Label>
+              <Input
+                value={config.type_label || ""}
+                onChange={(e) => updateConfig(i, "type_label", e.target.value || null)}
+                placeholder="Type A"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label>Bedrooms</Label>
               <Input
                 type="number"
@@ -79,6 +96,44 @@ export function ConfigurationsEditor({ configurations, onChange }: Configuration
                 value={config.bathrooms ?? ""}
                 onChange={(e) => updateConfig(i, "bathrooms", e.target.value ? Number(e.target.value) : null)}
                 placeholder="2"
+              />
+            </div>
+
+            {towers.length > 0 && (
+              <div className="space-y-2">
+                <Label>Tower</Label>
+                <select
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={config.tower_id || ""}
+                  onChange={(e) => updateConfig(i, "tower_id", e.target.value || null)}
+                >
+                  <option value="">No tower</option>
+                  {towers.map((tower) => (
+                    <option key={tower.id} value={tower.id}>
+                      {tower.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label>Floor From</Label>
+              <Input
+                type="number"
+                value={config.floor_from ?? ""}
+                onChange={(e) => updateConfig(i, "floor_from", e.target.value ? Number(e.target.value) : null)}
+                placeholder="1"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Floor To</Label>
+              <Input
+                type="number"
+                value={config.floor_to ?? ""}
+                onChange={(e) => updateConfig(i, "floor_to", e.target.value ? Number(e.target.value) : null)}
+                placeholder="25"
               />
             </div>
 
@@ -99,6 +154,36 @@ export function ConfigurationsEditor({ configurations, onChange }: Configuration
                 value={config.built_up_area_sqft ?? ""}
                 onChange={(e) => updateConfig(i, "built_up_area_sqft", e.target.value ? Number(e.target.value) : null)}
                 placeholder="1100"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Balcony Area (sqft)</Label>
+              <Input
+                type="number"
+                value={config.balcony_area_sqft ?? ""}
+                onChange={(e) => updateConfig(i, "balcony_area_sqft", e.target.value ? Number(e.target.value) : null)}
+                placeholder="100"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Covered Area (sqft)</Label>
+              <Input
+                type="number"
+                value={config.covered_area_sqft ?? ""}
+                onChange={(e) => updateConfig(i, "covered_area_sqft", e.target.value ? Number(e.target.value) : null)}
+                placeholder="950"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Super Area (sqft)</Label>
+              <Input
+                type="number"
+                value={config.super_area_sqft ?? ""}
+                onChange={(e) => updateConfig(i, "super_area_sqft", e.target.value ? Number(e.target.value) : null)}
+                placeholder="1400"
               />
             </div>
 

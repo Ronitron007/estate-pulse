@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { MapPin, Building2, Calendar, Home, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatPriceRange, formatDate } from "@/lib/format";
+import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { useFavorites } from "@/components/auth/FavoritesProvider";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -128,6 +128,9 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
             <p className="text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600">
               {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
             </p>
+            {project.price_per_sqft && (
+              <p className="text-xs text-gray-500">{formatPrice(project.price_per_sqft)}/sqft</p>
+            )}
           </div>
 
           {/* Name with hover underline effect */}
