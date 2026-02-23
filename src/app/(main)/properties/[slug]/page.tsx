@@ -129,7 +129,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
       {/* Section Nav — sticky, full-width */}
       <SectionNav sections={sections} />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 pt-2 pb-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
           <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
@@ -140,7 +140,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </nav>
 
         {/* Title block */}
-        <div className="mb-6">
+        <div className="mb-2 mt-4">
           <div className="flex items-center gap-3 mb-2">
             <span className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded ${statusColors[project.status]}`}>
               {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
@@ -160,7 +160,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             <section id="overview" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
               {/* Quick Info — compact inline */}
               <AnimateIn>
-                <div className="py-6 border-b border-border space-y-3">
+                <div className="py-2 border-b border-border space-y-3">
                   {/* Inline specs row */}
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     {(() => {

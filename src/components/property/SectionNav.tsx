@@ -78,7 +78,7 @@ export function SectionNav({ sections, heroId = "hero" }: SectionNavProps) {
 
   return (
     <div
-      className={`sticky top-16 md:top-20 z-40 transition-all duration-300 ${
+      className={`sticky bg-background top-16 md:top-20 z-40 transition-all duration-300 ${
         visible
           ? "translate-y-0 opacity-100"
           : "-translate-y-full opacity-0 pointer-events-none"
