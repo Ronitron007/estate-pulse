@@ -69,7 +69,7 @@ export function UnitShowcase({ configurations }: UnitShowcaseProps) {
   if (config.super_area_sqft) specs.push({ label: "Super Area", value: formatArea(config.super_area_sqft) });
   if (config.built_up_area_sqft) specs.push({ label: "Built-up", value: formatArea(config.built_up_area_sqft) });
   if (config.balcony_area_sqft) specs.push({ label: "Balcony", value: formatArea(config.balcony_area_sqft) });
-  if (config.price) specs.push({ label: "Price", value: formatPriceRange(config.price, null, false) });
+  if (config.price) specs.push({ label: "Price", value: `₹${formatPriceRange(config.price, null, false)}` });
 
   const configTowers: ConfigTower[] = config.towers || [];
 

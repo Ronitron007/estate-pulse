@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Building2, Calendar, Check, ChevronRight, Car, BedDouble, Bath, Ruler } from "lucide-react";
+import { MapPin, Building2, Calendar, Check, ChevronRight, Car, BedDouble, Bath, Ruler, CheckCircle, Layers, Home } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
 import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -226,15 +226,47 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   )}
                 </div>
               </AnimateIn>
+              
+      
 
           
 
               {/* About */}
               {project.description && (
                 <AnimateIn delay={0.1}>
-                  <div className="py-6 border-b border-border">
+                  <div className="pt-2 pb-6 border-b border-border">
                     <h3 className="font-display text-lg font-semibold mb-4">About this Project</h3>
                     <p className="text-muted-foreground whitespace-pre-line">{project.description}</p>
+                    {project.project_details_extra && <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mt-4">
+        {project.project_details_extra.totalTowers != null && (
+          <div className="text-center">
+            <Building2 className="mx-auto mb-1 h-5 w-5 text-primary" />
+            <p className="text-lg font-bold">{project.project_details_extra.totalTowers}</p>
+            <p className="text-xs text-muted-foreground">Towers</p>
+          </div>
+        )}
+        {project.project_details_extra.totalUnits != null && (
+          <div className="text-center">
+            <Home className="mx-auto mb-1 h-5 w-5 text-primary" />
+            <p className="text-lg font-bold">{project.project_details_extra.totalUnits}</p>
+            <p className="text-xs text-muted-foreground">Total Units</p>
+          </div>
+        )}
+        {project.project_details_extra.floors != null && (
+          <div className="text-center">
+            <Layers className="mx-auto mb-1 h-5 w-5 text-primary" />
+            <p className="text-lg font-bold">{project.project_details_extra.floors}</p>
+            <p className="text-xs text-muted-foreground">Floors</p>
+          </div>
+        )}
+        {project.vastu_compliant && (
+          <div className="text-center">
+            <CheckCircle className="mx-auto mb-1 h-5 w-5 text-green-600" />
+            <p className="text-sm font-semibold text-green-600">Vastu</p>
+            <p className="text-xs text-muted-foreground">Compliant</p>
+          </div>
+        )}
+      </div>}
                   </div>
                 </AnimateIn>
               )}
@@ -315,11 +347,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               ) : null}
 
               {/* Project Details */}
-              {project.project_details_extra && (
-                <AnimateIn delay={0.29}>
-                  <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
-                </AnimateIn>
-              )}
+             
                 {project.parking && (
                   <AnimateIn delay={0.22}>
                     <div className="py-6 border-b border-border">
