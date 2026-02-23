@@ -93,7 +93,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
           href={`https://wa.me/917719784712?text=${encodeURIComponent(`Hi, I'm interested in ${propertyTitle ?? 'a property'}.`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-1 rounded-lg bg-[hsl(142,70%,40%)] px-4 py-2 text-sm font-medium text-white"
+          className="mt-1 rounded-sm bg-[hsl(142,70%,40%)] px-4 py-2 text-sm font-medium text-white"
         >
           Chat on WhatsApp
         </a>
@@ -106,7 +106,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={gap}>
       {error && (
-        <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
+        <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-sm">
           {error}
         </div>
       )}
@@ -193,7 +193,7 @@ export function InquiryForm({ projectId, propertyTitle, compact = false }: Inqui
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-gold hover:opacity-90 text-white font-semibold shadow-gold"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold"
         size="lg"
       >
         <Send className="w-4 h-4 mr-2" />

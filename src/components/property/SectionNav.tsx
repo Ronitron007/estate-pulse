@@ -84,11 +84,11 @@ export function SectionNav({ sections, heroId = "hero" }: SectionNavProps) {
           : "-translate-y-full opacity-0 pointer-events-none"
       }`}
     >
-      <div className="bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+      <div className="border-b border-border">
         <div className="max-w-7xl mx-auto px-4">
           <div
             ref={tabsRef}
-            className="flex gap-1 overflow-x-auto scrollbar-hide py-2 md:justify-center"
+            className="flex gap-6 overflow-x-auto scrollbar-hide py-3 md:justify-start"
           >
             {sections.map((s) => {
               const isActive = activeId === s.id;
@@ -97,15 +97,15 @@ export function SectionNav({ sections, heroId = "hero" }: SectionNavProps) {
                   key={s.id}
                   ref={isActive ? activeTabRef : undefined}
                   onClick={() => handleClick(s.id)}
-                  className={`relative whitespace-nowrap px-4 py-2 text-sm font-medium rounded-full transition-colors shrink-0 ${
+                  className={`relative whitespace-nowrap pb-3 text-sm font-medium transition-colors shrink-0 ${
                     isActive
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {s.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary" />
                   )}
                 </button>
               );

@@ -38,11 +38,11 @@ export function MobileCtaBar({ propertyTitle, phone = "917719784712", observeId 
           href={`https://wa.me/${phone}?text=${waMessage}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+          className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-foreground px-4 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
         >
           <MessageCircle className="h-4 w-4" /> Talk to an Expert
         </a>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-medium transition-colors hover:bg-muted">
+        <button className="flex flex-1 items-center justify-center gap-2 rounded-sm border border-border px-4 py-3 text-sm font-medium transition-colors hover:bg-muted">
           <Calendar className="h-4 w-4" /> Schedule a visit
         </button>
       </div>

@@ -13,7 +13,7 @@ export function ProjectDetailStats({ data, vastuCompliant }: { data: ProjectDeta
   if (!hasData) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
+    <div className="py-6 border-b border-border">
       <h3 className="font-display text-lg font-semibold mb-4">Project Details</h3>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {data.totalTowers != null && (

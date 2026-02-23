@@ -109,9 +109,9 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 md:pt-20">
+    <div className="min-h-screen bg-background pt-16 md:pt-20">
       {/* Hero Image */}
-      <div id="hero" className="relative h-[400px] bg-gray-200">
+      <div id="hero" className="relative h-[500px] bg-muted">
         {primaryImage ? (
           <img
             src={getImageUrl(primaryImage.image_path, "hero")}
@@ -152,82 +152,72 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-0">
 
             {/* ── OVERVIEW ── */}
             <section id="overview" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
               {/* Quick Info */}
               <AnimateIn>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-500">Price Range</p>
-                        <p className="font-semibold">
-                          {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Property Type</p>
-                        <p className="font-semibold capitalize">{project.property_type || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Possession</p>
-                        <p className="font-semibold">{formatDate(project.possession_date) || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Units</p>
-                        <p className="font-semibold">
-                          {project.available_units !== null && project.total_units
-                            ? `${project.available_units}/${project.total_units} available`
-                            : "N/A"}
-                        </p>
-                      </div>
-                      {project.price_per_sqft && (
-                        <div>
-                          <p className="text-sm text-gray-500">Price / Sq Ft</p>
-                          <p className="font-semibold">{formatPrice(project.price_per_sqft)}/sqft</p>
-                        </div>
-                      )}
+                <div className="py-6 border-b border-border">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Price Range</p>
+                      <p className="font-semibold">
+                        {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
+                      </p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Property Type</p>
+                      <p className="font-semibold capitalize">{project.property_type || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Possession</p>
+                      <p className="font-semibold">{formatDate(project.possession_date) || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Units</p>
+                      <p className="font-semibold">
+                        {project.available_units !== null && project.total_units
+                          ? `${project.available_units}/${project.total_units} available`
+                          : "N/A"}
+                      </p>
+                    </div>
+                    {project.price_per_sqft && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Price / Sq Ft</p>
+                        <p className="font-semibold">{formatPrice(project.price_per_sqft)}/sqft</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </AnimateIn>
 
               {/* Highlights */}
               {project.highlights?.length > 0 && (
                 <AnimateIn delay={0.05}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Project Highlights</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {project.highlights.map((h, i) => (
-                          <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
-                            <span className="text-primary mt-0.5">
-                              <DynamicIcon name={h.icon_name || "circle-check"} className="w-5 h-5" />
-                            </span>
-                            <span>{h.text}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="py-6 border-b border-border">
+                    <h3 className="font-display text-lg font-semibold mb-4">Project Highlights</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {project.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-3 py-2">
+                          <span className="text-primary mt-0.5">
+                            <DynamicIcon name={h.icon_name || "circle-check"} className="w-5 h-5" />
+                          </span>
+                          <span>{h.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </AnimateIn>
               )}
 
               {/* About */}
               {project.description && (
                 <AnimateIn delay={0.1}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>About this Project</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-700 whitespace-pre-line">{project.description}</p>
-                    </CardContent>
-                  </Card>
+                  <div className="py-6 border-b border-border">
+                    <h3 className="font-display text-lg font-semibold mb-4">About this Project</h3>
+                    <p className="text-muted-foreground whitespace-pre-line">{project.description}</p>
+                  </div>
                 </AnimateIn>
               )}
             </section>
@@ -248,21 +238,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             {hasAmenities && (
               <section id="amenities" className="scroll-mt-28 md:scroll-mt-32">
                 <AnimateIn delay={0.18}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Amenities</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {project.amenities!.map((amenity) => (
-                          <div key={amenity.id} className="flex items-center gap-2">
-                            <Check className="w-4 h-4 text-green-600" />
-                            <span>{amenity.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="py-6 border-b border-border">
+                    <h3 className="font-display text-lg font-semibold mb-4">Amenities</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {project.amenities!.map((amenity) => (
+                        <div key={amenity.id} className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-600" />
+                          <span>{amenity.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </AnimateIn>
               </section>
             )}
@@ -272,63 +258,54 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               <section id="specifications" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
                 {project.specifications && project.specifications.length > 0 && (
                   <AnimateIn delay={0.2}>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Specifications</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="divide-y">
-                          {project.specifications.map((spec, i) => (
-                            <div key={i} className="flex items-center justify-between py-3">
-                              <div className="flex items-center gap-2 text-gray-600">
-                                <DynamicIcon name={spec.icon_name || "circle"} className="w-4 h-4" />
-                                <span>{spec.label}</span>
-                              </div>
-                              <span className="font-medium">{spec.value}</span>
+                    <div className="py-6 border-b border-border">
+                      <h3 className="font-display text-lg font-semibold mb-4">Specifications</h3>
+                      <div className="divide-y divide-border">
+                        {project.specifications.map((spec, i) => (
+                          <div key={i} className="flex items-center justify-between py-3">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <DynamicIcon name={spec.icon_name || "circle"} className="w-4 h-4" />
+                              <span>{spec.label}</span>
                             </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+                            <span className="font-medium">{spec.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </AnimateIn>
                 )}
 
                 {project.parking && (
                   <AnimateIn delay={0.22}>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Car className="w-5 h-5" />
-                          Parking
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-2 gap-4">
-                          {project.parking.types?.length > 0 && (
-                            <div>
-                              <p className="text-sm text-gray-500">Parking Types</p>
-                              <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
-                            </div>
-                          )}
-                          {project.parking.basement_levels && (
-                            <div>
-                              <p className="text-sm text-gray-500">Basement Levels</p>
-                              <p className="font-medium">{project.parking.basement_levels}</p>
-                            </div>
-                          )}
+                    <div className="py-6 border-b border-border">
+                      <h3 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Car className="w-5 h-5" /> Parking
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {project.parking.types?.length > 0 && (
                           <div>
-                            <p className="text-sm text-gray-500">Guest Parking</p>
-                            <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
+                            <p className="text-sm text-muted-foreground">Parking Types</p>
+                            <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
                           </div>
-                          {project.parking.allotment && (
-                            <div>
-                              <p className="text-sm text-gray-500">Per Unit Allotment</p>
-                              <p className="font-medium">{project.parking.allotment}</p>
-                            </div>
-                          )}
+                        )}
+                        {project.parking.basement_levels && (
+                          <div>
+                            <p className="text-sm text-muted-foreground">Basement Levels</p>
+                            <p className="font-medium">{project.parking.basement_levels}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm text-muted-foreground">Guest Parking</p>
+                          <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
                         </div>
-                      </CardContent>
-                    </Card>
+                        {project.parking.allotment && (
+                          <div>
+                            <p className="text-sm text-muted-foreground">Per Unit Allotment</p>
+                            <p className="font-medium">{project.parking.allotment}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </AnimateIn>
                 )}
               </section>
@@ -337,33 +314,30 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             {/* ── LOCATION + POIs + PROJECT DETAILS ── */}
             <section id="location" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
               <AnimateIn delay={0.25}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="w-5 h-5" />
-                      Location
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-gray-700">
+                <div className="py-6 border-b border-border">
+                  <h3 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
+                    <MapPin className="w-5 h-5" /> Location
+                  </h3>
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground">
                       {project.address && `${project.address}, `}
                       {project.locality && `${project.locality}, `}
                       {project.city}
                       {project.pincode && ` - ${project.pincode}`}
                     </p>
                     {project.rera_id && (
-                      <p className="text-sm text-gray-500">RERA ID: {project.rera_id}</p>
+                      <p className="text-sm text-muted-foreground">RERA ID: {project.rera_id}</p>
                     )}
                     {project.location && (
                       <LocationMap
                         lat={project.location.lat}
                         lng={project.location.lng}
                         propertyType={project.property_type}
-                        className="h-64 w-full rounded-lg overflow-hidden"
+                        className="h-64 w-full rounded-sm overflow-hidden"
                       />
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </AnimateIn>
 
               {/* POIs / Location Advantages */}
@@ -396,33 +370,29 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
             {/* 3D Walkthrough (no nav tab) */}
             {(project.matterport_url || project.video_url) && (
-              <div className="rounded-xl border border-border bg-card p-6">
+              <div className="py-6 border-b border-border">
                 <h3 className="font-display text-lg font-semibold mb-4">3D Walkthrough</h3>
-                <div className="aspect-video rounded-lg bg-muted" />
+                <div className="aspect-video rounded-sm bg-muted" />
               </div>
             )}
 
             {/* ── GALLERY ── */}
             {hasGallery && (
               <section id="gallery" className="scroll-mt-28 md:scroll-mt-32">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Gallery</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {galleryImages.map((image) => (
-                        <div key={image.id} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                          <img
-                            src={getImageUrl(image.image_path, "thumbnail")}
-                            alt={image.alt_text || "Property image"}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="py-6 border-b border-border">
+                  <h3 className="font-display text-lg font-semibold mb-4">Gallery</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {galleryImages.map((image) => (
+                      <div key={image.id} className="aspect-square rounded-sm overflow-hidden bg-muted">
+                        <img
+                          src={getImageUrl(image.image_path, "thumbnail")}
+                          alt={image.alt_text || "Property image"}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </section>
             )}
           </div>
