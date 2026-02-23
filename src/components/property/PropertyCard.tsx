@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { MapPin, Building2, Calendar, Home, Heart } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { useFavorites } from "@/components/auth/FavoritesProvider";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -13,11 +12,10 @@ import type { Project } from "@/types/database";
 
 interface PropertyCardProps {
   project: Project;
-  index?: number; // For staggered animations
+  index?: number;
 }
 
 export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -39,14 +37,11 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
         : `${minBedrooms}-${maxBedrooms} BHK`
       : null;
 
-  const statusColors = {
-    upcoming: "bg-blue-100 text-blue-800",
-    ongoing: "bg-green-100 text-green-800",
-    completed: "bg-gray-100 text-gray-800",
+  const statusColors: Record<string, string> = {
+    upcoming: "bg-blue-50 text-blue-700 border-blue-200",
+    ongoing: "bg-green-50 text-green-700 border-green-200",
+    completed: "bg-gray-50 text-gray-700 border-gray-200",
   };
-
-  // Stagger delay based on index
-  const staggerDelay = Math.min(index * 0.05, 0.4);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,128 +58,106 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
   };
 
   return (
-    <Link href={`/properties/${project.slug}`}>
-      <Card
-        className="overflow-hidden cursor-pointer h-full group opacity-0 animate-bounce-in"
-        style={{ animationDelay: `${staggerDelay}s` }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Image with hover zoom */}
-        <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-          {primaryImage ? (
-            <img
-              src={getImageUrl(primaryImage.image_path, "card")}
-              alt={primaryImage.alt_text || project.name}
-              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <Building2 className="w-12 h-12 animate-float" />
-            </div>
-          )}
-
-          {/* Gradient overlay on hover */}
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+    <Link
+      href={`/properties/${project.slug}`}
+      className="group flex flex-col sm:flex-row border-b border-border transition-colors duration-200 hover:bg-muted/50"
+    >
+      {/* Image */}
+      <div className="relative sm:w-[45%] h-56 sm:h-auto overflow-hidden bg-muted">
+        {primaryImage ? (
+          <img
+            src={getImageUrl(primaryImage.image_path, "card")}
+            alt={primaryImage.alt_text || project.name}
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            <Building2 className="w-12 h-12" />
+          </div>
+        )}
 
-          {/* Status badge with subtle pulse for upcoming */}
+        {/* Favorite button */}
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-sm transition-colors duration-200 hover:bg-white"
+        >
+          <Heart
+            className={`w-4 h-4 transition-colors duration-200 ${
+              isFavorited ? "fill-red-500 text-red-500" : "text-gray-600"
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Details */}
+      <div className="sm:w-[55%] p-5 sm:p-8 flex flex-col justify-center">
+        <div className="flex items-center gap-2 mb-2">
           <span
-            className={`absolute top-3 left-3 px-2 py-1 text-xs font-medium rounded transition-transform duration-200 ${
-              statusColors[project.status]
-            } ${project.status === "upcoming" ? "badge-pulse" : ""} ${
-              isHovered ? "scale-105" : ""
+            className={`px-2 py-0.5 text-xs font-medium rounded-sm border ${
+              statusColors[project.status] || statusColors.ongoing
             }`}
           >
             {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
           </span>
-
-          {/* Property type badge */}
           {project.property_type && (
-            <span className="absolute top-3 right-12 px-2 py-1 text-xs font-medium rounded bg-white/90 text-gray-700 backdrop-blur-sm transition-transform duration-200 group-hover:scale-105">
+            <span className="px-2 py-0.5 text-xs font-medium rounded-sm border border-border text-muted-foreground">
               {project.property_type.charAt(0).toUpperCase() + project.property_type.slice(1)}
             </span>
           )}
-
-          {/* Favorite heart button */}
-          <button
-            onClick={handleFavoriteClick}
-            className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110 active:scale-95 ${
-              isHeartAnimating ? "animate-heart-beat" : ""
-            }`}
-          >
-            <Heart
-              className={`w-4 h-4 transition-colors duration-200 ${
-                isFavorited ? "fill-red-500 text-red-500" : "text-gray-600"
-              }`}
-            />
-          </button>
         </div>
 
-        <CardContent className="p-4">
-          {/* Price with subtle entrance animation */}
-          <div className="mb-2">
-            <p className="text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600">
-              {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
-            </p>
-            {project.price_per_sqft && (
-              <p className="text-xs text-gray-500">{formatPrice(project.price_per_sqft)}/sqft</p>
-            )}
-          </div>
+        <h3 className="font-display text-xl font-semibold text-foreground mb-1 line-clamp-1">
+          {project.name}
+        </h3>
 
-          {/* Name with hover underline effect */}
-          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1 group-hover:text-blue-600 transition-colors duration-200">
-            {project.name}
-          </h3>
+        {project.builder && (
+          <p className="text-sm text-muted-foreground mb-2">by {project.builder.name}</p>
+        )}
 
-          {/* Builder */}
-          {project.builder && (
-            <p className="text-sm text-gray-500 mb-2 transition-colors duration-200 group-hover:text-gray-600">
-              by {project.builder.name}
-            </p>
+        <div className="flex items-center text-sm text-muted-foreground mb-3">
+          <MapPin className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
+          <span className="line-clamp-1">
+            {project.locality ? `${project.locality}, ` : ""}
+            {project.city}
+          </span>
+        </div>
+
+        <p className="text-2xl font-bold text-foreground mb-1">
+          {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
+        </p>
+        {project.price_per_sqft && (
+          <p className="text-xs text-muted-foreground mb-3">{formatPrice(project.price_per_sqft)}/sqft</p>
+        )}
+
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          {bedroomText && (
+            <div className="flex items-center">
+              <Home className="w-3.5 h-3.5 mr-1" />
+              {bedroomText}
+            </div>
           )}
-
-          {/* Location with icon bounce */}
-          <div className="flex items-center text-sm text-gray-600 mb-2 transition-colors duration-200 group-hover:text-gray-700">
-            <MapPin className="w-4 h-4 mr-1 flex-shrink-0 transition-transform duration-300 group-hover:scale-110" />
-            <span className="line-clamp-1">
-              {project.locality ? `${project.locality}, ` : ""}
-              {project.city}
-            </span>
-          </div>
-
-          {/* Details row with staggered icon animations */}
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            {bedroomText && (
-              <div className="flex items-center transition-transform duration-300 group-hover:translate-x-0.5">
-                <Home className="w-4 h-4 mr-1 transition-transform duration-300 group-hover:scale-110" />
-                {bedroomText}
-              </div>
-            )}
-            {project.possession_date && (
-              <div className="flex items-center transition-transform duration-300 delay-75 group-hover:translate-x-0.5">
-                <Calendar className="w-4 h-4 mr-1 transition-transform duration-300 delay-75 group-hover:scale-110" />
-                {formatDate(project.possession_date)}
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          {project.possession_date && (
+            <div className="flex items-center">
+              <Calendar className="w-3.5 h-3.5 mr-1" />
+              {formatDate(project.possession_date)}
+            </div>
+          )}
+        </div>
+      </div>
     </Link>
   );
 }
 
-// Skeleton loader for PropertyCard with shimmer effect
+// Skeleton loader
 export function PropertyCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-      <div className="aspect-[4/3] skeleton" />
-      <div className="p-4 space-y-3">
-        <div className="h-6 w-1/3 skeleton" />
-        <div className="h-5 w-2/3 skeleton" />
+    <div className="flex flex-col sm:flex-row border-b border-border">
+      <div className="sm:w-[45%] h-56 sm:h-48 skeleton" />
+      <div className="sm:w-[55%] p-5 sm:p-8 space-y-3">
+        <div className="h-4 w-20 skeleton" />
+        <div className="h-6 w-2/3 skeleton" />
         <div className="h-4 w-1/2 skeleton" />
-        <div className="h-4 w-3/4 skeleton" />
+        <div className="h-7 w-1/3 skeleton" />
         <div className="flex gap-4">
           <div className="h-4 w-16 skeleton" />
           <div className="h-4 w-20 skeleton" />
