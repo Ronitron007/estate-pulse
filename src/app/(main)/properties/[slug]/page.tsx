@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Building2, Calendar, Check, ChevronRight, Car } from "lucide-react";
+import { MapPin, Building2, Calendar, Check, ChevronRight, Car, BedDouble, Bath, Ruler } from "lucide-react";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
 import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -157,39 +157,72 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
             {/* ── OVERVIEW ── */}
             <section id="overview" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
-              {/* Quick Info */}
+              {/* Quick Info — compact inline */}
               <AnimateIn>
-                <div className="py-6 border-b border-border">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Price Range</p>
-                      <p className="font-semibold">
-                        {formatPriceRange(project.price_min, project.price_max, project.price_on_request)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Property Type</p>
-                      <p className="font-semibold capitalize">{project.property_type || "N/A"}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Possession</p>
-                      <p className="font-semibold">{formatDate(project.possession_date) || "N/A"}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Units</p>
-                      <p className="font-semibold">
-                        {project.available_units !== null && project.total_units
-                          ? `${project.available_units}/${project.total_units} available`
-                          : "N/A"}
-                      </p>
-                    </div>
-                    {project.price_per_sqft && (
-                      <div>
-                        <p className="text-sm text-muted-foreground">Price / Sq Ft</p>
-                        <p className="font-semibold">{formatPrice(project.price_per_sqft)}/sqft</p>
-                      </div>
+                <div className="py-6 border-b border-border space-y-3">
+                  {/* Inline specs row */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                    {(() => {
+                      const bhks = project.configurations?.length
+                        ? [...new Set(project.configurations.map(c => c.bedrooms).filter(Boolean))].sort()
+                        : [];
+                      return bhks.length > 0 ? (
+                        <span className="flex items-center gap-1">
+                          <BedDouble className="w-4 h-4" />
+                          {bhks.length === 1 ? `${bhks[0]} Bed` : `${bhks[0]}–${bhks[bhks.length - 1]} Bed`}
+                        </span>
+                      ) : null;
+                    })()}
+                    {(() => {
+                      const baths = project.configurations?.length
+                        ? [...new Set(project.configurations.map(c => c.bathrooms).filter(Boolean))].sort()
+                        : [];
+                      return baths.length > 0 ? (
+                        <span className="flex items-center gap-1">
+                          <Bath className="w-4 h-4" />
+                          {baths.length === 1 ? `${baths[0]} Bath` : `${baths[0]}–${baths[baths.length - 1]} Bath`}
+                        </span>
+                      ) : null;
+                    })()}
+                    {(() => {
+                      const areas = project.configurations?.map(c => c.carpet_area_sqft).filter(Boolean) as number[] || [];
+                      if (!areas.length) return null;
+                      const min = Math.min(...areas);
+                      const max = Math.max(...areas);
+                      return (
+                        <span className="flex items-center gap-1">
+                          <Ruler className="w-4 h-4" />
+                          {min === max ? `${min.toLocaleString()} sq.ft` : `${min.toLocaleString()}–${max.toLocaleString()} sq.ft`}
+                        </span>
+                      );
+                    })()}
+                    {project.property_type && (
+                      <span className="flex items-center gap-1">
+                        <Building2 className="w-4 h-4" />
+                        <span className="capitalize">{project.property_type}</span>
+                      </span>
+                    )}
+                    {project.possession_date && (
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(project.possession_date)}
+                      </span>
                     )}
                   </div>
+
+                  {/* Price — only if real values exist */}
+                  {(project.price_min || project.price_max) && (
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <p className="text-xl font-bold">
+                        {formatPriceRange(project.price_min, project.price_max, false)}
+                      </p>
+                      {project.price_per_sqft && (
+                        <span className="text-sm text-muted-foreground">
+                          {formatPrice(project.price_per_sqft)}/sqft
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </AnimateIn>
 
