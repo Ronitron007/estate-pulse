@@ -16,7 +16,7 @@ export function MapListToggle({ currentView }: MapListToggleProps) {
   const params = new URLSearchParams(searchParams.toString());
 
   return (
-    <div className="inline-flex rounded-lg border bg-white p-1 shadow-sm">
+    <div className="inline-flex rounded-sm border bg-background p-1 shadow-xs">
       <Link href={`/properties?${params.toString()}`}>
         <Button
           variant={currentView === "list" ? "default" : "ghost"}

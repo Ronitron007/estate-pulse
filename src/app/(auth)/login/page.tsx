@@ -88,7 +88,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-sm">
               {error}
             </div>
           )}

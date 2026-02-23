@@ -39,7 +39,7 @@ export default async function SavedPage() {
         <p className="text-gray-500 mb-8">{favorites.length} properties saved</p>
 
         {favorites.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-lg">
+          <div className="text-center py-16 bg-white rounded-sm">
             <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">No saved properties yet</h2>
             <p className="text-gray-500 mb-4">Browse properties and click the heart icon to save them</p>

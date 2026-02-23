@@ -17,7 +17,7 @@ export function LocationMap({ lat, lng, propertyType, zoom = 15, className }: Lo
 
   if (!apiKey) {
     return (
-      <div className={`flex items-center justify-center bg-gray-100 rounded-lg ${className}`}>
+      <div className={`flex items-center justify-center bg-gray-100 rounded-sm ${className}`}>
         <p className="text-gray-500 text-sm">Map unavailable</p>
       </div>
     );
@@ -45,7 +45,7 @@ export function LocationMap({ lat, lng, propertyType, zoom = 15, className }: Lo
           streetViewControl={false}
           mapTypeControl={false}
           fullscreenControl={true}
-          className="w-full h-full rounded-lg"
+          className="w-full h-full rounded-sm"
         >
           <MapMarker project={markerProject} />
         </Map>

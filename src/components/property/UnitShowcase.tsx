@@ -118,7 +118,7 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
                   aria-selected={i === activeIndex}
                   aria-controls={`unit-panel-${c.id}`}
                   onClick={() => goTo(i)}
-                  className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                  className={`shrink-0 rounded-sm px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                     i === activeIndex
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -132,7 +132,7 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
         )}
 
         {/* Carousel */}
-        <div className="relative overflow-hidden rounded-xl">
+        <div className="relative overflow-hidden rounded-sm">
           {/* Arrow buttons (fade instead of mount/unmount) */}
           {showNav && (
             <Button
@@ -222,16 +222,16 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
                   <img
                     src={floorPlanSrc}
                     alt={`Floor plan — ${getConfigLabel(config)}`}
-                    className="w-full rounded-lg object-contain bg-muted border border-border"
+                    className="w-full rounded-sm object-contain bg-muted border border-border"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-lg">
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-sm">
                     <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-full text-sm font-medium shadow">
                       <Maximize className="w-4 h-4" /> View Full Size
                     </span>
                   </div>
                 </button>
               ) : (
-                <div className="w-full aspect-[4/3] rounded-lg bg-muted border border-dashed border-border flex items-center justify-center">
+                <div className="w-full aspect-[4/3] rounded-sm bg-muted border border-dashed border-border flex items-center justify-center">
                   <p className="text-sm text-muted-foreground">Floor plan coming soon</p>
                 </div>
               )}

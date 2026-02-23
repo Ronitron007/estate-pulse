@@ -52,7 +52,7 @@ export function FloorPlanLightbox({ src, alt, open, onClose }: FloorPlanLightbox
           <motion.img
             src={src}
             alt={alt}
-            className="max-w-[90vw] max-h-[80vh] object-contain rounded-lg"
+            className="max-w-[90vw] max-h-[80vh] object-contain rounded-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}

@@ -65,7 +65,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
       {/* Error message with wobble animation */}
       {error && (
         <div
-          className={`p-3 text-sm text-red-600 bg-red-50 rounded-lg transition-all duration-200 ${
+          className={`p-3 text-sm text-red-600 bg-red-50 rounded-sm transition-all duration-200 ${
             showError ? "animate-wobble" : ""
           }`}
           onAnimationEnd={() => setShowError(false)}
