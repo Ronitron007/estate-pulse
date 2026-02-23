@@ -1,10 +1,8 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { getProjects, getCities } from "@/lib/queries/projects";
-import { PropertyGrid } from "@/components/property/PropertyGrid";
-import { PropertyFilters } from "@/components/property/PropertyFilters";
-import { SortDropdown } from "@/components/property/SortDropdown";
 import { MapListToggle } from "@/components/map/MapListToggle";
+import { PropertiesClientView } from "@/components/property/PropertiesClientView";
 import type { ProjectFilters, PropertyType, ProjectStatus } from "@/types/database";
 
 export const metadata: Metadata = {
@@ -38,16 +36,7 @@ async function PropertiesContent({ searchParams }: PageProps) {
     getCities(),
   ]);
 
-  return (
-    <>
-      <PropertyFilters cities={cities} />
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-muted-foreground">{projects.length} properties found</p>
-        <SortDropdown />
-      </div>
-      <PropertyGrid projects={projects} />
-    </>
-  );
+  return <PropertiesClientView projects={projects} cities={cities} />;
 }
 
 export default async function PropertiesPage(props: PageProps) {
