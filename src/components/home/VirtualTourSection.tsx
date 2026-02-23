@@ -10,7 +10,7 @@ export function VirtualTourSection() {
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section ref={ref} className="py-20 bg-charcoal">
+    <section ref={ref} className="py-20 bg-midnight">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -56,7 +56,7 @@ export function VirtualTourSection() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
           >
-            <div className="aspect-video bg-charcoal-light border border-white/10 flex items-center justify-center relative overflow-hidden">
+            <div className="aspect-video bg-midnight-light border border-white/10 flex items-center justify-center relative overflow-hidden">
               <div className="text-center">
                 <Box className="w-16 h-16 text-primary/40 mx-auto mb-4" />
                 <p className="text-white/40 text-sm">3D Tour Preview</p>
