@@ -90,7 +90,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   // Build section nav tabs conditionally
   const hasConfigurations = project.configurations && project.configurations.length > 0;
   const hasAmenities = project.amenities && project.amenities.length > 0;
-  const hasSpecs = (project.specifications && project.specifications.length > 0) || project.parking;
+  const hasSpecs = project.specifications && project.specifications.length > 0;
   const hasInvestment = !!project.investment_data;
   const hasGallery = galleryImages.length > 0;
   const hasLocationContent = !!(
@@ -103,8 +103,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     { id: "overview", label: "Overview" },
     ...(hasConfigurations ? [{ id: "configurations", label: "Configurations" }] : []),
     ...(hasAmenities ? [{ id: "amenities", label: "Amenities" }] : []),
-    ...(hasSpecs ? [{ id: "specifications", label: "Specs" }] : []),
     { id: "location", label: "Location" },
+    ...(hasSpecs ? [{ id: "specifications", label: "Specs" }] : []),
     ...(hasInvestment ? [{ id: "pricing", label: "Pricing" }] : []),
     ...(hasGallery ? [{ id: "gallery", label: "Gallery" }] : []),
   ];
@@ -160,10 +160,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             <section id="overview" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
               {/* Quick Info — compact inline */}
               <AnimateIn>
-                <div className="py-2 border-b border-border space-y-3">
+                <div className="py-2  border-border space-y-3">
                   {/* Inline specs row */}
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                    {(() => {
+                    {/* {(() => {
                       const bhks = project.configurations?.length
                         ? [...new Set(project.configurations.map(c => c.bedrooms).filter(Boolean))].sort()
                         : [];
@@ -184,7 +184,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                           {baths.length === 1 ? `${baths[0]} Bath` : `${baths[0]}–${baths[baths.length - 1]} Bath`}
                         </span>
                       ) : null;
-                    })()}
+                    })()} */}
                     {(() => {
                       const areas = project.configurations?.map(c => c.carpet_area_sqft).filter(Boolean) as number[] || [];
                       if (!areas.length) return null;
@@ -227,24 +227,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 </div>
               </AnimateIn>
 
-              {/* Highlights */}
-              {project.highlights?.length > 0 && (
-                <AnimateIn delay={0.05}>
-                  <div className="py-6 border-b border-border">
-                    <h3 className="font-display text-lg font-semibold mb-4">Project Highlights</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {project.highlights.map((h, i) => (
-                        <div key={i} className="flex items-start gap-3 py-2">
-                          <span className="text-primary mt-0.5">
-                            <DynamicIcon name={h.icon_name || "circle-check"} className="w-5 h-5" />
-                          </span>
-                          <span>{h.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </AnimateIn>
-              )}
+          
 
               {/* About */}
               {project.description && (
@@ -255,6 +238,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   </div>
                 </AnimateIn>
               )}
+
+              
             </section>
 
             {/* ── CONFIGURATIONS ── */}
@@ -287,63 +272,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </section>
             )}
 
-            {/* ── SPECIFICATIONS + PARKING ── */}
-            {hasSpecs && (
-              <section id="specifications" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
-                {project.specifications && project.specifications.length > 0 && (
-                  <AnimateIn delay={0.2}>
-                    <div className="py-6 border-b border-border">
-                      <h3 className="font-display text-lg font-semibold mb-4">Specifications</h3>
-                      <div className="divide-y divide-border">
-                        {project.specifications.map((spec, i) => (
-                          <div key={i} className="flex items-center justify-between py-3">
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <DynamicIcon name={spec.icon_name || "circle"} className="w-4 h-4" />
-                              <span>{spec.label}</span>
-                            </div>
-                            <span className="font-medium">{spec.value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </AnimateIn>
-                )}
-
-                {project.parking && (
-                  <AnimateIn delay={0.22}>
-                    <div className="py-6 border-b border-border">
-                      <h3 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Car className="w-5 h-5" /> Parking
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        {project.parking.types?.length > 0 && (
-                          <div>
-                            <p className="text-sm text-muted-foreground">Parking Types</p>
-                            <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
-                          </div>
-                        )}
-                        {project.parking.basement_levels && (
-                          <div>
-                            <p className="text-sm text-muted-foreground">Basement Levels</p>
-                            <p className="font-medium">{project.parking.basement_levels}</p>
-                          </div>
-                        )}
-                        <div>
-                          <p className="text-sm text-muted-foreground">Guest Parking</p>
-                          <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
-                        </div>
-                        {project.parking.allotment && (
-                          <div>
-                            <p className="text-sm text-muted-foreground">Per Unit Allotment</p>
-                            <p className="font-medium">{project.parking.allotment}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </AnimateIn>
-                )}
-              </section>
-            )}
+           
 
             {/* ── LOCATION + POIs + PROJECT DETAILS ── */}
             <section id="location" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
@@ -391,7 +320,84 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <ProjectDetailStats data={project.project_details_extra} vastuCompliant={project.vastu_compliant} />
                 </AnimateIn>
               )}
+                {project.parking && (
+                  <AnimateIn delay={0.22}>
+                    <div className="py-6 border-b border-border">
+                      <h3 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Car className="w-5 h-5" /> Parking
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {project.parking.types?.length > 0 && (
+                          <div>
+                            <p className="text-sm text-muted-foreground">Parking Types</p>
+                            <p className="font-medium capitalize">{project.parking.types.join(", ")}</p>
+                          </div>
+                        )}
+                        {project.parking.basement_levels && (
+                          <div>
+                            <p className="text-sm text-muted-foreground">Basement Levels</p>
+                            <p className="font-medium">{project.parking.basement_levels}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm text-muted-foreground">Guest Parking</p>
+                          <p className="font-medium">{project.parking.guest_parking ? "Yes" : "No"}</p>
+                        </div>
+                        {project.parking.allotment && (
+                          <div>
+                            <p className="text-sm text-muted-foreground">Per Unit Allotment</p>
+                            <p className="font-medium">{project.parking.allotment}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </AnimateIn>
+                )}
+                  {/* Highlights */}
+                  {project.highlights?.length > 0 && (
+                <AnimateIn delay={0.05}>
+                  <div className="py-6 border-b border-border">
+                    <h3 className="font-display text-lg font-semibold mb-4">Project Highlights</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {project.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-3 py-2">
+                          <span className="text-primary mt-0.5">
+                            <DynamicIcon name={h.icon_name || "circle-check"} className="w-5 h-5" />
+                          </span>
+                          <span>{h.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </AnimateIn>
+              )}
             </section>
+
+             {/* ── SPECIFICATIONS + PARKING ── */}
+             {hasSpecs && (
+              <section id="specifications" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
+                {project.specifications && project.specifications.length > 0 && (
+                  <AnimateIn delay={0.2}>
+                    <div className="py-6 border-b border-border">
+                      <h3 className="font-display text-lg font-semibold mb-4">Specifications</h3>
+                      <div className="divide-y divide-border">
+                        {project.specifications.map((spec, i) => (
+                          <div key={i} className="flex items-center justify-between py-3">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <DynamicIcon name={spec.icon_name || "circle"} className="w-4 h-4" />
+                              <span>{spec.label}</span>
+                            </div>
+                            <span className="font-medium">{spec.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </AnimateIn>
+                )}
+
+              
+              </section>
+            )}
 
             {/* ── PRICING (Investment Insights) ── */}
             {hasInvestment && (
