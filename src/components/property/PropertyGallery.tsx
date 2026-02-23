@@ -42,7 +42,7 @@ export function PropertyGallery({ images, projectName }: PropertyGalleryProps) {
           <button
             key={image.id}
             onClick={() => openLightbox(index)}
-            className="relative aspect-square rounded-sm overflow-hidden bg-gray-100 hover:opacity-90 transition-opacity"
+            className="relative aspect-square rounded-sm overflow-hidden bg-muted hover:opacity-90 transition-opacity"
           >
             <img
               src={getImageUrl(image.image_path, "thumbnail")}

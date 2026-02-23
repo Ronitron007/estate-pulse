@@ -109,7 +109,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or</span>
+          <span className="bg-white px-2 text-muted-foreground">Or</span>
         </div>
       </div>
 
@@ -175,7 +175,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
                     className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                       level <= passwordStrength.level
                         ? strengthColors[passwordStrength.level]
-                        : "bg-gray-200"
+                        : "bg-border"
                     }`}
                   />
                 ))}
@@ -187,7 +187,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
                     : passwordStrength.level === 2
                     ? "text-yellow-600"
                     : passwordStrength.level === 3
-                    ? "text-blue-600"
+                    ? "text-primary"
                     : "text-green-600"
                 }`}
               >
@@ -216,7 +216,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           </button>
           <Label
             htmlFor="whatsapp"
-            className="text-sm text-gray-600 font-normal cursor-pointer"
+            className="text-sm text-muted-foreground font-normal cursor-pointer"
             onClick={() => setWhatsappOptIn(!whatsappOptIn)}
           >
             Receive WhatsApp updates about new properties and offers

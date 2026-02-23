@@ -42,7 +42,7 @@ async function PropertiesContent({ searchParams }: PageProps) {
     <>
       <PropertyFilters cities={cities} />
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-gray-500">{projects.length} properties found</p>
+        <p className="text-sm text-muted-foreground">{projects.length} properties found</p>
         <SortDropdown />
       </div>
       <PropertyGrid projects={projects} />
@@ -55,7 +55,7 @@ export default async function PropertiesPage(props: PageProps) {
     <div className="min-h-screen bg-background pt-16 md:pt-20">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
+          <h1 className="text-3xl font-bold text-foreground">Properties</h1>
           <Suspense fallback={<div className="w-24 h-9 bg-muted rounded-sm animate-pulse" />}>
             <MapListToggle currentView="list" />
           </Suspense>

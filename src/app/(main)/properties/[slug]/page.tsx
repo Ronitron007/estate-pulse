@@ -83,7 +83,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   const statusColors = {
     upcoming: "bg-blue-100 text-blue-800",
     ongoing: "bg-green-100 text-green-800",
-    completed: "bg-gray-100 text-gray-800",
+    completed: "bg-muted text-muted-foreground",
   };
 
   // Build section nav tabs conditionally
@@ -119,7 +119,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
             <Building2 className="w-24 h-24" />
           </div>
         )}

@@ -12,7 +12,7 @@ export function PriceDisplay({
   priceOnRequest,
 }: PriceDisplayProps) {
   return (
-    <span className="text-lg font-semibold text-gray-900">
+    <span className="text-lg font-semibold text-foreground">
       {formatPriceRange(priceMin, priceMax, priceOnRequest)}
     </span>
   );

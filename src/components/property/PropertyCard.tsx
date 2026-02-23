@@ -40,7 +40,7 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
   const statusColors: Record<string, string> = {
     upcoming: "bg-blue-50 text-blue-700 border-blue-200",
     ongoing: "bg-green-50 text-green-700 border-green-200",
-    completed: "bg-gray-50 text-gray-700 border-gray-200",
+    completed: "bg-muted text-muted-foreground border-border",
   };
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
@@ -83,7 +83,7 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
         >
           <Heart
             className={`w-4 h-4 transition-colors duration-200 ${
-              isFavorited ? "fill-red-500 text-red-500" : "text-gray-600"
+              isFavorited ? "fill-red-500 text-red-500" : "text-muted-foreground"
             }`}
           />
         </button>

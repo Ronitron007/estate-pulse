@@ -17,8 +17,8 @@ export function LocationMap({ lat, lng, propertyType, zoom = 15, className }: Lo
 
   if (!apiKey) {
     return (
-      <div className={`flex items-center justify-center bg-gray-100 rounded-sm ${className}`}>
-        <p className="text-gray-500 text-sm">Map unavailable</p>
+      <div className={`flex items-center justify-center bg-muted rounded-sm ${className}`}>
+        <p className="text-muted-foreground text-sm">Map unavailable</p>
       </div>
     );
   }

@@ -55,7 +55,7 @@ export function MapWithUserLocation({ projects, defaultCenter }: MapWithUserLoca
       <div className="p-4 bg-white border-b flex items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold">Map View</h1>
-          <p className="text-sm text-gray-500">{projects.length} properties</p>
+          <p className="text-sm text-muted-foreground">{projects.length} properties</p>
         </div>
         <div className="flex items-center gap-4">
           <LocateMeButton
