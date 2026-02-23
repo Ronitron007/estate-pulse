@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background — dark overlay, gradient serves as placeholder until a real hero image is added */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--charcoal)] via-[hsl(220,20%,15%)] to-[hsl(220,20%,8%)]" />
+      <div className="absolute inset-0 bg-[var(--charcoal)]" />
 
       <div className="container mx-auto px-4 relative z-10 py-32">
         <motion.div
@@ -17,8 +17,8 @@ export function Hero() {
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm px-4 py-1.5 mb-6">
+            <span className="w-2 h-2 bg-primary rounded-full" />
             <span className="text-white/80 text-xs font-medium tracking-wide uppercase">
               Chandigarh Tricity&apos;s Trusted Platform
             </span>
@@ -26,7 +26,7 @@ export function Hero() {
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
             Find Verified Homes in{' '}
-            <span className="text-gradient-gold">Chandigarh Tricity</span>
+            <span className="text-primary">Chandigarh Tricity</span>
           </h1>
 
           <p className="text-lg md:text-xl text-white/70 max-w-xl mb-8 font-light leading-relaxed">
@@ -38,7 +38,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/properties"
-              className="bg-gradient-gold text-white px-8 py-4 rounded-sm font-semibold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-gold"
+              className="bg-primary text-white px-8 py-4 rounded-sm font-semibold text-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
             >
               View Properties <ArrowRight className="w-4 h-4" />
             </Link>

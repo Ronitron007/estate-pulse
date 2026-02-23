@@ -21,7 +21,7 @@ export function VirtualTourSection() {
             <p className="text-primary text-sm font-semibold tracking-wider uppercase mb-2">Immersive Experience</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-6">
               Walk Through Properties<br />
-              <span className="text-gradient-gold">From Your Couch</span>
+              <span className="text-primary">From Your Couch</span>
             </h2>
             <p className="text-white/60 leading-relaxed mb-8">
               Our Matterport-powered 3D walkthroughs let you explore every room,
@@ -36,7 +36,7 @@ export function VirtualTourSection() {
                 'Available 24/7 on any device',
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-gradient-gold rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 bg-primary flex items-center justify-center flex-shrink-0">
                     <ArrowRight className="w-3 h-3 text-white" />
                   </div>
                   <span className="text-white/70 text-sm">{item}</span>
@@ -45,7 +45,7 @@ export function VirtualTourSection() {
             </div>
             <Link
               href="/properties"
-              className="inline-flex items-center gap-2 bg-gradient-gold text-white px-6 py-3 rounded-sm font-semibold text-sm hover:opacity-90 transition-opacity shadow-gold"
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-sm font-semibold text-sm hover:bg-primary/90 transition-colors"
             >
               Explore 3D Tours <Box className="w-4 h-4" />
             </Link>
@@ -56,13 +56,12 @@ export function VirtualTourSection() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
           >
-            <div className="aspect-video bg-charcoal-light rounded-lg border border-white/10 flex items-center justify-center relative overflow-hidden">
+            <div className="aspect-video bg-charcoal-light border border-white/10 flex items-center justify-center relative overflow-hidden">
               <div className="text-center">
                 <Box className="w-16 h-16 text-primary/40 mx-auto mb-4" />
                 <p className="text-white/40 text-sm">3D Tour Preview</p>
                 <p className="text-white/20 text-xs mt-1">Matterport Integration Ready</p>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent" />
             </div>
           </motion.div>
         </div>

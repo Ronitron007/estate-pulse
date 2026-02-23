@@ -30,14 +30,14 @@ export function TestimonialsSection() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">What Our Clients Say</h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="max-w-2xl mx-auto divide-y divide-border">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.id}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="bg-card p-6 rounded-lg shadow-card border border-border"
+              className="py-6"
             >
               <Quote className="w-8 h-8 text-primary/30 mb-3" />
               <p className="text-sm text-card-foreground leading-relaxed mb-4">{t.text}</p>
