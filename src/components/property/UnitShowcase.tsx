@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, BedDouble, Bath, Building2, Layers, Maximize } from "lucide-react";
+import { BedDouble, Bath, Building2, Layers, Maximize } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { FloorPlanLightbox } from "./FloorPlanLightbox";
 import { formatArea, formatPriceRange } from "@/lib/format";
 import { getImageUrl } from "@/lib/image-urls";
@@ -15,10 +14,18 @@ interface UnitShowcaseProps {
   towers?: Tower[];
 }
 
-function getConfigLabel(config: Configuration): string {
-  const name = config.config_name || (config.bedrooms ? `${config.bedrooms} BHK` : "Unit");
-  if (config.tower?.name) return `${name} — ${config.tower.name}`;
-  return name;
+interface ConfigGroup {
+  key: string;
+  label: string;
+  configs: Configuration[];
+}
+
+function getGroupKey(config: Configuration): string {
+  return config.config_name || (config.bedrooms ? `${config.bedrooms} BHK` : "Unit");
+}
+
+function resolveTower(config: Configuration, towers?: Tower[]): Tower | undefined {
+  return config.tower || (config.tower_id ? towers?.find((t) => t.id === config.tower_id) : undefined);
 }
 
 const slideVariants = {
@@ -34,52 +41,76 @@ const slideVariants = {
 };
 
 export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Group configs by type (bedrooms + config_name)
+  const groups = useMemo(() => {
+    const map = new Map<string, Configuration[]>();
+    for (const c of configurations) {
+      const key = getGroupKey(c);
+      const existing = map.get(key);
+      if (existing) existing.push(c);
+      else map.set(key, [c]);
+    }
+    return Array.from(map.entries()).map(([key, configs]): ConfigGroup => ({
+      key,
+      label: key,
+      configs,
+    }));
+  }, [configurations]);
+
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+  const [activeTowerIndex, setActiveTowerIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const pillsRef = useRef<HTMLDivElement>(null);
 
-  const config = configurations[activeIndex];
-  const tower = config?.tower || (config?.tower_id ? towers?.find((t) => t.id === config.tower_id) : undefined);
-  const showNav = configurations.length > 1;
+  const group = groups[activeGroupIndex];
+  const config = group?.configs[activeTowerIndex];
+  const tower = config ? resolveTower(config, towers) : undefined;
+  const showGroupNav = groups.length > 1;
+  const showTowerNav = group?.configs.length > 1;
 
-  const goTo = useCallback(
+  // Reset tower index when switching config groups
+  useEffect(() => {
+    setActiveTowerIndex(0);
+  }, [activeGroupIndex]);
+
+  const goToGroup = useCallback(
     (index: number) => {
-      setDirection(index > activeIndex ? 1 : -1);
-      setActiveIndex(index);
+      setDirection(index > activeGroupIndex ? 1 : -1);
+      setActiveGroupIndex(index);
     },
-    [activeIndex]
+    [activeGroupIndex]
   );
 
-  const goNext = useCallback(() => {
-    if (activeIndex < configurations.length - 1) goTo(activeIndex + 1);
-  }, [activeIndex, configurations.length, goTo]);
+  const goNextGroup = useCallback(() => {
+    if (activeGroupIndex < groups.length - 1) goToGroup(activeGroupIndex + 1);
+  }, [activeGroupIndex, groups.length, goToGroup]);
 
-  const goPrev = useCallback(() => {
-    if (activeIndex > 0) goTo(activeIndex - 1);
-  }, [activeIndex, goTo]);
+  const goPrevGroup = useCallback(() => {
+    if (activeGroupIndex > 0) goToGroup(activeGroupIndex - 1);
+  }, [activeGroupIndex, goToGroup]);
 
-  // Keyboard navigation (guarded against input focus)
+  // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNextGroup();
+      if (e.key === "ArrowLeft") goPrevGroup();
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [goNext, goPrev]);
+  }, [goNextGroup, goPrevGroup]);
 
   // Auto-scroll active pill into view
   useEffect(() => {
     if (!pillsRef.current) return;
-    const activePill = pillsRef.current.children[activeIndex] as HTMLElement;
+    const activePill = pillsRef.current.children[activeGroupIndex] as HTMLElement;
     if (activePill) {
       activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
-  }, [activeIndex]);
+  }, [activeGroupIndex]);
 
-  if (!configurations.length) return null;
+  if (!configurations.length || !config) return null;
 
   const floorPlanSrc = config.floor_plan_cloudinary_id
     ? getImageUrl(config.floor_plan_cloudinary_id, "card")
@@ -88,13 +119,15 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
     ? getImageUrl(config.floor_plan_cloudinary_id, "hero")
     : null;
 
-  // Collect specs that have data
+  // Collect specs
   const specs: { label: string; value: string }[] = [];
   if (config.carpet_area_sqft) specs.push({ label: "Carpet", value: formatArea(config.carpet_area_sqft) });
   if (config.super_area_sqft) specs.push({ label: "Super Area", value: formatArea(config.super_area_sqft) });
   if (config.built_up_area_sqft) specs.push({ label: "Built-up", value: formatArea(config.built_up_area_sqft) });
   if (config.balcony_area_sqft) specs.push({ label: "Balcony", value: formatArea(config.balcony_area_sqft) });
   if (config.price) specs.push({ label: "Price", value: `₹${formatPriceRange(config.price, null, false)}` });
+
+  const configLabel = group.label;
 
   return (
     <Card>
@@ -105,87 +138,48 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Pill Navigation */}
-        {showNav && (
+        {/* Config Type Pills */}
+        {showGroupNav && (
           <div className="relative">
             <div className="absolute left-0 top-0 bottom-2 w-4 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 top-0 bottom-2 w-4 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none" />
             <div ref={pillsRef} className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-1" role="tablist" aria-label="Unit configurations">
-              {configurations.map((c, i) => (
+              {groups.map((g, i) => (
                 <button
-                  key={c.id}
+                  key={g.key}
                   role="tab"
-                  aria-selected={i === activeIndex}
-                  aria-controls={`unit-panel-${c.id}`}
-                  onClick={() => goTo(i)}
+                  aria-selected={i === activeGroupIndex}
+                  onClick={() => goToGroup(i)}
                   className={`shrink-0 rounded-sm px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                    i === activeIndex
+                    i === activeGroupIndex
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
-                  {getConfigLabel(c)}
+                  {g.label}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Carousel */}
+        {/* Carousel content */}
         <div className="relative overflow-hidden rounded-sm">
-          {/* Arrow buttons (fade instead of mount/unmount) */}
-          {showNav && (
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label="Previous configuration"
-              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-card/80 hover:bg-card shadow-md rounded-full h-9 w-9 p-0 transition-opacity duration-200 ${
-                activeIndex === 0 ? "opacity-0 pointer-events-none" : "opacity-100"
-              }`}
-              onClick={goPrev}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-          )}
-          {showNav && (
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label="Next configuration"
-              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-card/80 hover:bg-card shadow-md rounded-full h-9 w-9 p-0 transition-opacity duration-200 ${
-                activeIndex === configurations.length - 1 ? "opacity-0 pointer-events-none" : "opacity-100"
-              }`}
-              onClick={goNext}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          )}
-
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
-              key={config.id}
-              id={`unit-panel-${config.id}`}
+              key={`${group.key}-${activeTowerIndex}`}
               role="tabpanel"
-              aria-label={getConfigLabel(config)}
+              aria-label={configLabel}
               custom={direction}
               variants={slideVariants}
               initial="enter"
               animate="center"
               exit="exit"
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              drag={showNav ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.18}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -50) goNext();
-                else if (info.offset.x > 50) goPrev();
-              }}
             >
               {/* Header bar */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4">
-                <h4 className="text-base font-semibold">
-                  {config.config_name || (config.bedrooms ? `${config.bedrooms} BHK` : "Unit")}
-                </h4>
+                <h4 className="text-base font-semibold">{configLabel}</h4>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   {config.bedrooms != null && (
                     <span className="flex items-center gap-1">
@@ -201,27 +195,57 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
                     <span>Floors {config.floor_from}–{config.floor_to}</span>
                   )}
                 </div>
-                {tower && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              </div>
+
+              {/* Tower Sub-Tabs */}
+              {showTowerNav && (
+                <div className="flex flex-wrap gap-2 mb-4" role="tablist" aria-label="Available towers">
+                  {group.configs.map((c, i) => {
+                    const t = resolveTower(c, towers);
+                    const label = t?.name || `Tower ${i + 1}`;
+                    return (
+                      <button
+                        key={c.id}
+                        role="tab"
+                        aria-selected={i === activeTowerIndex}
+                        onClick={() => setActiveTowerIndex(i)}
+                        className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1 text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring ${
+                          i === activeTowerIndex
+                            ? "bg-primary/10 text-primary border border-primary/20"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent"
+                        }`}
+                      >
+                        <Building2 className="w-3 h-3" />
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Single tower badge (when only one tower) */}
+              {!showTowerNav && tower && (
+                <div className="mb-4">
+                  <span className="inline-flex items-center gap-1 rounded-sm bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                     <Building2 className="w-3.5 h-3.5" />
                     {tower.name}
                     {tower.floor_from != null && tower.floor_to != null && (
                       <span className="text-primary/70 ml-1">· {tower.floor_to - tower.floor_from + 1} floors</span>
                     )}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Floor Plan Image */}
               {floorPlanSrc ? (
                 <button
                   onClick={() => setLightboxOpen(true)}
                   className="relative w-full group cursor-zoom-in"
-                  aria-label={`View full-size floor plan for ${getConfigLabel(config)}`}
+                  aria-label={`View full-size floor plan for ${configLabel}`}
                 >
                   <img
                     src={floorPlanSrc}
-                    alt={`Floor plan — ${getConfigLabel(config)}`}
+                    alt={`Floor plan — ${configLabel}${tower ? ` (${tower.name})` : ""}`}
                     className="w-full rounded-sm object-contain bg-muted border border-border"
                   />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-sm">
@@ -264,10 +288,10 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
           </AnimatePresence>
         </div>
 
-        {/* Slide counter */}
-        {showNav && (
+        {/* Group counter */}
+        {showGroupNav && (
           <p className="text-center text-xs text-muted-foreground">
-            {activeIndex + 1} / {configurations.length}
+            {activeGroupIndex + 1} / {groups.length}
           </p>
         )}
       </CardContent>
@@ -276,7 +300,7 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
       {floorPlanHero && (
         <FloorPlanLightbox
           src={floorPlanHero}
-          alt={`Floor plan — ${getConfigLabel(config)}`}
+          alt={`Floor plan — ${configLabel}${tower ? ` (${tower.name})` : ""}`}
           open={lightboxOpen}
           onClose={() => setLightboxOpen(false)}
         />
