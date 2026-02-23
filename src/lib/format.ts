@@ -5,14 +5,14 @@ export function formatPrice(price: number | null): string {
   const amount = price / 100;
 
   if (amount >= 10000000) {
-    return `${(amount / 10000000).toFixed(2)} Cr`;
+    return `₹${(amount / 10000000).toFixed(2)} Cr`;
   } else if (amount >= 100000) {
-    return `${(amount / 100000).toFixed(2)} L`;
+    return `₹${(amount / 100000).toFixed(2)} L`;
   } else if (amount >= 1000) {
-    return `${(amount / 1000).toFixed(0)}K`;
+    return `₹${(amount / 1000).toFixed(0)}K`;
   }
 
-  return `${amount.toLocaleString("en-IN")}`;
+  return `₹${amount.toLocaleString("en-IN")}`;
 }
 
 export function formatPriceRange(min: number | null, max: number | null, onRequest: boolean): string {

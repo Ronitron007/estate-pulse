@@ -69,7 +69,7 @@ export function UnitShowcase({ configurations }: UnitShowcaseProps) {
   if (config.super_area_sqft) specs.push({ label: "Super Area", value: formatArea(config.super_area_sqft) });
   if (config.built_up_area_sqft) specs.push({ label: "Built-up", value: formatArea(config.built_up_area_sqft) });
   if (config.balcony_area_sqft) specs.push({ label: "Balcony", value: formatArea(config.balcony_area_sqft) });
-  if (config.price) specs.push({ label: "Price", value: `₹${formatPriceRange(config.price, null, false)}` });
+  if (config.price) specs.push({ label: "Price", value: formatPriceRange(config.price, null, false) });
 
   const configTowers: ConfigTower[] = config.towers || [];
 
@@ -140,7 +140,7 @@ export function UnitShowcase({ configurations }: UnitShowcaseProps) {
                 <Building2 className="w-3.5 h-3.5" />
                 {ct.name}
                 {ct.floor_from != null && ct.floor_to != null && (
-                  <span className="text-primary/70 ml-0.5">· Fl {ct.floor_from}–{ct.floor_to}</span>
+                  <span className="text-primary/70 ml-0.5">· Floor {ct.floor_from} to {ct.floor_to}</span>
                 )}
               </span>
             ))}

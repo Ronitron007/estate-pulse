@@ -111,10 +111,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background pt-16 md:pt-20">
-      {/* Hero Image */}
-      <div id="hero" className="relative h-[500px] bg-muted">
+      {/* Hero Image — clean, no overlay text */}
+      <div id="hero" className="relative h-[400px] md:h-[500px] bg-muted">
         {primaryImage ? (
-          <Image
+          <img
             src={getImageUrl(primaryImage.image_path, "hero")}
             alt={primaryImage.alt_text || project.name}
             className="w-full h-full object-cover"
@@ -124,18 +124,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             <Building2 className="w-24 h-24" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="max-w-7xl mx-auto">
-            <span className={`inline-block px-3 py-1 text-sm font-medium rounded mb-3 ${statusColors[project.status]}`}>
-              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-            </span>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{project.name}</h1>
-            {project.builder && (
-              <p className="text-white/80">by {project.builder.name}</p>
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Section Nav — sticky, full-width */}
@@ -143,13 +131,26 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
           <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <Link href="/properties" className="hover:text-foreground transition-colors">Properties</Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <span className="text-foreground">{project.name}</span>
         </nav>
+
+        {/* Title block */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <span className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded ${statusColors[project.status]}`}>
+              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+            </span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">{project.name}</h1>
+          {project.builder && (
+            <p className="text-muted-foreground">by {project.builder.name}</p>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
