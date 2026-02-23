@@ -44,10 +44,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
         showSolid
-          ? "bg-card/95 backdrop-blur-md shadow-card border-b border-border"
-          : "bg-transparent"
+          ? "bg-card/95 backdrop-blur-md border-b border-border"
+          : "bg-transparent border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
@@ -97,7 +97,7 @@ export function Header() {
           </a>
 
           {loading ? (
-            <div className="w-20 h-8 bg-muted rounded animate-pulse" />
+            <div className="w-20 h-8 bg-muted rounded-sm animate-pulse" />
           ) : user ? (
             <>
               <Link
@@ -126,7 +126,7 @@ export function Header() {
               </Link>
               <Link
                 href="/properties"
-                className="bg-gradient-gold text-white px-5 py-2 rounded-sm text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="bg-primary text-white px-5 py-2 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
                 View Properties
               </Link>

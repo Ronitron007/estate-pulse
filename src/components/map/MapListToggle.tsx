@@ -16,7 +16,7 @@ export function MapListToggle({ currentView }: MapListToggleProps) {
   const params = new URLSearchParams(searchParams.toString());
 
   return (
-    <div className="inline-flex rounded-lg border bg-white p-1 shadow-sm">
+    <div className="inline-flex rounded-sm border bg-background p-1 shadow-xs">
       <Link href={`/properties?${params.toString()}`}>
         <Button
           variant={currentView === "list" ? "default" : "ghost"}
@@ -24,7 +24,7 @@ export function MapListToggle({ currentView }: MapListToggleProps) {
           className={`flex items-center gap-2 rounded-md transition-all duration-200 ${
             currentView === "list"
               ? "shadow-sm"
-              : "hover:bg-gray-100"
+              : "hover:bg-muted"
           }`}
         >
           <List
@@ -42,7 +42,7 @@ export function MapListToggle({ currentView }: MapListToggleProps) {
           className={`flex items-center gap-2 rounded-md transition-all duration-200 ${
             currentView === "map"
               ? "shadow-sm"
-              : "hover:bg-gray-100"
+              : "hover:bg-muted"
           }`}
         >
           <Map
@@ -70,7 +70,7 @@ export function MapListToggleAnimated({ currentView }: MapListToggleProps) {
   const params = new URLSearchParams(searchParams.toString());
 
   return (
-    <div className="relative inline-flex rounded-full border bg-gray-100 p-1">
+    <div className="relative inline-flex rounded-full border bg-muted p-1">
       {/* Sliding background pill */}
       <div
         className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-out ${
@@ -81,7 +81,7 @@ export function MapListToggleAnimated({ currentView }: MapListToggleProps) {
       <Link
         href={`/properties?${params.toString()}`}
         className={`relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-          currentView === "list" ? "text-gray-900" : "text-gray-500 hover:text-gray-700"
+          currentView === "list" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
         }`}
       >
         <List className="w-4 h-4" />
@@ -91,7 +91,7 @@ export function MapListToggleAnimated({ currentView }: MapListToggleProps) {
       <Link
         href={`/map?${params.toString()}`}
         className={`relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-          currentView === "map" ? "text-gray-900" : "text-gray-500 hover:text-gray-700"
+          currentView === "map" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
         }`}
       >
         <Map className="w-4 h-4" />

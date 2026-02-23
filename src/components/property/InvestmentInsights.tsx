@@ -11,7 +11,7 @@ export function InvestmentInsights({ data }: { data: InvestmentData }) {
   if (!data || !Object.values(data).some(Boolean)) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
+    <div className="py-6 border-b border-border">
       <h3 className="font-display text-lg font-semibold mb-4">Investment Insights</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         {data.rentalYieldPct != null && (

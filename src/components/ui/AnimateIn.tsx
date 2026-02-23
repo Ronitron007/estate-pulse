@@ -16,8 +16,8 @@ export function AnimateIn({ children, delay = 0, direction = 'up', className }: 
 
   const initial = {
     opacity: 0,
-    y: direction === 'up' ? 20 : 0,
-    x: direction === 'left' ? -24 : direction === 'right' ? 24 : 0,
+    y: direction === 'up' ? 8 : 0,
+    x: direction === 'left' ? -12 : direction === 'right' ? 12 : 0,
   };
 
   return (
@@ -25,7 +25,7 @@ export function AnimateIn({ children, delay = 0, direction = 'up', className }: 
       ref={ref}
       initial={initial}
       animate={inView ? { opacity: 1, y: 0, x: 0 } : initial}
-      transition={{ duration: 0.5, delay, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.3, delay, ease: [0.4, 0, 0.2, 1] }}
       className={className}
     >
       {children}

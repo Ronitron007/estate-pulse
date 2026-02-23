@@ -27,8 +27,8 @@ export default function MapPage() {
     <div className="pt-16 md:pt-20">
       <Suspense
         fallback={
-          <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500">Loading map...</p>
+          <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-muted">
+            <p className="text-muted-foreground">Loading map...</p>
           </div>
         }
       >

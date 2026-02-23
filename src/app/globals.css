@@ -47,94 +47,86 @@
   --radius-4xl: calc(var(--radius) + 16px);
 
   /* Custom animation timings */
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-snap: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.125rem;
   --background: hsl(40 20% 98%);
-  --foreground: hsl(220 20% 10%);
+  --foreground: hsl(240 20% 15%);
   --card: hsl(40 20% 98%);
-  --card-foreground: hsl(220 20% 10%);
+  --card-foreground: hsl(240 20% 15%);
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(220 20% 10%);
-  --primary: hsl(40 60% 45%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(220 15% 95%);
-  --secondary-foreground: hsl(220 20% 10%);
-  --muted: hsl(40 10% 94%);
-  --muted-foreground: hsl(220 10% 45%);
-  --accent: hsl(40 70% 50%);
-  --accent-foreground: hsl(0 0% 100%);
+  --popover-foreground: hsl(240 20% 15%);
+  --primary: hsl(240 20% 15%);
+  --primary-foreground: hsl(40 20% 98%);
+  --secondary: hsl(40 15% 93%);
+  --secondary-foreground: hsl(240 20% 15%);
+  --muted: hsl(40 10% 93%);
+  --muted-foreground: hsl(240 10% 45%);
+  --accent: hsl(40 50% 50%);
+  --accent-foreground: hsl(240 20% 15%);
   --destructive: hsl(0 84.2% 60.2%);
-  --border: hsl(40 15% 88%);
-  --input: hsl(40 15% 88%);
-  --ring: hsl(40 60% 45%);
+  --border: hsl(40 12% 87%);
+  --input: hsl(40 12% 87%);
+  --ring: hsl(240 20% 15%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: hsl(40 20% 97%);
-  --sidebar-foreground: hsl(220 20% 10%);
-  --sidebar-primary: hsl(40 60% 45%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(40 10% 94%);
-  --sidebar-accent-foreground: hsl(220 20% 10%);
-  --sidebar-border: hsl(40 15% 88%);
-  --sidebar-ring: hsl(40 60% 45%);
+  --sidebar-foreground: hsl(240 20% 15%);
+  --sidebar-primary: hsl(240 20% 15%);
+  --sidebar-primary-foreground: hsl(40 20% 98%);
+  --sidebar-accent: hsl(40 10% 93%);
+  --sidebar-accent-foreground: hsl(240 20% 15%);
+  --sidebar-border: hsl(40 12% 87%);
+  --sidebar-ring: hsl(240 20% 15%);
 
   /* Custom tokens */
-  --gold: hsl(40 60% 45%);
-  --gold-light: hsl(40 50% 70%);
-  --gold-dark: hsl(40 70% 30%);
-  --charcoal: hsl(220 20% 12%);
-  --charcoal-light: hsl(220 15% 25%);
-  --warm-white: hsl(40 20% 98%);
+  --midnight: hsl(240 20% 15%);
+  --midnight-light: hsl(240 15% 25%);
+  --gold-accent: hsl(40 50% 50%);
+  --gold-accent-light: hsl(40 40% 70%);
+  --ivory: hsl(40 20% 98%);
   --warm-gray: hsl(40 10% 60%);
 
-  --gradient-gold: linear-gradient(135deg, hsl(40 60% 45%), hsl(40 70% 55%));
-  --gradient-dark: linear-gradient(135deg, hsl(220 20% 8%), hsl(220 20% 15%));
-
-  --shadow-card: 0 4px 24px -4px hsl(220 20% 10% / 0.08);
-  --shadow-card-hover: 0 12px 40px -8px hsl(220 20% 10% / 0.15);
-  --shadow-gold: 0 4px 20px -4px hsl(40 60% 45% / 0.3);
+  --shadow-subtle: 0 1px 2px hsl(240 20% 15% / 0.06);
 }
 
 .dark {
-  --background: hsl(220 20% 8%);
-  --foreground: hsl(40 10% 95%);
-  --card: hsl(220 20% 12%);
-  --card-foreground: hsl(40 10% 95%);
-  --popover: hsl(220 20% 12%);
-  --popover-foreground: hsl(40 10% 95%);
-  --primary: hsl(40 60% 50%);
-  --primary-foreground: hsl(220 20% 8%);
-  --secondary: hsl(220 20% 15%);
-  --secondary-foreground: hsl(40 10% 95%);
-  --muted: hsl(220 20% 12%);
-  --muted-foreground: hsl(220 10% 60%);
-  --accent: hsl(40 70% 55%);
-  --accent-foreground: hsl(220 20% 8%);
+  --background: hsl(240 20% 7%);
+  --foreground: hsl(40 15% 93%);
+  --card: hsl(240 18% 11%);
+  --card-foreground: hsl(40 15% 93%);
+  --popover: hsl(240 18% 11%);
+  --popover-foreground: hsl(40 15% 93%);
+  --primary: hsl(40 50% 55%);
+  --primary-foreground: hsl(240 20% 7%);
+  --secondary: hsl(240 15% 15%);
+  --secondary-foreground: hsl(40 15% 93%);
+  --muted: hsl(240 15% 14%);
+  --muted-foreground: hsl(240 10% 55%);
+  --accent: hsl(40 50% 55%);
+  --accent-foreground: hsl(240 20% 7%);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: hsl(220 15% 20%);
-  --input: hsl(220 15% 20%);
-  --ring: hsl(40 60% 50%);
+  --border: hsl(240 12% 20%);
+  --input: hsl(240 12% 20%);
+  --ring: hsl(40 50% 55%);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: hsl(220 20% 10%);
-  --sidebar-foreground: hsl(40 10% 95%);
-  --sidebar-primary: hsl(40 60% 50%);
-  --sidebar-primary-foreground: hsl(40 10% 95%);
-  --sidebar-accent: hsl(220 20% 15%);
-  --sidebar-accent-foreground: hsl(40 10% 95%);
-  --sidebar-border: hsl(220 15% 20%);
-  --sidebar-ring: hsl(40 60% 50%);
+  --sidebar: hsl(240 20% 9%);
+  --sidebar-foreground: hsl(40 15% 93%);
+  --sidebar-primary: hsl(40 50% 55%);
+  --sidebar-primary-foreground: hsl(40 15% 93%);
+  --sidebar-accent: hsl(240 15% 15%);
+  --sidebar-accent-foreground: hsl(40 15% 93%);
+  --sidebar-border: hsl(240 12% 20%);
+  --sidebar-ring: hsl(40 50% 55%);
 }
 
 @layer base {
@@ -151,39 +143,20 @@
   font-family: 'Playfair Display', serif;
 }
 
-.bg-gradient-gold {
-  background: var(--gradient-gold);
-}
-
 .text-gold {
-  color: var(--gold);
+  color: var(--gold-accent);
 }
 
-.text-gradient-gold {
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.bg-midnight {
+  background-color: var(--midnight);
 }
 
-.bg-charcoal {
-  background-color: var(--charcoal);
+.bg-midnight-light {
+  background-color: var(--midnight-light);
 }
 
-.bg-charcoal-light {
-  background-color: var(--charcoal-light);
-}
-
-.shadow-card {
-  box-shadow: var(--shadow-card);
-}
-
-.shadow-card-hover {
-  box-shadow: var(--shadow-card-hover);
-}
-
-.shadow-gold {
-  box-shadow: var(--shadow-gold);
+.shadow-subtle {
+  box-shadow: var(--shadow-subtle);
 }
 
 /* ========================================
@@ -221,74 +194,6 @@
   background-size: 200% 100%;
 }
 
-/* Card lift animation */
-@keyframes card-lift {
-  0% {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 1px 3px oklch(0 0 0 / 0.1);
-  }
-  100% {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 20px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1);
-  }
-}
-
-/* Gentle pulse for attention */
-@keyframes gentle-pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.animate-gentle-pulse {
-  animation: gentle-pulse 2s ease-in-out infinite;
-}
-
-/* Heart beat animation for favorites */
-@keyframes heart-beat {
-  0% {
-    transform: scale(1);
-  }
-  15% {
-    transform: scale(1.25);
-  }
-  30% {
-    transform: scale(1);
-  }
-  45% {
-    transform: scale(1.15);
-  }
-  60% {
-    transform: scale(1);
-  }
-}
-
-.animate-heart-beat {
-  animation: heart-beat 0.6s ease-in-out;
-}
-
-/* Bounce in animation for grid items */
-@keyframes bounce-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  60% {
-    transform: scale(1.02) translateY(-2px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.animate-bounce-in {
-  animation: bounce-in 0.5s var(--ease-bounce) forwards;
-}
-
 /* Slide in from right for drawer */
 @keyframes slide-in-right {
   0% {
@@ -319,6 +224,22 @@
   animation: fade-in 0.2s ease-out forwards;
 }
 
+/* Slide up for content reveals */
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s var(--ease-smooth) forwards;
+}
+
 /* Scale in for modals */
 @keyframes scale-in {
   0% {
@@ -335,49 +256,6 @@
   animation: scale-in 0.25s var(--ease-bounce) forwards;
 }
 
-/* Wobble for errors */
-@keyframes wobble {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  15% {
-    transform: translateX(-4px);
-  }
-  30% {
-    transform: translateX(4px);
-  }
-  45% {
-    transform: translateX(-4px);
-  }
-  60% {
-    transform: translateX(4px);
-  }
-  75% {
-    transform: translateX(-2px);
-  }
-  90% {
-    transform: translateX(2px);
-  }
-}
-
-.animate-wobble {
-  animation: wobble 0.5s ease-in-out;
-}
-
-/* Subtle float for icons */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
 /* Rotate for loading spinner */
 @keyframes spin-smooth {
   0% {
@@ -392,29 +270,6 @@
   animation: spin-smooth 1s linear infinite;
 }
 
-/* Toggle switch slide */
-@keyframes toggle-slide {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(2px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* Image zoom on hover */
-@keyframes img-zoom {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
-}
-
 /* Stagger delay utility classes */
 .stagger-1 { animation-delay: 0.05s; }
 .stagger-2 { animation-delay: 0.1s; }
@@ -425,15 +280,6 @@
 .stagger-7 { animation-delay: 0.35s; }
 .stagger-8 { animation-delay: 0.4s; }
 .stagger-9 { animation-delay: 0.45s; }
-
-/* Button press effect */
-.btn-press {
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.btn-press:active {
-  transform: scale(0.97);
-}
 
 /* Link underline animation */
 .link-underline {
@@ -455,23 +301,12 @@
   width: 100%;
 }
 
-/* Input focus glow */
-.input-glow {
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+/* Card hover subtle */
+.card-hover-subtle {
+  transition: background-color 0.2s var(--ease-smooth);
 }
-
-.input-glow:focus {
-  box-shadow: 0 0 0 3px oklch(0.6 0.15 250 / 0.2);
-}
-
-/* Card hover lift */
-.card-hover-lift {
-  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
-}
-
-.card-hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1);
+.card-hover-subtle:hover {
+  background-color: hsl(40 10% 93% / 0.5);
 }
 
 /* Image container hover zoom */
@@ -484,44 +319,7 @@
 }
 
 .img-hover-zoom:hover img {
-  transform: scale(1.05);
-}
-
-/* Status badge pulse */
-.badge-pulse {
-  position: relative;
-}
-
-.badge-pulse::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: inherit;
-  opacity: 0;
-  z-index: -1;
-  animation: badge-pulse-ring 2s ease-out infinite;
-}
-
-@keyframes badge-pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-/* Checkbox tick animation */
-@keyframes check-tick {
-  0% {
-    stroke-dashoffset: 24;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+  transform: scale(1.03);
 }
 
 /* Nav link hover effect */
@@ -539,7 +337,7 @@
   height: 2px;
   background: currentColor;
   transition: width 0.3s var(--ease-smooth), left 0.3s var(--ease-smooth);
-  border-radius: 1px;
+  border-radius: 0;
 }
 
 .nav-link-hover:hover::before {
@@ -557,7 +355,7 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .dark .skeleton {
@@ -570,37 +368,14 @@
   background-size: 200% 100%;
 }
 
-/* Icon bounce on hover */
-.icon-bounce {
-  transition: transform 0.2s var(--ease-bounce);
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.icon-bounce:hover {
-  transform: translateY(-2px);
-}
-
-/* Gradient text shine */
-@keyframes text-shine {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-.text-shine {
-  background: linear-gradient(
-    90deg,
-    oklch(0.5 0.2 260) 0%,
-    oklch(0.6 0.15 200) 50%,
-    oklch(0.5 0.2 260) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: text-shine 3s linear infinite;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Hide scrollbar utility */
@@ -624,8 +399,6 @@
   }
 
   .animate-shimmer,
-  .animate-gentle-pulse,
-  .animate-float,
   .animate-spin-smooth {
     animation: none;
   }

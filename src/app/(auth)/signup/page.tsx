@@ -67,14 +67,14 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-6 h-6 text-green-600" />
             </div>
             <h2 className="text-xl font-semibold mb-2">Check your email</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               We&apos;ve sent a verification link to <strong>{email}</strong>
             </p>
             <Link href="/login">
@@ -87,7 +87,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href="/" className="flex items-center justify-center gap-2 mb-4">
@@ -99,7 +99,7 @@ export default function SignupPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-sm">
               {error}
             </div>
           )}
@@ -136,7 +136,7 @@ export default function SignupPage() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+              <span className="bg-white px-2 text-muted-foreground">Or continue with email</span>
             </div>
           </div>
 
@@ -198,7 +198,7 @@ export default function SignupPage() {
                 onChange={(e) => setWhatsappOptIn(e.target.checked)}
                 className="mt-1"
               />
-              <Label htmlFor="whatsapp" className="text-sm text-gray-600 font-normal">
+              <Label htmlFor="whatsapp" className="text-sm text-muted-foreground font-normal">
                 I agree to receive property updates and notifications via WhatsApp
               </Label>
             </div>
@@ -208,9 +208,9 @@ export default function SignupPage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
+            <Link href="/login" className="text-primary hover:underline">
               Sign in
             </Link>
           </p>

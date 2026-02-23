@@ -34,9 +34,9 @@ export function MarketInsights() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="bg-card p-6 rounded-lg shadow-card border border-border relative overflow-hidden"
+              className="py-6 relative"
             >
-              <span className="absolute top-4 right-4 text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded-full">
+              <span className="absolute top-0 right-0 text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded-sm border border-primary/20">
                 {card.badge}
               </span>
               <card.icon className="w-10 h-10 text-primary mb-4" />

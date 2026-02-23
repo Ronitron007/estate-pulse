@@ -130,6 +130,12 @@ export interface Project {
   towers?: Tower[];
 }
 
+export interface ConfigTower {
+  name: string;
+  floor_from?: number | null;
+  floor_to?: number | null;
+}
+
 export interface Configuration {
   id: string;
   project_id: string;
@@ -143,12 +149,8 @@ export interface Configuration {
   super_area_sqft: number | null;
   price: number | null;
   floor_plan_cloudinary_id: string | null;
-  tower_id: string | null;
-  floor_from: number | null;
-  floor_to: number | null;
   type_label: string | null;
-  // Joined relation
-  tower?: Tower;
+  towers: ConfigTower[];
 }
 
 export interface ProjectImage {

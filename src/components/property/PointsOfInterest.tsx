@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import type { PointOfInterest } from "@/types/database";
 
@@ -26,44 +25,40 @@ export function PointsOfInterest({ pois }: PointsOfInterestProps) {
   const filtered = active ? pois.filter((p) => p.category === active) : pois;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="w-5 h-5" />
-          Nearby Places
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {categories.length > 1 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActive(cat)}
-                className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
-                  active === cat
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
-                }`}
-              >
-                {CATEGORY_LABELS[cat] || cat}
-              </button>
-            ))}
-          </div>
-        )}
+    <div className="py-6 border-b border-border">
+      <h3 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
+        <MapPin className="w-5 h-5" /> Nearby Places
+      </h3>
 
-        <div className="space-y-2">
-          {filtered.map((poi, i) => (
-            <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
-              <span className="text-gray-700">{poi.name}</span>
-              <span className="text-sm font-medium text-gray-500">
-                {poi.distance_value} {poi.distance_unit}
-              </span>
-            </div>
+      {categories.length > 1 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActive(cat)}
+              className={`px-3 py-1.5 text-sm rounded-sm border transition-colors ${
+                active === cat
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-muted-foreground border-border hover:border-foreground/30"
+              }`}
+            >
+              {CATEGORY_LABELS[cat] || cat}
+            </button>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      <div className="space-y-2">
+        {filtered.map((poi, i) => (
+          <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
+            <span className="text-foreground">{poi.name}</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {poi.distance_value} {poi.distance_unit}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

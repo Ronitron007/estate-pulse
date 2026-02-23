@@ -100,11 +100,11 @@ export function AuthModal({
             {view === "login" ? (
               <>
                 <LoginForm redirectTo={redirectTo} onSuccess={onClose} />
-                <p className="text-center text-sm text-gray-500 mt-6">
+                <p className="text-center text-sm text-muted-foreground mt-6">
                   Don&apos;t have an account?{" "}
                   <button
                     onClick={() => setView("signup")}
-                    className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200 hover:underline"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors duration-200 hover:underline"
                   >
                     Sign up
                   </button>
@@ -113,11 +113,11 @@ export function AuthModal({
             ) : (
               <>
                 <SignupForm onSuccess={onClose} />
-                <p className="text-center text-sm text-gray-500 mt-6">
+                <p className="text-center text-sm text-muted-foreground mt-6">
                   Already have an account?{" "}
                   <button
                     onClick={() => setView("login")}
-                    className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200 hover:underline"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors duration-200 hover:underline"
                   >
                     Sign in
                   </button>

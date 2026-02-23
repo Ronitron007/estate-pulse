@@ -39,11 +39,11 @@ export function PropertyFilters({ cities }: PropertyFiltersProps) {
   const hasFilters = currentCity || currentType || currentStatus || currentSearch;
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-6">
+    <div className="border-b border-border pb-4 mb-6">
       <div className="flex flex-col md:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search projects..."
             className="pl-10"
@@ -54,7 +54,7 @@ export function PropertyFilters({ cities }: PropertyFiltersProps) {
 
         {/* City filter */}
         <select
-          className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+          className="h-9 px-3 rounded-sm border border-input bg-background text-sm"
           value={currentCity}
           onChange={(e) => updateFilters("city", e.target.value)}
         >
@@ -68,7 +68,7 @@ export function PropertyFilters({ cities }: PropertyFiltersProps) {
 
         {/* Property type filter */}
         <select
-          className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+          className="h-9 px-3 rounded-sm border border-input bg-background text-sm"
           value={currentType}
           onChange={(e) => updateFilters("type", e.target.value)}
         >
@@ -82,7 +82,7 @@ export function PropertyFilters({ cities }: PropertyFiltersProps) {
 
         {/* Status filter */}
         <select
-          className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+          className="h-9 px-3 rounded-sm border border-input bg-background text-sm"
           value={currentStatus}
           onChange={(e) => updateFilters("status", e.target.value)}
         >

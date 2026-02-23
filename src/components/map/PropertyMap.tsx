@@ -17,8 +17,8 @@ export function PropertyMap({ projects, center, zoom = 12, userLocation }: Prope
 
   if (!apiKey) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <p className="text-gray-500">Google Maps API key not configured</p>
+      <div className="w-full h-full flex items-center justify-center bg-muted">
+        <p className="text-muted-foreground">Google Maps API key not configured</p>
       </div>
     );
   }

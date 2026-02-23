@@ -35,10 +35,10 @@ export function WhyChooseUs() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="bg-card p-6 rounded-lg shadow-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all group text-center"
+              className="text-center py-6"
             >
-              <div className="w-14 h-14 bg-gradient-gold rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <usp.icon className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <usp.icon className="w-7 h-7 text-primary" />
               </div>
               <h3 className="font-display text-lg font-semibold text-card-foreground mb-2">{usp.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{usp.desc}</p>

@@ -45,14 +45,14 @@ export function MarkerCluster({ projects }: MarkerClusterProps) {
           <div className="p-2 min-w-[200px]">
             <h3 className="font-semibold text-sm">{selectedProject.name}</h3>
             {selectedProject.property_type && (
-              <p className="text-xs text-gray-500 capitalize">{selectedProject.property_type}</p>
+              <p className="text-xs text-muted-foreground capitalize">{selectedProject.property_type}</p>
             )}
-            <p className="text-sm font-medium text-blue-600 mt-1">
+            <p className="text-sm font-medium text-primary mt-1">
               {formatPriceRange(selectedProject.price_min, selectedProject.price_max, false)}
             </p>
             <Link
               href={`/properties/${selectedProject.slug}`}
-              className="text-xs text-blue-600 hover:underline mt-2 block"
+              className="text-xs text-primary hover:underline mt-2 block"
             >
               View details
             </Link>

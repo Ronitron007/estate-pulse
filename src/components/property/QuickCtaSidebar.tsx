@@ -14,7 +14,7 @@ export function QuickCtaSidebar({ propertyTitle, price, specs, phone = '91771978
   const waMessage = encodeURIComponent(`Hi, I'm interested in ${propertyTitle}.`);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className="border-l border-border pl-6 space-y-4">
       {price && (
         <div>
           <p className="font-display text-2xl font-bold text-primary">{price}</p>
@@ -27,11 +27,11 @@ export function QuickCtaSidebar({ propertyTitle, price, specs, phone = '91771978
           href={`https://wa.me/${phone}?text=${waMessage}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[hsl(142,70%,40%)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="flex w-full items-center justify-center gap-2 rounded-sm bg-[hsl(142,70%,40%)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <MessageCircle className="h-4 w-4" /> WhatsApp
         </a>
-        <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted">
+        <button className="flex w-full items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted">
           <Calendar className="h-4 w-4" /> Schedule Visit
         </button>
       </div>

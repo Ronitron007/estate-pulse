@@ -43,5 +43,11 @@ next-env.d.ts
 # scratch files (screenshots, research, working docs)
 .scratch/
 
+# supabase CLI temp
+supabase/.temp/
+
 # playwright MCP logs
 .playwright-mcp/
+
+# git worktrees
+.worktrees/
