@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Configuration, Tower } from "@/types/database";
+import type { Configuration, ConfigTower, Tower } from "@/types/database";
 
 interface ConfigurationsEditorProps {
   configurations: Partial<Configuration>[];
@@ -26,10 +26,8 @@ export function ConfigurationsEditor({ configurations, towers, onChange }: Confi
         covered_area_sqft: null,
         super_area_sqft: null,
         price: null,
-        tower_id: null,
-        floor_from: null,
-        floor_to: null,
         type_label: null,
+        towers: [],
       },
     ]);
   };
@@ -44,6 +42,29 @@ export function ConfigurationsEditor({ configurations, towers, onChange }: Confi
     const newConfigs = [...configurations];
     newConfigs.splice(index, 1);
     onChange(newConfigs);
+  };
+
+  const addTower = (configIndex: number) => {
+    const config = configurations[configIndex];
+    const currentTowers: ConfigTower[] = (config.towers as ConfigTower[]) || [];
+    updateConfig(configIndex, "towers", [
+      ...currentTowers,
+      { name: "", floor_from: null, floor_to: null },
+    ]);
+  };
+
+  const updateTower = (configIndex: number, towerIndex: number, field: keyof ConfigTower, value: any) => {
+    const config = configurations[configIndex];
+    const currentTowers: ConfigTower[] = [...((config.towers as ConfigTower[]) || [])];
+    currentTowers[towerIndex] = { ...currentTowers[towerIndex], [field]: value };
+    updateConfig(configIndex, "towers", currentTowers);
+  };
+
+  const removeTower = (configIndex: number, towerIndex: number) => {
+    const config = configurations[configIndex];
+    const currentTowers: ConfigTower[] = [...((config.towers as ConfigTower[]) || [])];
+    currentTowers.splice(towerIndex, 1);
+    updateConfig(configIndex, "towers", currentTowers);
   };
 
   return (
@@ -96,44 +117,6 @@ export function ConfigurationsEditor({ configurations, towers, onChange }: Confi
                 value={config.bathrooms ?? ""}
                 onChange={(e) => updateConfig(i, "bathrooms", e.target.value ? Number(e.target.value) : null)}
                 placeholder="2"
-              />
-            </div>
-
-            {towers.length > 0 && (
-              <div className="space-y-2">
-                <Label>Tower</Label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={config.tower_id || ""}
-                  onChange={(e) => updateConfig(i, "tower_id", e.target.value || null)}
-                >
-                  <option value="">No tower</option>
-                  {towers.map((tower) => (
-                    <option key={tower.id} value={tower.id}>
-                      {tower.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <Label>Floor From</Label>
-              <Input
-                type="number"
-                value={config.floor_from ?? ""}
-                onChange={(e) => updateConfig(i, "floor_from", e.target.value ? Number(e.target.value) : null)}
-                placeholder="1"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Floor To</Label>
-              <Input
-                type="number"
-                value={config.floor_to ?? ""}
-                onChange={(e) => updateConfig(i, "floor_to", e.target.value ? Number(e.target.value) : null)}
-                placeholder="25"
               />
             </div>
 
@@ -196,6 +179,67 @@ export function ConfigurationsEditor({ configurations, towers, onChange }: Confi
                 placeholder="5500000"
               />
             </div>
+          </div>
+
+          {/* Towers sub-editor */}
+          <div className="space-y-2 pt-2 border-t">
+            <Label className="text-sm font-medium">Towers</Label>
+            {((config.towers as ConfigTower[]) || []).map((ct, ti) => (
+              <div key={ti} className="flex items-center gap-2">
+                {towers.length > 0 ? (
+                  <select
+                    className="flex h-9 w-40 rounded-md border border-input bg-background px-2 py-1 text-sm"
+                    value={ct.name || ""}
+                    onChange={(e) => updateTower(i, ti, "name", e.target.value)}
+                  >
+                    <option value="">Select tower</option>
+                    {towers.map((t) => (
+                      <option key={t.id || t.name} value={t.name || ""}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <Input
+                    className="h-9 w-40"
+                    value={ct.name || ""}
+                    onChange={(e) => updateTower(i, ti, "name", e.target.value)}
+                    placeholder="Tower name"
+                  />
+                )}
+                <Input
+                  className="h-9 w-20"
+                  type="number"
+                  value={ct.floor_from ?? ""}
+                  onChange={(e) => updateTower(i, ti, "floor_from", e.target.value ? Number(e.target.value) : null)}
+                  placeholder="Fl from"
+                />
+                <span className="text-muted-foreground">–</span>
+                <Input
+                  className="h-9 w-20"
+                  type="number"
+                  value={ct.floor_to ?? ""}
+                  onChange={(e) => updateTower(i, ti, "floor_to", e.target.value ? Number(e.target.value) : null)}
+                  placeholder="Fl to"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeTower(i, ti)}
+                  className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addTower(i)}
+              className="text-sm text-primary hover:underline"
+            >
+              + Add Tower
+            </button>
           </div>
         </div>
       ))}

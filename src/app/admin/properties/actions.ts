@@ -139,10 +139,8 @@ export async function createPropertyAction(
         super_area_sqft: config.super_area_sqft ?? null,
         price: config.price ?? null,
         floor_plan_cloudinary_id: config.floor_plan_cloudinary_id || null,
-        tower_id: config.tower_id || null,
-        floor_from: config.floor_from ?? null,
-        floor_to: config.floor_to ?? null,
         type_label: config.type_label || null,
+        towers: config.towers || [],
       }));
 
       const { error: configsError } = await supabase
@@ -316,10 +314,8 @@ export async function updatePropertyAction(
         super_area_sqft: config.super_area_sqft ?? null,
         price: config.price ?? null,
         floor_plan_cloudinary_id: config.floor_plan_cloudinary_id || null,
-        tower_id: config.tower_id || null,
-        floor_from: config.floor_from ?? null,
-        floor_to: config.floor_to ?? null,
         type_label: config.type_label || null,
+        towers: config.towers || [],
       }));
 
       const { error: configsError } = await supabase

@@ -1,114 +1,56 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo } from "react";
 import { BedDouble, Bath, Building2, Layers, Maximize } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloorPlanLightbox } from "./FloorPlanLightbox";
 import { formatArea, formatPriceRange } from "@/lib/format";
 import { getImageUrl } from "@/lib/image-urls";
-import type { Configuration, Tower } from "@/types/database";
+import type { Configuration, ConfigTower } from "@/types/database";
 
 interface UnitShowcaseProps {
   configurations: Configuration[];
-  towers?: Tower[];
 }
 
-interface ConfigGroup {
-  key: string;
+interface BHKGroup {
+  bedrooms: number | null;
   label: string;
   configs: Configuration[];
 }
 
-function getGroupKey(config: Configuration): string {
-  return config.config_name || (config.bedrooms ? `${config.bedrooms} BHK` : "Unit");
-}
-
-function resolveTower(config: Configuration, towers?: Tower[]): Tower | undefined {
-  return config.tower || (config.tower_id ? towers?.find((t) => t.id === config.tower_id) : undefined);
-}
-
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 200 : -200,
-    opacity: 0,
-  }),
-  center: { x: 0, opacity: 1 },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -200 : 200,
-    opacity: 0,
-  }),
-};
-
-export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
-  // Group configs by type (bedrooms + config_name)
-  const groups = useMemo(() => {
-    const map = new Map<string, Configuration[]>();
+export function UnitShowcase({ configurations }: UnitShowcaseProps) {
+  // Group configs by bedrooms → top-level BHK pills
+  const bhkGroups = useMemo(() => {
+    const map = new Map<number | null, Configuration[]>();
     for (const c of configurations) {
-      const key = getGroupKey(c);
+      const key = c.bedrooms;
       const existing = map.get(key);
       if (existing) existing.push(c);
       else map.set(key, [c]);
     }
-    return Array.from(map.entries()).map(([key, configs]): ConfigGroup => ({
-      key,
-      label: key,
-      configs,
-    }));
+    return Array.from(map.entries())
+      .sort(([a], [b]) => (a ?? 0) - (b ?? 0))
+      .map(([bedrooms, configs]): BHKGroup => ({
+        bedrooms,
+        label: bedrooms ? `${bedrooms} BHK` : "Unit",
+        configs,
+      }));
   }, [configurations]);
 
-  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
-  const [activeTowerIndex, setActiveTowerIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const [activeBHK, setActiveBHK] = useState(0);
+  const [activeConfig, setActiveConfig] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const pillsRef = useRef<HTMLDivElement>(null);
 
-  const group = groups[activeGroupIndex];
-  const config = group?.configs[activeTowerIndex];
-  const tower = config ? resolveTower(config, towers) : undefined;
-  const showGroupNav = groups.length > 1;
-  const showTowerNav = group?.configs.length > 1;
+  const group = bhkGroups[activeBHK];
+  const config = group?.configs[activeConfig];
+  const showBHKNav = bhkGroups.length > 1;
+  const showCarpetNav = group?.configs.length > 1;
 
-  // Reset tower index when switching config groups
-  useEffect(() => {
-    setActiveTowerIndex(0);
-  }, [activeGroupIndex]);
-
-  const goToGroup = useCallback(
-    (index: number) => {
-      setDirection(index > activeGroupIndex ? 1 : -1);
-      setActiveGroupIndex(index);
-    },
-    [activeGroupIndex]
-  );
-
-  const goNextGroup = useCallback(() => {
-    if (activeGroupIndex < groups.length - 1) goToGroup(activeGroupIndex + 1);
-  }, [activeGroupIndex, groups.length, goToGroup]);
-
-  const goPrevGroup = useCallback(() => {
-    if (activeGroupIndex > 0) goToGroup(activeGroupIndex - 1);
-  }, [activeGroupIndex, goToGroup]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === "ArrowRight") goNextGroup();
-      if (e.key === "ArrowLeft") goPrevGroup();
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [goNextGroup, goPrevGroup]);
-
-  // Auto-scroll active pill into view
-  useEffect(() => {
-    if (!pillsRef.current) return;
-    const activePill = pillsRef.current.children[activeGroupIndex] as HTMLElement;
-    if (activePill) {
-      activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-    }
-  }, [activeGroupIndex]);
+  // Reset config index when switching BHK group
+  const handleBHKChange = (index: number) => {
+    setActiveBHK(index);
+    setActiveConfig(0);
+  };
 
   if (!configurations.length || !config) return null;
 
@@ -127,7 +69,7 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
   if (config.balcony_area_sqft) specs.push({ label: "Balcony", value: formatArea(config.balcony_area_sqft) });
   if (config.price) specs.push({ label: "Price", value: `₹${formatPriceRange(config.price, null, false)}` });
 
-  const configLabel = group.label;
+  const configTowers: ConfigTower[] = config.towers || [];
 
   return (
     <Card>
@@ -138,161 +80,124 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Config Type Pills */}
-        {showGroupNav && (
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-2 w-4 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-2 w-4 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none" />
-            <div ref={pillsRef} className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-1" role="tablist" aria-label="Unit configurations">
-              {groups.map((g, i) => (
-                <button
-                  key={g.key}
-                  role="tab"
-                  aria-selected={i === activeGroupIndex}
-                  onClick={() => goToGroup(i)}
-                  className={`shrink-0 rounded-sm px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                    i === activeGroupIndex
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  }`}
-                >
-                  {g.label}
-                </button>
-              ))}
-            </div>
+        {/* BHK Pills */}
+        {showBHKNav && (
+          <div className="flex gap-2 flex-wrap" role="tablist" aria-label="BHK types">
+            {bhkGroups.map((g, i) => (
+              <button
+                key={g.label}
+                role="tab"
+                aria-selected={i === activeBHK}
+                onClick={() => handleBHKChange(i)}
+                className={`shrink-0 rounded-sm px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                  i === activeBHK
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                {g.label}
+              </button>
+            ))}
           </div>
         )}
 
-        {/* Carousel content */}
-        <div className="relative overflow-hidden rounded-sm">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={`${group.key}-${activeTowerIndex}`}
-              role="tabpanel"
-              aria-label={configLabel}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              {/* Header bar */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4">
-                <h4 className="text-base font-semibold">{configLabel}</h4>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  {config.bedrooms != null && (
-                    <span className="flex items-center gap-1">
-                      <BedDouble className="w-4 h-4" /> {config.bedrooms}
-                    </span>
-                  )}
-                  {config.bathrooms != null && (
-                    <span className="flex items-center gap-1">
-                      <Bath className="w-4 h-4" /> {config.bathrooms}
-                    </span>
-                  )}
-                  {config.floor_from != null && config.floor_to != null && (
-                    <span>Floors {config.floor_from}–{config.floor_to}</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Tower Sub-Tabs */}
-              {showTowerNav && (
-                <div className="flex flex-wrap gap-2 mb-4" role="tablist" aria-label="Available towers">
-                  {group.configs.map((c, i) => {
-                    const t = resolveTower(c, towers);
-                    const label = t?.name || `Tower ${i + 1}`;
-                    return (
-                      <button
-                        key={c.id}
-                        role="tab"
-                        aria-selected={i === activeTowerIndex}
-                        onClick={() => setActiveTowerIndex(i)}
-                        className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1 text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring ${
-                          i === activeTowerIndex
-                            ? "bg-primary/10 text-primary border border-primary/20"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent"
-                        }`}
-                      >
-                        <Building2 className="w-3 h-3" />
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Single tower badge (when only one tower) */}
-              {!showTowerNav && tower && (
-                <div className="mb-4">
-                  <span className="inline-flex items-center gap-1 rounded-sm bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                    <Building2 className="w-3.5 h-3.5" />
-                    {tower.name}
-                    {tower.floor_from != null && tower.floor_to != null && (
-                      <span className="text-primary/70 ml-1">· {tower.floor_to - tower.floor_from + 1} floors</span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {/* Floor Plan Image */}
-              {floorPlanSrc ? (
+        {/* Carpet Area Sub-Pills (when >1 config in BHK group) */}
+        {showCarpetNav && (
+          <div className="flex gap-2 flex-wrap" role="tablist" aria-label="Carpet areas">
+            {group.configs.map((c, i) => {
+              const label = c.carpet_area_sqft
+                ? formatArea(c.carpet_area_sqft)
+                : c.config_name || `Option ${i + 1}`;
+              return (
                 <button
-                  onClick={() => setLightboxOpen(true)}
-                  className="relative w-full group cursor-zoom-in"
-                  aria-label={`View full-size floor plan for ${configLabel}`}
+                  key={c.id}
+                  role="tab"
+                  aria-selected={i === activeConfig}
+                  onClick={() => setActiveConfig(i)}
+                  className={`shrink-0 rounded-sm px-3 py-1 text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring ${
+                    i === activeConfig
+                      ? "bg-primary/10 text-primary border border-primary/20"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80 border border-transparent"
+                  }`}
                 >
-                  <img
-                    src={floorPlanSrc}
-                    alt={`Floor plan — ${configLabel}${tower ? ` (${tower.name})` : ""}`}
-                    className="w-full rounded-sm object-contain bg-muted border border-border"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-sm">
-                    <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-full text-sm font-medium shadow">
-                      <Maximize className="w-4 h-4" /> View Full Size
-                    </span>
-                  </div>
+                  {label}
                 </button>
-              ) : (
-                <div className="w-full aspect-[4/3] rounded-sm bg-muted border border-dashed border-border flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground">Floor plan coming soon</p>
-                </div>
-              )}
+              );
+            })}
+          </div>
+        )}
 
-              {/* Specs bar */}
-              {specs.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-                  {specs.map((s) => (
-                    <div key={s.label}>
-                      <p className="text-xs text-muted-foreground">{s.label}</p>
-                      <p className="text-sm font-semibold">{s.value}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* Tower Badges */}
+        {configTowers.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {configTowers.map((ct, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1 rounded-sm bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                {ct.name}
+                {ct.floor_from != null && ct.floor_to != null && (
+                  <span className="text-primary/70 ml-0.5">· Fl {ct.floor_from}–{ct.floor_to}</span>
+                )}
+              </span>
+            ))}
+          </div>
+        )}
 
-              {/* Tower details (secondary info) */}
-              {tower && (tower.lifts_count || tower.staircase_info || tower.units_per_floor) && (
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
-                  {tower.units_per_floor && <span>{tower.units_per_floor} units/floor</span>}
-                  {tower.lifts_count && (
-                    <span>
-                      {tower.lifts_count} {tower.lift_type || ""} lift{tower.lifts_count > 1 ? "s" : ""}
-                    </span>
-                  )}
-                  {tower.staircase_info && <span>{tower.staircase_info}</span>}
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+        {/* Header bar */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <h4 className="text-base font-semibold">
+            {config.config_name || group.label}
+          </h4>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            {config.bedrooms != null && (
+              <span className="flex items-center gap-1">
+                <BedDouble className="w-4 h-4" /> {config.bedrooms}
+              </span>
+            )}
+            {config.bathrooms != null && (
+              <span className="flex items-center gap-1">
+                <Bath className="w-4 h-4" /> {config.bathrooms}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Group counter */}
-        {showGroupNav && (
-          <p className="text-center text-xs text-muted-foreground">
-            {activeGroupIndex + 1} / {groups.length}
-          </p>
+        {/* Floor Plan Image */}
+        {floorPlanSrc ? (
+          <button
+            onClick={() => setLightboxOpen(true)}
+            className="relative w-full group cursor-zoom-in"
+            aria-label={`View full-size floor plan for ${config.config_name || group.label}`}
+          >
+            <img
+              src={floorPlanSrc}
+              alt={`Floor plan — ${config.config_name || group.label}`}
+              className="w-full rounded-sm object-contain bg-muted border border-border"
+            />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-sm">
+              <span className="flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-full text-sm font-medium shadow">
+                <Maximize className="w-4 h-4" /> View Full Size
+              </span>
+            </div>
+          </button>
+        ) : (
+          <div className="w-full aspect-[4/3] rounded-sm bg-muted border border-dashed border-border flex items-center justify-center">
+            <p className="text-sm text-muted-foreground">Floor plan coming soon</p>
+          </div>
+        )}
+
+        {/* Specs bar */}
+        {specs.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {specs.map((s) => (
+              <div key={s.label}>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-sm font-semibold">{s.value}</p>
+              </div>
+            ))}
+          </div>
         )}
       </CardContent>
 
@@ -300,7 +205,7 @@ export function UnitShowcase({ configurations, towers }: UnitShowcaseProps) {
       {floorPlanHero && (
         <FloorPlanLightbox
           src={floorPlanHero}
-          alt={`Floor plan — ${configLabel}${tower ? ` (${tower.name})` : ""}`}
+          alt={`Floor plan — ${config.config_name || group.label}`}
           open={lightboxOpen}
           onClose={() => setLightboxOpen(false)}
         />

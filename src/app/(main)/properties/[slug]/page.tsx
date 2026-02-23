@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Building2, Calendar, Check, ChevronRight, Car } from "lucide-react";
@@ -113,7 +114,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
       {/* Hero Image */}
       <div id="hero" className="relative h-[500px] bg-muted">
         {primaryImage ? (
-          <img
+          <Image
             src={getImageUrl(primaryImage.image_path, "hero")}
             alt={primaryImage.alt_text || project.name}
             className="w-full h-full object-cover"
@@ -228,7 +229,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 <AnimateIn delay={0.15}>
                   <UnitShowcase
                     configurations={project.configurations!}
-                    towers={project.towers}
                   />
                 </AnimateIn>
               </section>
