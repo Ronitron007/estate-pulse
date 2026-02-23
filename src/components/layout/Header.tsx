@@ -44,10 +44,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
         showSolid
           ? "bg-card/95 backdrop-blur-md shadow-card border-b border-border"
-          : "bg-transparent"
+          : "bg-transparent border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
