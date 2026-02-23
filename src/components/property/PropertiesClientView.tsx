@@ -2,10 +2,14 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { PropertyGrid } from "@/components/property/PropertyGrid";
-import { PropertyFilters } from "@/components/property/PropertyFilters";
 import { SortDropdown } from "@/components/property/SortDropdown";
 import { MobileFilterBar } from "@/components/property/MobileFilterBar";
-import { FilterPanel, type FilterValues } from "@/components/property/FilterPanel";
+import {
+  FilterPanel,
+  FilterSections,
+  useFilterOptions,
+  type FilterValues,
+} from "@/components/property/FilterPanel";
 import type { Project } from "@/types/database";
 
 interface PropertiesClientViewProps {
@@ -38,7 +42,6 @@ function sortProjects(projects: Project[], sort: string): Project[] {
         return da - db;
       });
     default:
-      // newest — by published_at desc
       return sorted.sort((a, b) => {
         const da = a.published_at ? new Date(a.published_at).getTime() : 0;
         const db = b.published_at ? new Date(b.published_at).getTime() : 0;
@@ -49,11 +52,21 @@ function sortProjects(projects: Project[], sort: string): Project[] {
 
 export function PropertiesClientView({
   projects,
-  cities,
 }: PropertiesClientViewProps) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
   const [sort, setSort] = useState("");
+
+  const { localityOptions, bedroomOptions, priceExtent } = useFilterOptions(projects);
+
+  // Initialize price range from data on first render
+  const effectiveFilters = useMemo<FilterValues>(() => {
+    return {
+      ...filters,
+      priceMin: filters.priceMin === EMPTY_FILTERS.priceMin ? priceExtent[0] : filters.priceMin,
+      priceMax: filters.priceMax === EMPTY_FILTERS.priceMax ? priceExtent[1] : filters.priceMax,
+    };
+  }, [filters, priceExtent]);
 
   const activeFilterCount =
     filters.localities.length +
@@ -85,7 +98,6 @@ export function PropertiesClientView({
       filters.priceMax !== EMPTY_FILTERS.priceMax
     ) {
       result = result.filter((p) => {
-        // Include if price ranges overlap
         if (p.price_min != null && p.price_min > filters.priceMax) return false;
         if (p.price_max != null && p.price_max < filters.priceMin) return false;
         return true;
@@ -100,26 +112,87 @@ export function PropertiesClientView({
     setFilterOpen(false);
   }, []);
 
+  // Desktop: immediate filter updates
+  const toggleLocality = useCallback((name: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      localities: prev.localities.includes(name)
+        ? prev.localities.filter((l) => l !== name)
+        : [...prev.localities, name],
+    }));
+  }, []);
+
+  const toggleBedroom = useCallback((n: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      bedrooms: prev.bedrooms.includes(n)
+        ? prev.bedrooms.filter((b) => b !== n)
+        : [...prev.bedrooms, n],
+    }));
+  }, []);
+
+  const handlePriceChange = useCallback((range: [number, number]) => {
+    setFilters((prev) => ({
+      ...prev,
+      priceMin: range[0],
+      priceMax: range[1],
+    }));
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setFilters(EMPTY_FILTERS);
+  }, []);
+
+  const hasActiveFilters = activeFilterCount > 0;
+
   return (
     <>
-      {/* Desktop filters — hidden on mobile */}
-      <div className="hidden md:block">
-        <PropertyFilters cities={cities} />
-      </div>
+      {/* Desktop: 2-column layout — grid left, filters right */}
+      <div className="flex gap-8">
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {/* Results count + desktop sort */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-muted-foreground">
+              {filteredProjects.length} properties found
+            </p>
+            <div className="hidden md:block">
+              <SortDropdown />
+            </div>
+          </div>
 
-      {/* Results count + desktop sort */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-muted-foreground">
-          {filteredProjects.length} properties found
-        </p>
-        <div className="hidden md:block">
-          <SortDropdown />
+          {/* Add bottom padding on mobile for sticky bar */}
+          <div className="pb-14 md:pb-0">
+            <PropertyGrid projects={filteredProjects} />
+          </div>
         </div>
-      </div>
 
-      {/* Add bottom padding on mobile for sticky bar */}
-      <div className="pb-14 md:pb-0">
-        <PropertyGrid projects={filteredProjects} />
+        {/* Desktop filter sidebar */}
+        <aside className="hidden md:block w-72 shrink-0">
+          <div className="sticky top-24">
+            {hasActiveFilters && (
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={clearAll}
+                  className="text-sm font-medium text-primary"
+                >
+                  Clear All
+                </button>
+              </div>
+            )}
+            <FilterSections
+              localityOptions={localityOptions}
+              bedroomOptions={bedroomOptions}
+              priceExtent={priceExtent}
+              selectedLocalities={effectiveFilters.localities}
+              selectedBedrooms={effectiveFilters.bedrooms}
+              priceRange={[effectiveFilters.priceMin, effectiveFilters.priceMax]}
+              onToggleLocality={toggleLocality}
+              onToggleBedroom={toggleBedroom}
+              onPriceChange={handlePriceChange}
+            />
+          </div>
+        </aside>
       </div>
 
       {/* Mobile only */}

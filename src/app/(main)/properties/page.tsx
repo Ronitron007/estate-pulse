@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { getProjects, getCities } from "@/lib/queries/projects";
+import { getProjects } from "@/lib/queries/projects";
 import { MapListToggle } from "@/components/map/MapListToggle";
 import { PropertiesClientView } from "@/components/property/PropertiesClientView";
 import type { ProjectFilters, PropertyType, ProjectStatus } from "@/types/database";
@@ -31,12 +31,9 @@ async function PropertiesContent({ searchParams }: PageProps) {
     sort: params.sort as ProjectFilters["sort"],
   };
 
-  const [projects, cities] = await Promise.all([
-    getProjects(filters),
-    getCities(),
-  ]);
+  const projects = await getProjects(filters);
 
-  return <PropertiesClientView projects={projects} cities={cities} />;
+  return <PropertiesClientView projects={projects} cities={[]} />;
 }
 
 export default async function PropertiesPage(props: PageProps) {

@@ -15,30 +15,13 @@ export interface FilterValues {
   priceMax: number;
 }
 
-interface FilterPanelProps {
-  projects: Project[];
-  open: boolean;
-  onClose: () => void;
-  onApply: (filters: FilterValues) => void;
-  initialFilters?: FilterValues;
-}
-
-function formatPrice(lakhs: number): string {
+export function formatPrice(lakhs: number): string {
   if (lakhs >= 100) return `${(lakhs / 100).toFixed(lakhs % 100 === 0 ? 0 : 1)} Cr`;
   return `${lakhs} L`;
 }
 
-export function FilterPanel({
-  projects,
-  open,
-  onClose,
-  onApply,
-  initialFilters,
-}: FilterPanelProps) {
-  const [mounted, setMounted] = useState(false);
-
-  // Derive filter options from project data
-  const { localityOptions, bedroomOptions, priceExtent } = useMemo(() => {
+export function useFilterOptions(projects: Project[]) {
+  return useMemo(() => {
     const localityMap = new Map<string, number>();
     const bedroomSet = new Set<number>();
     let pMin = Infinity;
@@ -53,7 +36,6 @@ export function FilterPanel({
           if (c.bedrooms != null) bedroomSet.add(c.bedrooms);
         }
       }
-      // Price in lakhs
       if (p.price_min != null && p.price_min < pMin) pMin = p.price_min;
       if (p.price_max != null && p.price_max > pMax) pMax = p.price_max;
     }
@@ -64,7 +46,6 @@ export function FilterPanel({
 
     const bedroomOptions = Array.from(bedroomSet).sort((a, b) => a - b);
 
-    // Round down/up to nearest 50L for nice slider bounds
     const floorMin = pMin === Infinity ? 0 : Math.floor(pMin / 50) * 50;
     const ceilMax = pMax === -Infinity ? 1000 : Math.ceil(pMax / 50) * 50;
 
@@ -74,8 +55,160 @@ export function FilterPanel({
       priceExtent: [floorMin, ceilMax] as [number, number],
     };
   }, [projects]);
+}
 
-  // Internal filter state
+// --- Shared filter sections UI ---
+
+interface FilterSectionsProps {
+  localityOptions: { name: string; count: number }[];
+  bedroomOptions: number[];
+  priceExtent: [number, number];
+  selectedLocalities: string[];
+  selectedBedrooms: number[];
+  priceRange: [number, number];
+  onToggleLocality: (name: string) => void;
+  onToggleBedroom: (n: number) => void;
+  onPriceChange: (range: [number, number]) => void;
+}
+
+export function FilterSections({
+  localityOptions,
+  bedroomOptions,
+  priceExtent,
+  selectedLocalities,
+  selectedBedrooms,
+  priceRange,
+  onToggleLocality,
+  onToggleBedroom,
+  onPriceChange,
+}: FilterSectionsProps) {
+  return (
+    <div className="space-y-6">
+      {/* Locality */}
+      {localityOptions.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Locality
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {localityOptions.map(({ name, count }) => {
+              const active = selectedLocalities.includes(name);
+              return (
+                <button
+                  key={name}
+                  onClick={() => onToggleLocality(name)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                    active
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-background text-foreground border-border hover:border-foreground/40"
+                  }`}
+                >
+                  {name}{" "}
+                  <span
+                    className={
+                      active ? "text-background/70" : "text-muted-foreground"
+                    }
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <hr className="border-border" />
+
+      {/* Bedrooms */}
+      {bedroomOptions.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <BedDouble className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Bedrooms
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {bedroomOptions.map((n) => {
+              const active = selectedBedrooms.includes(n);
+              return (
+                <button
+                  key={n}
+                  onClick={() => onToggleBedroom(n)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                    active
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-background text-foreground border-border hover:border-foreground/40"
+                  }`}
+                >
+                  {n} BHK
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <hr className="border-border" />
+
+      {/* Price Range */}
+      {priceExtent[0] < priceExtent[1] && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <IndianRupee className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Price
+              </span>
+            </div>
+            <span className="text-sm font-medium text-foreground">
+              {formatPrice(priceRange[0])} &ndash; {formatPrice(priceRange[1])}
+            </span>
+          </div>
+          <div className="px-1">
+            <Slider
+              min={priceExtent[0]}
+              max={priceExtent[1]}
+              step={50}
+              value={priceRange}
+              onValueChange={(val) => onPriceChange(val as [number, number])}
+            />
+          </div>
+          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+            <span>{formatPrice(priceExtent[0])}</span>
+            <span>{formatPrice(priceExtent[1])}</span>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+// --- Mobile full-screen overlay ---
+
+interface FilterPanelProps {
+  projects: Project[];
+  open: boolean;
+  onClose: () => void;
+  onApply: (filters: FilterValues) => void;
+  initialFilters?: FilterValues;
+}
+
+export function FilterPanel({
+  projects,
+  open,
+  onClose,
+  onApply,
+  initialFilters,
+}: FilterPanelProps) {
+  const [mounted, setMounted] = useState(false);
+  const { localityOptions, bedroomOptions, priceExtent } = useFilterOptions(projects);
+
+  // Internal filter state (only applied on "Show N" tap)
   const [selectedLocalities, setSelectedLocalities] = useState<string[]>(
     initialFilters?.localities ?? []
   );
@@ -88,7 +221,6 @@ export function FilterPanel({
       : priceExtent
   );
 
-  // Sync when initialFilters or priceExtent changes
   useEffect(() => {
     if (initialFilters) {
       setSelectedLocalities(initialFilters.localities);
@@ -97,27 +229,19 @@ export function FilterPanel({
     }
   }, [initialFilters]);
 
-  // Reset price range when extent changes (projects change)
   useEffect(() => {
-    if (!initialFilters) {
-      setPriceRange(priceExtent);
-    }
+    if (!initialFilters) setPriceRange(priceExtent);
   }, [priceExtent, initialFilters]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Body scroll lock
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   const toggleLocality = useCallback((name: string) => {
@@ -138,20 +262,11 @@ export function FilterPanel({
     setPriceRange(priceExtent);
   };
 
-  // Count matching projects
   const matchCount = useMemo(() => {
     return projects.filter((p) => {
-      if (
-        selectedLocalities.length > 0 &&
-        (!p.locality || !selectedLocalities.includes(p.locality))
-      )
+      if (selectedLocalities.length > 0 && (!p.locality || !selectedLocalities.includes(p.locality)))
         return false;
-      if (
-        selectedBedrooms.length > 0 &&
-        !p.configurations?.some(
-          (c) => c.bedrooms != null && selectedBedrooms.includes(c.bedrooms)
-        )
-      )
+      if (selectedBedrooms.length > 0 && !p.configurations?.some((c) => c.bedrooms != null && selectedBedrooms.includes(c.bedrooms)))
         return false;
       if (p.price_min != null && p.price_min > priceRange[1]) return false;
       if (p.price_max != null && p.price_max < priceRange[0]) return false;
@@ -186,130 +301,29 @@ export function FilterPanel({
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <button
-              onClick={onClose}
-              className="p-1 -ml-1 text-foreground"
-              aria-label="Close filters"
-            >
+            <button onClick={onClose} className="p-1 -ml-1 text-foreground" aria-label="Close filters">
               <X className="w-5 h-5" />
             </button>
             {hasActiveFilters && (
-              <button
-                onClick={clearAll}
-                className="text-sm font-medium text-primary"
-              >
+              <button onClick={clearAll} className="text-sm font-medium text-primary">
                 Clear All
               </button>
             )}
           </div>
 
           {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6">
-            {/* Locality */}
-            {localityOptions.length > 0 && (
-              <section>
-                <div className="flex items-center gap-2 mb-3">
-                  <MapPin className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Locality
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {localityOptions.map(({ name, count }) => {
-                    const active = selectedLocalities.includes(name);
-                    return (
-                      <button
-                        key={name}
-                        onClick={() => toggleLocality(name)}
-                        className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                          active
-                            ? "bg-foreground text-background border-foreground"
-                            : "bg-background text-foreground border-border hover:border-foreground/40"
-                        }`}
-                      >
-                        {name}{" "}
-                        <span
-                          className={
-                            active
-                              ? "text-background/70"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
-            <hr className="border-border" />
-
-            {/* Bedrooms */}
-            {bedroomOptions.length > 0 && (
-              <section>
-                <div className="flex items-center gap-2 mb-3">
-                  <BedDouble className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Bedrooms
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {bedroomOptions.map((n) => {
-                    const active = selectedBedrooms.includes(n);
-                    return (
-                      <button
-                        key={n}
-                        onClick={() => toggleBedroom(n)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                          active
-                            ? "bg-foreground text-background border-foreground"
-                            : "bg-background text-foreground border-border hover:border-foreground/40"
-                        }`}
-                      >
-                        {n} BHK
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
-            <hr className="border-border" />
-
-            {/* Price Range */}
-            {priceExtent[0] < priceExtent[1] && (
-              <section>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <IndianRupee className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      Price
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-foreground">
-                    {formatPrice(priceRange[0])} &ndash;{" "}
-                    {formatPrice(priceRange[1])}
-                  </span>
-                </div>
-                <div className="px-1">
-                  <Slider
-                    min={priceExtent[0]}
-                    max={priceExtent[1]}
-                    step={50}
-                    value={priceRange}
-                    onValueChange={(val) =>
-                      setPriceRange(val as [number, number])
-                    }
-                  />
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                  <span>{formatPrice(priceExtent[0])}</span>
-                  <span>{formatPrice(priceExtent[1])}</span>
-                </div>
-              </section>
-            )}
+          <div className="flex-1 overflow-y-auto px-4 py-5">
+            <FilterSections
+              localityOptions={localityOptions}
+              bedroomOptions={bedroomOptions}
+              priceExtent={priceExtent}
+              selectedLocalities={selectedLocalities}
+              selectedBedrooms={selectedBedrooms}
+              priceRange={priceRange}
+              onToggleLocality={toggleLocality}
+              onToggleBedroom={toggleBedroom}
+              onPriceChange={setPriceRange}
+            />
           </div>
 
           {/* Footer */}
