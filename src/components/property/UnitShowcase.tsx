@@ -12,43 +12,45 @@ interface UnitShowcaseProps {
   configurations: Configuration[];
 }
 
-interface BHKGroup {
-  bedrooms: number | null;
+interface ConfigGroup {
+  key: string;
   label: string;
   configs: Configuration[];
 }
 
+function getGroupKey(config: Configuration): string {
+  return config.config_name || (config.bedrooms ? `${config.bedrooms} BHK` : "Unit");
+}
+
 export function UnitShowcase({ configurations }: UnitShowcaseProps) {
-  // Group configs by bedrooms → top-level BHK pills
-  const bhkGroups = useMemo(() => {
-    const map = new Map<number | null, Configuration[]>();
+  // Group configs by config_name → top-level pills
+  const groups = useMemo(() => {
+    const map = new Map<string, Configuration[]>();
     for (const c of configurations) {
-      const key = c.bedrooms;
+      const key = getGroupKey(c);
       const existing = map.get(key);
       if (existing) existing.push(c);
       else map.set(key, [c]);
     }
-    return Array.from(map.entries())
-      .sort(([a], [b]) => (a ?? 0) - (b ?? 0))
-      .map(([bedrooms, configs]): BHKGroup => ({
-        bedrooms,
-        label: bedrooms ? `${bedrooms} BHK` : "Unit",
-        configs,
-      }));
+    return Array.from(map.entries()).map(([key, configs]): ConfigGroup => ({
+      key,
+      label: key,
+      configs,
+    }));
   }, [configurations]);
 
-  const [activeBHK, setActiveBHK] = useState(0);
+  const [activeGroup, setActiveGroup] = useState(0);
   const [activeConfig, setActiveConfig] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const group = bhkGroups[activeBHK];
+  const group = groups[activeGroup];
   const config = group?.configs[activeConfig];
-  const showBHKNav = bhkGroups.length > 1;
+  const showGroupNav = groups.length > 1;
   const showCarpetNav = group?.configs.length > 1;
 
-  // Reset config index when switching BHK group
-  const handleBHKChange = (index: number) => {
-    setActiveBHK(index);
+  // Reset config index when switching group
+  const handleGroupChange = (index: number) => {
+    setActiveGroup(index);
     setActiveConfig(0);
   };
 
@@ -80,17 +82,17 @@ export function UnitShowcase({ configurations }: UnitShowcaseProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* BHK Pills */}
-        {showBHKNav && (
-          <div className="flex gap-2 flex-wrap" role="tablist" aria-label="BHK types">
-            {bhkGroups.map((g, i) => (
+        {/* Config Name Pills */}
+        {showGroupNav && (
+          <div className="flex gap-2 flex-wrap" role="tablist" aria-label="Unit configurations">
+            {groups.map((g, i) => (
               <button
-                key={g.label}
+                key={g.key}
                 role="tab"
-                aria-selected={i === activeBHK}
-                onClick={() => handleBHKChange(i)}
+                aria-selected={i === activeGroup}
+                onClick={() => handleGroupChange(i)}
                 className={`shrink-0 rounded-sm px-4 py-1.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                  i === activeBHK
+                  i === activeGroup
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
