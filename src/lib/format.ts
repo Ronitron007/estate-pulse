@@ -1,18 +1,15 @@
 export function formatPrice(price: number | null): string {
   if (!price) return "";
 
-  // Convert from paise/cents to rupees
-  const amount = price / 100;
-
-  if (amount >= 10000000) {
-    return `₹${(amount / 10000000).toFixed(2)} Cr`;
-  } else if (amount >= 100000) {
-    return `₹${(amount / 100000).toFixed(2)} L`;
-  } else if (amount >= 1000) {
-    return `₹${(amount / 1000).toFixed(0)}K`;
+  if (price >= 10000000) {
+    return `₹${(price / 10000000).toFixed(2)} Cr`;
+  } else if (price >= 100000) {
+    return `₹${(price / 100000).toFixed(2)} L`;
+  } else if (price >= 1000) {
+    return `₹${(price / 1000).toFixed(0)}K`;
   }
 
-  return `₹${amount.toLocaleString("en-IN")}`;
+  return `₹${price.toLocaleString("en-IN")}`;
 }
 
 export function formatPriceRange(min: number | null, max: number | null, onRequest: boolean): string {
