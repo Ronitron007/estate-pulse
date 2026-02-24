@@ -97,9 +97,12 @@ export function PropertiesClientView({
       filters.priceMin !== EMPTY_FILTERS.priceMin ||
       filters.priceMax !== EMPTY_FILTERS.priceMax
     ) {
+      // Filter values are in lakhs, DB values are in rupees
+      const minRupees = filters.priceMin * 100000;
+      const maxRupees = filters.priceMax * 100000;
       result = result.filter((p) => {
-        if (p.price_min != null && p.price_min > filters.priceMax) return false;
-        if (p.price_max != null && p.price_max < filters.priceMin) return false;
+        if (p.price_min != null && p.price_min > maxRupees) return false;
+        if (p.price_max != null && p.price_max < minRupees) return false;
         return true;
       });
     }

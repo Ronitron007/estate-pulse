@@ -36,8 +36,11 @@ export function useFilterOptions(projects: Project[]) {
           if (c.bedrooms != null) bedroomSet.add(c.bedrooms);
         }
       }
-      if (p.price_min != null && p.price_min < pMin) pMin = p.price_min;
-      if (p.price_max != null && p.price_max > pMax) pMax = p.price_max;
+      // Convert rupees to lakhs for slider
+      const minL = p.price_min != null ? p.price_min / 100000 : null;
+      const maxL = p.price_max != null ? p.price_max / 100000 : null;
+      if (minL != null && minL < pMin) pMin = minL;
+      if (maxL != null && maxL > pMax) pMax = maxL;
     }
 
     const localityOptions = Array.from(localityMap.entries())
@@ -46,6 +49,7 @@ export function useFilterOptions(projects: Project[]) {
 
     const bedroomOptions = Array.from(bedroomSet).sort((a, b) => a - b);
 
+    // Round to nearest 50L for clean slider bounds
     const floorMin = pMin === Infinity ? 0 : Math.floor(pMin / 50) * 50;
     const ceilMax = pMax === -Infinity ? 1000 : Math.ceil(pMax / 50) * 50;
 
@@ -263,13 +267,16 @@ export function FilterPanel({
   };
 
   const matchCount = useMemo(() => {
+    // priceRange is in lakhs, DB values are in rupees
+    const maxRupees = priceRange[1] * 100000;
+    const minRupees = priceRange[0] * 100000;
     return projects.filter((p) => {
       if (selectedLocalities.length > 0 && (!p.locality || !selectedLocalities.includes(p.locality)))
         return false;
       if (selectedBedrooms.length > 0 && !p.configurations?.some((c) => c.bedrooms != null && selectedBedrooms.includes(c.bedrooms)))
         return false;
-      if (p.price_min != null && p.price_min > priceRange[1]) return false;
-      if (p.price_max != null && p.price_max < priceRange[0]) return false;
+      if (p.price_min != null && p.price_min > maxRupees) return false;
+      if (p.price_max != null && p.price_max < minRupees) return false;
       return true;
     }).length;
   }, [projects, selectedLocalities, selectedBedrooms, priceRange]);
