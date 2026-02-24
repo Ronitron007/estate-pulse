@@ -26,7 +26,7 @@ export function Hero() {
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
             Find Verified Homes in{' '}
-            <span className="text-primary">Chandigarh Tricity</span>
+            <span className="text-accent">Chandigarh Tricity</span>
           </h1>
 
           <p className="text-lg md:text-xl text-white/70 max-w-xl mb-8 font-light leading-relaxed">
