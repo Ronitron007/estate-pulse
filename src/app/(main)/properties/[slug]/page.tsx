@@ -6,6 +6,7 @@ import { MapPin, Building2, Calendar, Check, ChevronRight, Car, BedDouble, Bath,
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries/projects";
 import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { LocationMap } from "@/components/map/LocationMap";
 import { getImageUrl } from "@/lib/image-urls";
@@ -191,10 +192,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                       const min = Math.min(...areas);
                       const max = Math.max(...areas);
                       return (
-                        <span className="flex items-center gap-1">
-                          <Ruler className="w-4 h-4" />
-                          {min === max ? `${min.toLocaleString()} sq.ft` : `${min.toLocaleString()}–${max.toLocaleString()} sq.ft`}
-                        </span>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center gap-1 cursor-help border-b border-dashed border-muted-foreground/40">
+                              <Ruler className="w-4 h-4" />
+                              {min === max ? `${min.toLocaleString()} sq.ft` : `${min.toLocaleString()}–${max.toLocaleString()} sq.ft`}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Carpet Area
+                          </TooltipContent>
+                        </Tooltip>
                       );
                     })()}
                     {project.property_type && (
