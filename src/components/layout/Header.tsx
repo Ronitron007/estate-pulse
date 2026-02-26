@@ -61,8 +61,10 @@ export function Header() {
             <Link
               key={link.path}
               href={link.path}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                showSolid ? "text-foreground" : "text-white/90"
+              className={`text-sm font-medium transition-colors ${
+                showSolid
+                  ? "text-foreground hover:text-primary"
+                  : "text-white/90 hover:text-white"
               } ${pathname === link.path ? "text-primary" : ""}`}
             >
               {link.label}
