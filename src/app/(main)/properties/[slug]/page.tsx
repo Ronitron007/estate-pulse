@@ -8,10 +8,8 @@ import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LocationMap } from "@/components/map/LocationMap";
 import { getImageUrl } from "@/lib/image-urls";
-import { LocationAdvantages } from "@/components/property/LocationAdvantages";
-import { PointsOfInterest } from "@/components/property/PointsOfInterest";
+import { LocationExplorer } from "@/components/property/LocationExplorer";
 import { InvestmentInsights } from "@/components/property/InvestmentInsights";
 import { ProjectDetailStats } from "@/components/property/ProjectDetailStats";
 import { QuickCtaSidebar } from "@/components/property/QuickCtaSidebar";
@@ -95,11 +93,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   const hasSpecs = project.specifications && project.specifications.length > 0;
   const hasInvestment = !!project.investment_data;
   const hasGallery = galleryImages.length > 0;
-  const hasLocationContent = !!(
-    project.points_of_interest?.length ||
-    (project.location_advantages && Object.keys(project.location_advantages).length) ||
-    project.project_details_extra
-  );
+  const hasLocationContent = !!project.location;
 
   const sections = [
     { id: "overview", label: "Overview" },
@@ -242,10 +236,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   )}
                 </div>
               </AnimateIn>
-              
-      
 
-          
+
+
+
 
               {/* About */}
               {project.description && (
@@ -287,7 +281,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 </AnimateIn>
               )}
 
-              
+
             </section>
 
             {/* ── CONFIGURATIONS ── */}
@@ -320,9 +314,9 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </section>
             )}
 
-           
 
-            {/* ── LOCATION + POIs + PROJECT DETAILS ── */}
+
+            {/* ── LOCATION ── */}
             <section id="location" className="scroll-mt-28 md:scroll-mt-32 space-y-6">
               <AnimateIn delay={0.25}>
                 <div className="py-6 border-b border-border">
@@ -339,31 +333,21 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                     {project.rera_id && (
                       <p className="text-sm text-muted-foreground">RERA ID: {project.rera_id}</p>
                     )}
-                    {project.location && (
-                      <LocationMap
+                    {project.location ? (
+                      <LocationExplorer
                         lat={project.location.lat}
                         lng={project.location.lng}
-                        propertyType={project.property_type}
-                        className="h-64 w-full rounded-sm overflow-hidden"
+                        propertyName={project.name}
                       />
+                    ) : (
+                      <p className="text-muted-foreground text-sm">Location not available</p>
                     )}
                   </div>
                 </div>
               </AnimateIn>
 
-              {/* POIs / Location Advantages */}
-              {project.points_of_interest?.length > 0 ? (
-                <AnimateIn delay={0.27}>
-                  <PointsOfInterest pois={project.points_of_interest} />
-                </AnimateIn>
-              ) : project.location_advantages && Object.keys(project.location_advantages).length > 0 ? (
-                <AnimateIn delay={0.27}>
-                  <LocationAdvantages data={project.location_advantages} />
-                </AnimateIn>
-              ) : null}
-
               {/* Project Details */}
-             
+
                 {project.parking && (
                   <AnimateIn delay={0.22}>
                     <div className="py-6 border-b border-border">
@@ -439,7 +423,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   </AnimateIn>
                 )}
 
-              
+
               </section>
             )}
 
