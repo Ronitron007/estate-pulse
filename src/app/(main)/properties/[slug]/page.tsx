@@ -21,6 +21,7 @@ import { DynamicIcon } from "@/components/ui/DynamicIcon";
 import { UnitShowcase } from "@/components/property/UnitShowcase";
 import { MobileCtaBar } from "@/components/property/MobileCtaBar";
 import { SectionNav } from "@/components/property/SectionNav";
+import { EmiCalculator } from "@/components/property/EmiCalculator";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -194,7 +195,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                       return (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className="flex items-center gap-1 cursor-help border-b border-dashed border-muted-foreground/40">
+                            <span className="flex items-center gap-1 cursor-pointer border-b border-dashed border-muted-foreground/40">
                               <Ruler className="w-4 h-4" />
                               {min === max ? `${min.toLocaleString()} sq.ft` : `${min.toLocaleString()}–${max.toLocaleString()} sq.ft`}
                             </span>
@@ -212,10 +213,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                       </span>
                     )}
                     {project.possession_date && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(project.possession_date)}
-                      </span>
+                      <Tooltip >
+                        <TooltipTrigger asChild>
+                          <span className="flex cursor-pointer border-b border-dashed border-muted-foreground/40 items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {formatDate(project.possession_date)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          Possession Date
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
 
@@ -440,6 +448,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               <section id="pricing" className="scroll-mt-28 md:scroll-mt-32">
                 <AnimateIn delay={0.3}>
                   <InvestmentInsights data={project.investment_data!} />
+                </AnimateIn>
+              </section>
+            )}
+
+            {/* ── EMI CALCULATOR ── */}
+            {(project.price_min || project.price_max) && (
+              <section className="scroll-mt-28 md:scroll-mt-32">
+                <AnimateIn delay={0.32}>
+                  <div className="py-6 border-b border-border">
+                    <EmiCalculator price={project.price_max || project.price_min!} />
+                  </div>
                 </AnimateIn>
               </section>
             )}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -11,11 +11,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { MobileNav } from "./MobileNav";
 
 const navLinks = [
-  { label: "Home", path: "/" },
   { label: "Properties", path: "/properties" },
   { label: "Map", path: "/map" },
   { label: "About", path: "/#why-us" },
-  { label: "Contact", path: "/#contact" },
 ];
 
 export function Header() {
@@ -86,16 +84,6 @@ export function Header() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
-          <a
-            href="tel:+917719784712"
-            className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-              showSolid ? "text-foreground" : "text-white/90"
-            }`}
-          >
-            <Phone className="w-4 h-4" />
-            +91 77197 84712
-          </a>
-
           {loading ? (
             <div className="w-20 h-8 bg-muted rounded-sm animate-pulse" />
           ) : user ? (
