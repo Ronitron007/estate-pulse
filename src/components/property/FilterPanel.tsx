@@ -177,7 +177,7 @@ export function FilterSections({
             <Slider
               min={priceExtent[0]}
               max={priceExtent[1]}
-              step={50}
+              step={100}
               value={priceRange}
               onValueChange={(val) => onPriceChange(val as [number, number])}
             />

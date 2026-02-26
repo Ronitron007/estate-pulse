@@ -65,10 +65,10 @@ export function Footer() {
                 <Phone className="w-4 h-4" /> +91 77197 84712
               </a>
               <a
-                href="mailto:hello@estatepulse.in"
+                href="mailto:hello@perfectghar.in"
                 className="flex items-center gap-2 text-sm text-white/60 hover:text-primary transition-colors"
               >
-                <Mail className="w-4 h-4" /> hello@estatepulse.in
+                <Mail className="w-4 h-4" /> hello@perfectghar.in
               </a>
             </div>
           </div>
