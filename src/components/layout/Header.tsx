@@ -2,12 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/components/auth/AuthProvider";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { MobileNav } from "./MobileNav";
 
 const navLinks = [
@@ -17,9 +13,7 @@ const navLinks = [
 ];
 
 export function Header() {
-  const { user, loading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
 
   const isHome = pathname === "/";
@@ -29,12 +23,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.refresh();
-  };
 
   // On homepage: transparent when at top, solid on scroll
   // On other pages: always solid
@@ -84,46 +72,16 @@ export function Header() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
-          {loading ? (
-            <div className="w-20 h-8 bg-muted rounded-sm animate-pulse" />
-          ) : user ? (
-            <>
-              <Link
-                href="/saved"
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  showSolid ? "text-foreground" : "text-white/90"
-                }`}
-              >
-                Saved
-              </Link>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="group">
-                <LogOut className="w-4 h-4 mr-2 transition-transform duration-200 group-hover:-translate-x-0.5" />
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={showSolid ? "" : "text-white hover:text-white hover:bg-white/10"}
-                >
-                  Login
-                </Button>
-              </Link>
-              <Link
-                href="/properties"
-                className="bg-primary text-white px-5 py-2 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-colors"
-              >
-                View Properties
-              </Link>
-            </>
-          )}
+          <Link
+            href="/properties"
+            className="bg-primary text-white px-5 py-2 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-colors"
+          >
+            View Properties
+          </Link>
         </div>
 
         {/* Mobile nav */}
-        <MobileNav user={user ? { email: user.email ?? "" } : null} />
+        <MobileNav />
       </div>
     </header>
   );

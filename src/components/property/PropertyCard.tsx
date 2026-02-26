@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { MapPin, Building2, Calendar, Home, Heart } from "lucide-react";
+import { MapPin, Building2, Calendar, Home } from "lucide-react";
 import { formatPrice, formatPriceRange, formatDate } from "@/lib/format";
-import { useFavorites } from "@/components/auth/FavoritesProvider";
-import { useAuth } from "@/components/auth/AuthProvider";
-import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/lib/image-urls";
 import type { Project } from "@/types/database";
 
@@ -16,12 +12,6 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
-  const [isHeartAnimating, setIsHeartAnimating] = useState(false);
-  const { user } = useAuth();
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const router = useRouter();
-  const isFavorited = isFavorite(project.id);
-
   const primaryImage = project.images?.find((img) => img.is_primary) || project.images?.[0];
   const minBedrooms = project.configurations?.length
     ? Math.min(...project.configurations.filter((c) => c.bedrooms).map((c) => c.bedrooms!))
@@ -43,20 +33,6 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
     completed: "bg-muted text-muted-foreground border-border",
   };
 
-  const handleFavoriteClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!user) {
-      router.push(`/login?redirectTo=${encodeURIComponent(`/properties/${project.slug}`)}`);
-      return;
-    }
-
-    setIsHeartAnimating(true);
-    setTimeout(() => setIsHeartAnimating(false), 600);
-    await toggleFavorite(project.id);
-  };
-
   return (
     <Link
       href={`/properties/${project.slug}`}
@@ -75,18 +51,6 @@ export function PropertyCard({ project, index = 0 }: PropertyCardProps) {
             <Building2 className="w-12 h-12" />
           </div>
         )}
-
-        {/* Favorite button */}
-        <button
-          onClick={handleFavoriteClick}
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-sm transition-colors duration-200 hover:bg-white"
-        >
-          <Heart
-            className={`w-4 h-4 transition-colors duration-200 ${
-              isFavorited ? "fill-red-500 text-red-500" : "text-muted-foreground"
-            }`}
-          />
-        </button>
       </div>
 
       {/* Details */}
